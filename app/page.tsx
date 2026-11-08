@@ -20,6 +20,7 @@ import {
   Clock,
   ChevronDown,
   BadgeCheck,
+  Ruler,
 } from "lucide-react";
 
 import "./home-page.css";
@@ -28,10 +29,9 @@ const PHONE_NUMBER = "9130129205";
 const WHATSAPP_NUMBER = "919130129205";
 
 const generalWhatsAppMessage = encodeURIComponent(
-  "Hello Tulja Motors, I would like to enquire about your services."
+  "Hello Tulja Motors, I would like to enquire about your multi-brand automotive workshop in Kolhapur."
 );
 
-/* TULJA MOTORS — SIX SERVICE-SPECIFIC IMAGES */
 const services = [
   {
     number: "01",
@@ -41,7 +41,7 @@ const services = [
     icon: CarFront,
     image: "/images/services/Accident%20Repair.jpg",
     alt: "Indian car undergoing accident repair and restoration",
-    vehicle: "TATA NEXON",
+    vehicle: "ACCIDENT REPAIR",
   },
   {
     number: "02",
@@ -51,8 +51,8 @@ const services = [
     icon: Paintbrush,
     image:
       "https://www.team-bhp.com/sites/default/files/styles/amp_high_res/public/nexon_1.jpeg",
-    alt: "Tata Nexon showing damaged rear bodywork requiring dent repair",
-    vehicle: "TATA NEXON",
+    alt: "Tata Nexon showing bodywork damage",
+    vehicle: "BODY & PAINT",
   },
   {
     number: "03",
@@ -62,7 +62,7 @@ const services = [
     icon: Wrench,
     image: "/images/services/Car%20Restoration.jpg",
     alt: "Restored Maruti Suzuki vehicle",
-    vehicle: "MARUTI SUZUKI",
+    vehicle: "RESTORATION",
   },
   {
     number: "04",
@@ -71,8 +71,8 @@ const services = [
       "Vehicle inspection, mechanical diagnosis and repair services.",
     icon: Settings,
     image: "/images/services/mechanical-repair.jpg",
-    alt: "Technician working on a vehicle during mechanical repairs",
-    vehicle: "TATA MOTORS",
+    alt: "Technician working on a vehicle",
+    vehicle: "MECHANICAL",
   },
   {
     number: "05",
@@ -81,8 +81,8 @@ const services = [
       "Guidance and support throughout the vehicle insurance claim process.",
     icon: ShieldCheck,
     image: "/images/services/insurance-assistance.jpg",
-    alt: "Vehicle damage inspection for insurance claim assistance",
-    vehicle: "DAMAGE ASSESSMENT",
+    alt: "Vehicle damage inspection for insurance assistance",
+    vehicle: "INSURANCE SUPPORT",
   },
   {
     number: "06",
@@ -91,12 +91,11 @@ const services = [
       "Refresh your vehicle with professional renovation and upgrade work.",
     icon: Sparkles,
     image: "/images/services/car-renovation.jpg",
-    alt: "Mahindra Thar with refreshed exterior trim and styling",
-    vehicle: "MAHINDRA THAR",
+    alt: "Mahindra Thar with refreshed exterior styling",
+    vehicle: "CAR RENOVATION",
   },
 ];
 
-/* SHARVARI — EXACTLY TWO IMAGE FEATURES */
 const sharvariServices = [
   "Ceramic Coating",
   "PPF Installation",
@@ -114,8 +113,8 @@ const sharvariHighlights = [
       "Give your vehicle a distinctive road presence with exterior styling and customisation.",
     image:
       "https://imgx.gridoto.com/crop/0x126%3A740x654/700x465/photo/2020/01/21/3740741001.jpg",
-    alt: "Modified red Kia Seltos with sporty black alloy wheels",
-    vehicle: "KIA SELTOS",
+    alt: "Modified car with sporty exterior styling",
+    vehicle: "EXTERIOR STYLING",
   },
   {
     number: "02",
@@ -124,8 +123,8 @@ const sharvariHighlights = [
       "Upgrade your cabin with refreshed interiors, premium finishes and personalised styling.",
     image:
       "https://www.vroomvroomrestoration.in/uploads/image/vroom/cars/2005-maruti-swift/16.jpeg",
-    alt: "Maruti Suzuki Swift interior with refreshed dashboard and cabin",
-    vehicle: "MARUTI SUZUKI",
+    alt: "Car interior with refreshed dashboard and cabin",
+    vehicle: "INTERIOR STYLING",
   },
 ];
 
@@ -142,18 +141,43 @@ const projects = [
     category: "TULJA MOTORS",
     image:
       "https://www.team-bhp.com/sites/default/files/styles/amp_high_res/public/nexon_1.jpeg",
-    alt: "Tata Nexon body damage reference",
+    alt: "Tata Nexon bodywork reference",
   },
   {
     title: "Premium Vehicle Customisation",
     category: "SHARVARI MOTORS",
     image:
       "https://s3-ap-southeast-1.amazonaws.com/permaisuriban/img/20210702/portfolio/OZ_Racing_Italia_150_with_KIA_Seltos_gallery_13.jpg",
-    alt: "Black Kia Seltos with custom alloy wheels",
+    alt: "Kia Seltos with custom alloy wheels",
   },
 ];
 
+const districtTowns = [
+  "Kolhapur",
+  "Ichalkaranji",
+  "Kagal",
+  "Panhala",
+  "Hatkanangale",
+  "Shirol",
+  "Gadhinglaj",
+  "Radhanagari",
+  "Ajra",
+  "Chandgad",
+  "Bhudargad",
+  "Shahuwadi",
+];
+
 const faqs = [
+  {
+    question: "What is special about the new workshop?",
+    answer:
+      "The upcoming facility is planned as a 10,000 sq. ft. multi-brand automotive workshop in Top Sambhapur, Kolhapur, bringing multiple vehicle repair, restoration and customisation services together.",
+  },
+  {
+    question: "Which vehicle brands do you work on?",
+    answer:
+      "The workshop is intended to cater to multiple car brands. Contact our team with your vehicle make and model to discuss your specific requirements.",
+  },
   {
     question: "How long does accident repair take?",
     answer:
@@ -162,7 +186,7 @@ const faqs = [
   {
     question: "Can you help with insurance claims?",
     answer:
-      "Yes. We provide insurance claim assistance and guidance during the vehicle repair process. Contact our team to discuss your policy and requirements.",
+      "We provide insurance claim assistance and guidance during the vehicle repair process. Contact our team to discuss your policy and requirements.",
   },
   {
     question: "Can I get a repair estimate before booking?",
@@ -184,14 +208,14 @@ export default function HomePage() {
 
     const form = new FormData(event.currentTarget);
 
-    const name = String(form.get("name") || "");
-    const phone = String(form.get("phone") || "");
-    const vehicle = String(form.get("vehicle") || "");
-    const service = String(form.get("service") || "");
-    const location = String(form.get("location") || "");
+    const name = String(form.get("name") || "").trim();
+    const phone = String(form.get("phone") || "").trim();
+    const vehicle = String(form.get("vehicle") || "").trim();
+    const service = String(form.get("service") || "").trim();
+    const location = String(form.get("location") || "").trim();
 
     const message = [
-      "Hello Tulja Motors, I would like to request a vehicle service quotation.",
+      "Hello Tulja Motors, I would like to enquire about your multi-brand workshop.",
       "",
       `Name: ${name}`,
       `Phone: ${phone}`,
@@ -211,8 +235,8 @@ export default function HomePage() {
 
   return (
     <main className="tm-new-home">
-      {/* HERO */}
-      <section className="tm-main-hero">
+      {/* HERO — KOLHAPUR MULTI-BRAND WORKSHOP */}
+      <section className="tm-main-hero tm-kolhapur-hero">
         <div className="tm-main-hero-image" />
         <div className="tm-main-hero-overlay" />
 
@@ -220,23 +244,25 @@ export default function HomePage() {
           <div className="tm-container">
             <div className="tm-hero-label">
               <span className="tm-orange-dot" />
-              KOLHAPUR&apos;S AUTOMOTIVE REPAIR & RESTORATION CENTRE
+              A NEW AUTOMOTIVE DESTINATION FOR KOLHAPUR
             </div>
 
             <h1>
-              ACCIDENT REPAIR &
-              <span>DENTING PAINTING</span>
-              <span className="tm-heading-white">IN KOLHAPUR.</span>
+              KOLHAPUR&apos;S NEW
+              <span>MULTI-BRAND</span>
+              <span className="tm-heading-white">CAR WORKSHOP.</span>
             </h1>
 
             <p>
-              From accident damage to complete vehicle restoration,
-              experience professional automotive care at Tulja Motors.
+              A new 10,000 sq. ft. automotive workshop is coming to
+              Kolhapur. From accident repairs and mechanical work to
+              premium customisation — multiple automotive solutions
+              under one roof.
             </p>
 
             <div className="tm-hero-buttons">
               <Link href="/contact" className="tm-btn-primary">
-                Book Your Service
+                Enquire About Our Workshop
                 <ArrowUpRight size={18} />
               </Link>
 
@@ -248,42 +274,42 @@ export default function HomePage() {
 
             <div className="tm-hero-points">
               <span>
-                <CheckCircle2 size={16} /> Accident Repair
+                <CheckCircle2 size={16} /> Multi-Brand Services
               </span>
               <span>
-                <CheckCircle2 size={16} /> Denting & Painting
+                <CheckCircle2 size={16} /> 10,000 Sq. Ft. Space
               </span>
               <span>
-                <CheckCircle2 size={16} /> Insurance Assistance
+                <CheckCircle2 size={16} /> Kolhapur District
               </span>
             </div>
           </div>
         </div>
 
         <div className="tm-hero-bottom">
-          <span>PROFESSIONAL AUTOMOTIVE CARE</span>
+          <span>COMING TO KOLHAPUR</span>
           <span>
-            REPAIR <i /> RESTORE <i /> REDEFINE
+            REPAIR <i /> RESTORE <i /> CUSTOMISE
           </span>
         </div>
       </section>
 
-      {/* QUICK CONTACT BAR */}
-      <section className="tm-quick-bar">
+      {/* WORKSHOP HIGHLIGHTS */}
+      <section className="tm-quick-bar tm-kolhapur-quick-bar">
         <div className="tm-container tm-quick-inner">
           <div>
-            <Phone size={20} />
+            <MapPin size={20} />
             <span>
-              <small>CALL OUR TEAM</small>
-              <strong>+91 {PHONE_NUMBER}</strong>
+              <small>OUR LOCATION</small>
+              <strong>Top Sambhapur, Kolhapur</strong>
             </span>
           </div>
 
           <div>
-            <MapPin size={20} />
+            <Ruler size={20} />
             <span>
-              <small>VISIT OUR WORKSHOP</small>
-              <strong>Top Sambhapur, Kolhapur</strong>
+              <small>WORKSHOP SPACE</small>
+              <strong>10,000 Sq. Ft.</strong>
             </span>
           </div>
 
@@ -293,20 +319,105 @@ export default function HomePage() {
             rel="noopener noreferrer"
           >
             <MessageCircle size={19} />
-            WhatsApp Enquiry
+            Enquire Now
             <ArrowUpRight size={16} />
           </a>
         </div>
       </section>
 
-     
+      {/* KOLHAPUR DISTRICT INTRODUCTION */}
+      <section className="tm-kolhapur-intro tm-section">
+        <div className="tm-container">
+          <div className="tm-kolhapur-intro-grid">
+            <div className="tm-kolhapur-intro-copy">
+              <span className="tm-section-eyebrow">
+                A NEW CHAPTER FOR KOLHAPUR
+              </span>
 
-      {/* TULJA SERVICES — SIX IMAGE CARDS */}
+              <h2>
+                KOLHAPUR,
+                <span> YOUR CAR CARE DESTINATION IS COMING.</span>
+              </h2>
+
+              <p>
+                Finding the right place for your car repairs, restoration,
+                mechanical work and customisation is about to get easier.
+                Tulja Motors and Sharvari Motors are bringing multiple
+                automotive services together at a new 10,000 sq. ft.
+                multi-brand workshop in Kolhapur.
+              </p>
+
+              <p>
+                Whether you are from Kolhapur city or surrounding parts
+                of the district, our goal is to make professional
+                automotive care more accessible under one roof.
+              </p>
+
+              <Link href="/contact" className="tm-btn-primary">
+                Discover Our Workshop
+                <ArrowUpRight size={18} />
+              </Link>
+            </div>
+
+            <div className="tm-kolhapur-stat-card">
+              <span className="tm-kolhapur-stat-label">
+                OUR UPCOMING WORKSHOP
+              </span>
+
+              <strong className="tm-kolhapur-stat-number">10,000</strong>
+
+              <span className="tm-kolhapur-stat-unit">
+                SQ. FT. WORKSHOP SPACE
+              </span>
+
+              <div className="tm-kolhapur-stat-divider" />
+
+              <div className="tm-kolhapur-stat-bottom">
+                <MapPin size={20} />
+                <span>
+                  <strong>Top Sambhapur</strong>
+                  <small>Kolhapur, Maharashtra</small>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="tm-kolhapur-district">
+            <div className="tm-kolhapur-district-heading">
+              <span className="tm-section-eyebrow">
+                CONNECTING KOLHAPUR DISTRICT
+              </span>
+
+              <h3>
+                ONE DESTINATION.
+                <span> MULTIPLE CAR CARE SOLUTIONS.</span>
+              </h3>
+
+              <p>
+                Conveniently located near NH48 at Top Sambhapur,
+                Kolhapur. We aim to serve customers from across
+                Kolhapur and nearby areas.
+              </p>
+            </div>
+
+            <div className="tm-kolhapur-town-list">
+              {districtTowns.map((town) => (
+                <span key={town}>
+                  <MapPin size={14} />
+                  {town}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TULJA MOTORS SERVICES */}
       <section className="tm-services-section tm-section">
         <div className="tm-container">
           <div className="tm-services-heading">
             <div className="tm-section-heading tm-align-left">
-              <span className="tm-section-eyebrow">TULJA MOTORS</span>
+              <span className="tm-section-eyebrow">DIVISION 01 · TULJA MOTORS</span>
 
               <h2>
                 COMPLETE CAR
@@ -314,8 +425,8 @@ export default function HomePage() {
               </h2>
 
               <p>
-                Professional repair and restoration services to help get your
-                vehicle back on the road.
+                Professional repair and restoration services to help
+                get your vehicle back on the road.
               </p>
             </div>
 
@@ -339,6 +450,7 @@ export default function HomePage() {
                       src={service.image}
                       alt={service.alt}
                       loading="lazy"
+                      decoding="async"
                     />
 
                     <div className="tm-service-image-overlay" />
@@ -377,8 +489,8 @@ export default function HomePage() {
             <div>
               <strong>Need help with an insurance claim?</strong>
               <p>
-                Talk to our team about insurance claim assistance and vehicle
-                repair requirements.
+                Talk to our team about insurance claim assistance
+                and vehicle repair requirements.
               </p>
             </div>
 
@@ -390,11 +502,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SHARVARI SERVICES — ONLY TWO PHOTOS */}
+      {/* SHARVARI MOTORS SERVICES */}
       <section className="tm-sharvari-section tm-section">
         <div className="tm-container tm-sharvari-layout">
           <div className="tm-sharvari-copy">
-            <span className="tm-section-eyebrow">SHARVARI MOTORS</span>
+            <span className="tm-section-eyebrow">
+              DIVISION 02 · SHARVARI MOTORS
+            </span>
 
             <h2>
               MAKE YOUR CAR
@@ -402,8 +516,8 @@ export default function HomePage() {
             </h2>
 
             <p>
-              Explore premium automotive styling, personalisation and
-              protection solutions through Sharvari Motors.
+              Explore premium automotive styling, personalisation
+              and protection solutions through Sharvari Motors.
             </p>
 
             <Link href="/sharvari-motors" className="tm-btn-primary">
@@ -420,7 +534,12 @@ export default function HomePage() {
                   className="tm-sharvari-feature-card"
                   key={item.number}
                 >
-                  <img src={item.image} alt={item.alt} loading="lazy" />
+                  <img
+                    src={item.image}
+                    alt={item.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
 
                   <div className="tm-sharvari-feature-overlay" />
 
@@ -455,62 +574,69 @@ export default function HomePage() {
       <section className="tm-why-section tm-section">
         <div className="tm-container">
           <div className="tm-section-heading">
-            <span className="tm-section-eyebrow">WHY TULJA MOTORS</span>
+            <span className="tm-section-eyebrow">
+              WHY THIS WORKSHOP
+            </span>
 
             <h2>
-              YOUR VEHICLE DESERVES
-              <span> THE RIGHT CARE.</span>
+              KOLHAPUR&apos;S NEXT
+              <span> AUTOMOTIVE DESTINATION.</span>
             </h2>
 
             <p>
-              We focus on professional workmanship, transparent communication
-              and customer-focused service.
+              A dedicated multi-brand workshop bringing vehicle
+              repairs, restoration, mechanical services and
+              customisation together in one convenient location.
             </p>
           </div>
 
-          <div className="tm-why-grid">
-            <article>
-              <div><Wrench size={27} /></div>
-              <h3>Professional Workmanship</h3>
-              <p>
-                Repair solutions with attention to vehicle condition and
-                finishing quality.
-              </p>
-            </article>
+         <div className="tm-why-grid">
+  <article>
+    <div><Ruler size={27} /></div>
+    <h3>10,000 Sq. Ft. Space</h3>
+    <p>
+      A spacious workshop facility planned to bring multiple
+      automotive services together under one roof.
+    </p>
+  </article>
 
-            <article>
-              <div><ClipboardCheck size={27} /></div>
-              <h3>Clear Communication</h3>
-              <p>
-                Understand your repair requirements and discuss estimates
-                before proceeding.
-              </p>
-            </article>
+  {/* NEW WORKSHOP CARD */}
+  <article>
+    <div><Wrench size={27} /></div>
+    <h3>Fully Equipped Modern Workshop</h3>
+    <p>
+      Planned with modern automotive equipment, professional
+      tools and dedicated work areas for vehicle servicing.
+    </p>
+  </article>
 
-            <article>
-              <div><ShieldCheck size={27} /></div>
-              <h3>Insurance Assistance</h3>
-              <p>
-                Guidance to help you understand the vehicle insurance claim
-                and repair process.
-              </p>
-            </article>
+  <article>
+    <div><CarFront size={27} /></div>
+    <h3>Multi-Brand Approach</h3>
+    <p>
+      Automotive repair and customisation solutions for
+      customers with different car brands.
+    </p>
+  </article>
 
-            <article>
-              <div><BadgeCheck size={27} /></div>
-              <h3>Customer-Focused Service</h3>
-              <p>
-                A dedicated team to discuss your vehicle&apos;s needs and
-                service requirements.
-              </p>
-            </article>
-          </div>
+  <article>
+    <div><ShieldCheck size={27} /></div>
+    <h3>Insurance Assistance</h3>
+    <p>
+      Guidance to help you understand the vehicle
+      insurance claim and repair process.
+    </p>
+  </article>
 
-          <p className="tm-proof-note">
-            Verified business experience, completed vehicle counts, warranty
-            terms and insurance tie-ups will be displayed here after client
-            confirmation.
-          </p>
+  <article>
+    <div><BadgeCheck size={27} /></div>
+    <h3>Two Specialist Divisions</h3>
+    <p>
+      Tulja Motors for repairs and restoration, and
+      Sharvari Motors for styling and customisation.
+    </p>
+  </article>
+</div>
         </div>
       </section>
 
@@ -527,8 +653,8 @@ export default function HomePage() {
               </h2>
 
               <p>
-                Explore automotive repair, restoration and customisation
-                projects.
+                Explore automotive repair, restoration and
+                customisation projects.
               </p>
             </div>
 
@@ -549,6 +675,7 @@ export default function HomePage() {
                   src={project.image}
                   alt={project.alt}
                   loading="lazy"
+                  decoding="async"
                 />
 
                 <div className="tm-gallery-overlay">
@@ -561,9 +688,10 @@ export default function HomePage() {
           </div>
 
           <p className="tm-proof-note">
-            These are illustrative Indian-car reference photographs, not
-            confirmed Tulja Motors customer projects. Replace them with actual
-            workshop and before/after photographs before launch.
+            These are illustrative Indian-car reference photographs,
+            not confirmed Tulja Motors customer projects. Replace
+            them with actual workshop and before/after photographs
+            before launch.
           </p>
         </div>
       </section>
@@ -572,36 +700,42 @@ export default function HomePage() {
       <section className="tm-partners-section">
         <div className="tm-container tm-partners-inner">
           <div>
-            <span className="tm-section-eyebrow">INSURANCE SUPPORT</span>
+            <span className="tm-section-eyebrow">
+              INSURANCE SUPPORT
+            </span>
             <h2>INSURANCE CLAIM ASSISTANCE</h2>
             <p>
-              Contact us to discuss your insurance claim and vehicle repair
-              requirements.
+              Contact us to discuss your insurance claim and
+              vehicle repair requirements.
             </p>
           </div>
 
           <div className="tm-partner-placeholder">
             <ShieldCheck size={25} />
             <span>
-              Insurance company names and logos will be added after verifying
-              the current tie-ups.
+              Insurance company names and logos will be added
+              after verifying the current tie-ups.
             </span>
           </div>
         </div>
       </section>
 
-      {/* CUSTOMER REVIEWS */}
+      {/* CUSTOMER FEEDBACK */}
       <section className="tm-reviews-section tm-section">
         <div className="tm-container">
           <div className="tm-section-heading">
-            <span className="tm-section-eyebrow">CUSTOMER FEEDBACK</span>
+            <span className="tm-section-eyebrow">
+              CUSTOMER FEEDBACK
+            </span>
 
             <h2>
               TRUST BUILT THROUGH
               <span> CUSTOMER EXPERIENCE.</span>
             </h2>
 
-            <p>Read genuine customer feedback about our services.</p>
+            <p>
+              Read genuine customer feedback about our services.
+            </p>
           </div>
 
           <div className="tm-reviews-content">
@@ -612,12 +746,12 @@ export default function HomePage() {
             <div>
               <h3>What our customers say</h3>
               <p>
-                Verified Google reviews, actual ratings and customer review
-                screenshots will be displayed here.
+                Verified Google reviews, actual ratings and customer
+                review screenshots will be displayed here.
               </p>
               <span>
-                Customer reviews awaiting verified Google Business Profile
-                details.
+                Customer reviews awaiting verified Google Business
+                Profile details.
               </span>
             </div>
 
@@ -633,7 +767,9 @@ export default function HomePage() {
       <section className="tm-faq-section tm-section">
         <div className="tm-container tm-faq-layout">
           <div className="tm-faq-intro">
-            <span className="tm-section-eyebrow">HAVE QUESTIONS?</span>
+            <span className="tm-section-eyebrow">
+              HAVE QUESTIONS?
+            </span>
 
             <h2>
               FREQUENTLY ASKED
@@ -641,8 +777,8 @@ export default function HomePage() {
             </h2>
 
             <p>
-              Quick answers to common questions about vehicle repairs,
-              insurance assistance and customisation.
+              Quick answers about our upcoming Kolhapur workshop,
+              vehicle repairs, insurance assistance and customisation.
             </p>
 
             <a href={`tel:+91${PHONE_NUMBER}`} className="tm-btn-primary">
@@ -682,16 +818,18 @@ export default function HomePage() {
         <div className="tm-container">
           <div className="tm-location-heading">
             <div>
-              <span className="tm-section-eyebrow">FIND OUR WORKSHOP</span>
+              <span className="tm-section-eyebrow">
+                FIND OUR WORKSHOP
+              </span>
 
               <h2>
-                VISIT TULJA MOTORS
-                <span> IN KOLHAPUR.</span>
+                FIND YOUR NEW
+                <span> CAR CARE DESTINATION.</span>
               </h2>
 
               <p>
-                Find us near Shetimal Petrol Pump, Top Sambhapur, on
-                Pune–Bengaluru National Highway NH48.
+                Find us near Shetimal Petrol Pump, Top Sambhapur,
+                on Pune–Bengaluru National Highway NH48.
               </p>
             </div>
 
@@ -726,8 +864,8 @@ export default function HomePage() {
               <span>
                 <strong>Tulja Motors</strong>
                 <small>
-                  Pune–Bengaluru NH48, near Shetimal Petrol Pump, Top
-                  Sambhapur, Kolhapur, Maharashtra 416122
+                  Pune–Bengaluru NH48, near Shetimal Petrol Pump,
+                  Top Sambhapur, Kolhapur, Maharashtra 416122
                 </small>
               </span>
             </div>
@@ -741,27 +879,30 @@ export default function HomePage() {
           <div className="tm-hours-note">
             <Clock size={17} />
             <span>
-              Please contact our team to confirm current workshop hours before
-              visiting.
+              Please contact our team to confirm current workshop
+              hours and opening status before visiting.
             </span>
           </div>
         </div>
       </section>
 
-      {/* QUICK QUOTE FORM */}
+      {/* QUICK QUOTE */}
       <section className="tm-quote-section tm-section" id="quick-enquiry">
         <div className="tm-container tm-quote-layout">
           <div className="tm-quote-copy">
-            <span className="tm-section-eyebrow">GET A SERVICE ENQUIRY</span>
+            <span className="tm-section-eyebrow">
+              GET A WORKSHOP ENQUIRY
+            </span>
 
             <h2>
-              LET&apos;S GET YOUR CAR
-              <span> BACK ON THE ROAD.</span>
+              YOUR CAR.
+              <span> OUR NEXT PROJECT.</span>
             </h2>
 
             <p>
-              Share a few details about your vehicle. Our WhatsApp enquiry
-              will open with your information ready to send.
+              Share a few details about your vehicle and the service
+              you need. Your WhatsApp enquiry will open with the
+              information ready to send.
             </p>
 
             <div className="tm-quote-contact">
@@ -774,8 +915,8 @@ export default function HomePage() {
           </div>
 
           <form className="tm-quote-form" onSubmit={handleQuoteSubmit}>
-            <h3>REQUEST A QUICK QUOTE</h3>
-            <p>Fill in your vehicle details to get started.</p>
+            <h3>REQUEST A QUICK ENQUIRY</h3>
+            <p>Tell us about your vehicle.</p>
 
             <div className="tm-quote-fields">
               <input
@@ -829,7 +970,10 @@ export default function HomePage() {
               />
             </div>
 
-            <button type="submit" className="tm-btn-primary tm-quote-submit">
+            <button
+              type="submit"
+              className="tm-btn-primary tm-quote-submit"
+            >
               Send Enquiry on WhatsApp
               <MessageCircle size={18} />
             </button>
@@ -845,9 +989,12 @@ export default function HomePage() {
       <section className="tm-final-cta">
         <div className="tm-container tm-final-cta-inner">
           <div>
-            <span>YOUR VEHICLE. OUR RESPONSIBILITY.</span>
-            <h2>NEED PROFESSIONAL CAR CARE?</h2>
-            <p>Talk to Tulja Motors today.</p>
+            <span>A NEW AUTOMOTIVE DESTINATION FOR KOLHAPUR</span>
+            <h2>10,000 SQ. FT. OF AUTOMOTIVE POSSIBILITIES.</h2>
+            <p>
+              Multiple automotive services. Two specialist divisions.
+              One destination in Kolhapur.
+            </p>
           </div>
 
           <div className="tm-final-actions">

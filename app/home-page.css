@@ -1,27 +1,584 @@
-
 /* =========================================
-   TULJA MOTORS — PERFORMANCE OPTIMIZATION
+   TULJA MOTORS — HOMEPAGE
+   KOLHAPUR MULTI-BRAND WORKSHOP
 ========================================= */
 
-/* Service cards */
+.tm-new-home {
+  --tm-home-accent: var(--tm-orange, #f47721);
+  --tm-home-bg: #0b0d0f;
+  --tm-home-panel: #15181b;
+  --tm-home-text: #f7f7f7;
+  --tm-home-muted: #a6aaad;
+  --tm-home-border: rgba(255, 255, 255, 0.12);
+
+  width: 100%;
+  overflow: hidden;
+  background: var(--tm-home-bg);
+  color: var(--tm-home-text);
+}
+
+.tm-new-home *,
+.tm-new-home *::before,
+.tm-new-home *::after {
+  box-sizing: border-box;
+}
+
+.tm-container {
+  width: min(1320px, calc(100% - 90px));
+  margin-inline: auto;
+}
+
+.tm-section {
+  position: relative;
+  padding: 100px 0;
+}
+
+.tm-section-eyebrow {
+  display: inline-block;
+  color: var(--tm-home-accent);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.tm-btn-primary,
+.tm-btn-outline,
+.tm-btn-outline-dark {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  padding: 0 23px;
+  border: 1px solid transparent;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1px;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    gap 0.2s ease;
+}
+
+.tm-btn-primary {
+  background: var(--tm-home-accent);
+  color: #fff;
+}
+
+.tm-btn-primary:hover {
+  gap: 19px;
+  filter: brightness(1.08);
+}
+
+.tm-btn-outline {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+.tm-btn-outline:hover {
+  border-color: var(--tm-home-accent);
+  background: var(--tm-home-accent);
+}
+
+.tm-btn-outline-dark {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: #fff;
+}
+
+.tm-btn-outline-dark:hover {
+  border-color: var(--tm-home-accent);
+  color: var(--tm-home-accent);
+}
+
+/* =========================================
+   HERO
+========================================= */
+
+.tm-main-hero {
+  position: relative;
+  min-height: 720px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #080a0c;
+}
+
+.tm-main-hero-image {
+  position: absolute;
+  inset: 0;
+  background-image: url("/images/services/Accident%20Repair.jpg");
+  background-size: cover;
+  background-position: center 48%;
+  transform: scale(1.01);
+}
+
+.tm-main-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(4, 6, 8, 0.96) 0%,
+      rgba(4, 6, 8, 0.86) 44%,
+      rgba(4, 6, 8, 0.3) 100%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(4, 6, 8, 0.8) 0%,
+      transparent 35%,
+      rgba(4, 6, 8, 0.15) 100%
+    );
+}
+
+.tm-main-hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 125px 0 140px;
+}
+
+.tm-hero-label {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 28px;
+  color: #e2e3e3;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.8px;
+}
+
+.tm-orange-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: var(--tm-home-accent);
+  box-shadow: 0 0 15px var(--tm-home-accent);
+}
+
+.tm-main-hero h1 {
+  max-width: 970px;
+  margin: 0;
+  color: var(--tm-home-accent);
+  font-size: clamp(58px, 8.1vw, 108px);
+  font-weight: 950;
+  line-height: 0.91;
+  letter-spacing: -5px;
+}
+
+.tm-main-hero h1 > span {
+  display: block;
+  color: var(--tm-home-accent);
+}
+
+.tm-main-hero h1 .tm-heading-white {
+  color: #fff;
+}
+
+.tm-main-hero-content > .tm-container > p {
+  max-width: 620px;
+  margin: 30px 0 28px;
+  color: #d0d3d5;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.tm-hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+}
+
+.tm-hero-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 38px;
+}
+
+.tm-hero-points span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #e4e6e7;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.tm-hero-points svg {
+  color: var(--tm-home-accent);
+}
+
+.tm-hero-bottom {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 45px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  color: #c7cacc;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.5px;
+}
+
+.tm-hero-bottom span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.tm-hero-bottom i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--tm-home-accent);
+}
+
+/* =========================================
+   QUICK CONTACT BAR
+========================================= */
+
+.tm-quick-bar {
+  position: relative;
+  z-index: 3;
+  background: #171a1d;
+  border-bottom: 1px solid var(--tm-home-border);
+}
+
+.tm-quick-inner {
+  min-height: 105px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.tm-quick-inner > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tm-quick-inner > div > svg {
+  color: var(--tm-home-accent);
+}
+
+.tm-quick-inner > div > span {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tm-quick-inner small {
+  color: #999fa3;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.tm-quick-inner strong {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.tm-quick-inner > a {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 0 20px;
+  background: var(--tm-home-accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.8px;
+  text-decoration: none;
+  transition: gap 0.2s ease;
+}
+
+.tm-quick-inner > a:hover {
+  gap: 17px;
+}
+
+/* =========================================
+   KOLHAPUR INTRODUCTION
+========================================= */
+
+.tm-kolhapur-intro {
+  padding: 110px 0;
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      color-mix(in srgb, var(--tm-home-accent) 12%, transparent),
+      transparent 36%
+    ),
+    #101316;
+}
+
+.tm-kolhapur-intro-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  align-items: center;
+  gap: 75px;
+}
+
+.tm-kolhapur-intro-copy h2 {
+  max-width: 760px;
+  margin: 23px 0;
+  color: #fff;
+  font-size: clamp(43px, 5.5vw, 69px);
+  font-weight: 950;
+  line-height: 0.98;
+  letter-spacing: -3px;
+}
+
+.tm-kolhapur-intro-copy h2 span {
+  color: var(--tm-home-accent);
+}
+
+.tm-kolhapur-intro-copy p {
+  max-width: 650px;
+  margin: 0 0 17px;
+  color: #aeb3b6;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.tm-kolhapur-intro-copy .tm-btn-primary {
+  margin-top: 17px;
+}
+
+.tm-kolhapur-stat-card {
+  position: relative;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 42px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--tm-home-accent) 19%, #191c1f),
+      #171a1d 65%
+    );
+}
+
+.tm-kolhapur-stat-label {
+  color: #c4c7c9;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2px;
+}
+
+.tm-kolhapur-stat-number {
+  display: block;
+  margin-top: 18px;
+  color: #fff;
+  font-size: clamp(75px, 9vw, 115px);
+  font-weight: 950;
+  line-height: 0.95;
+  letter-spacing: -7px;
+}
+
+.tm-kolhapur-stat-unit {
+  margin-top: 13px;
+  color: var(--tm-home-accent);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.tm-kolhapur-stat-divider {
+  height: 1px;
+  margin: 30px 0 23px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.tm-kolhapur-stat-bottom {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: var(--tm-home-accent);
+}
+
+.tm-kolhapur-stat-bottom span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tm-kolhapur-stat-bottom strong {
+  color: #fff;
+  font-size: 13px;
+}
+
+.tm-kolhapur-stat-bottom small {
+  color: #aeb3b6;
+  font-size: 11px;
+}
+
+/* DISTRICT COVERAGE */
+
+.tm-kolhapur-district {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: center;
+  gap: 65px;
+  margin-top: 100px;
+  padding-top: 65px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tm-kolhapur-district-heading h3 {
+  margin: 18px 0;
+  color: #fff;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 950;
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+}
+
+.tm-kolhapur-district-heading h3 span {
+  color: var(--tm-home-accent);
+}
+
+.tm-kolhapur-district-heading p {
+  max-width: 450px;
+  color: #aeb3b6;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.tm-kolhapur-town-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 11px;
+}
+
+.tm-kolhapur-town-list span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.035);
+  color: #e4e5e6;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.tm-kolhapur-town-list span svg {
+  color: var(--tm-home-accent);
+}
+
+/* =========================================
+   SECTION HEADINGS
+========================================= */
+
+.tm-section-heading {
+  max-width: 760px;
+  margin: 0 auto 55px;
+  text-align: center;
+}
+
+.tm-section-heading.tm-align-left {
+  margin: 0;
+  text-align: left;
+}
+
+.tm-section-heading h2 {
+  margin: 18px 0;
+  color: #fff;
+  font-size: clamp(39px, 5vw, 64px);
+  font-weight: 950;
+  line-height: 0.99;
+  letter-spacing: -2.7px;
+}
+
+.tm-section-heading h2 span {
+  color: var(--tm-home-accent);
+}
+
+.tm-section-heading p {
+  max-width: 570px;
+  margin: 0 auto;
+  color: var(--tm-home-muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.tm-section-heading.tm-align-left p {
+  margin-left: 0;
+}
+
+/* =========================================
+   TULJA SERVICES
+========================================= */
+
+.tm-services-section {
+  background: #0b0d0f;
+}
+
+.tm-services-heading,
+.tm-gallery-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 35px;
+  margin-bottom: 48px;
+}
+
+.tm-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
 .tm-service-image-card {
   position: relative;
   min-width: 0;
   min-height: 390px;
   overflow: hidden;
-  border: 1px solid var(--tm-card-border);
-  border-radius: var(--tm-card-radius);
-  background: var(--tm-card-bg);
+  border: 1px solid var(--tm-card-border, rgba(255, 255, 255, 0.12));
+  border-radius: var(--tm-card-radius, 0px);
+  background: var(--tm-card-bg, #15181b);
   isolation: isolate;
   transition: border-color 0.2s ease;
 }
 
 .tm-service-image-card:hover {
-  border-color: var(--tm-orange, #ff7417);
+  border-color: var(--tm-home-accent);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* Service images */
+.tm-service-image-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
 .tm-service-image-wrap img {
   display: block;
   width: 100%;
@@ -39,14 +596,184 @@
   filter: none;
 }
 
-/* Remove expensive backdrop blur */
+.tm-service-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(4, 6, 8, 0.98) 0%,
+    rgba(4, 6, 8, 0.8) 42%,
+    rgba(4, 6, 8, 0.1) 100%
+  );
+}
+
 .tm-service-vehicle-tag {
+  position: absolute;
+  top: 17px;
+  left: 17px;
+  padding: 9px 12px;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   background: rgba(7, 8, 10, 0.88);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 1.3px;
 }
 
-/* Sharvari feature images */
+.tm-service-card-content {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 25px;
+}
+
+.tm-service-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  color: var(--tm-home-accent);
+}
+
+.tm-service-card-top span {
+  color: #fff;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1px;
+}
+
+.tm-service-card-content h3 {
+  margin: 0 0 10px;
+  color: #fff;
+  font-size: 23px;
+  font-weight: 850;
+}
+
+.tm-service-card-content p {
+  max-width: 340px;
+  margin: 0;
+  color: #c0c4c6;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.tm-service-card-content > a {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  margin-top: 20px;
+  place-items: center;
+  background: var(--tm-home-accent);
+  color: white;
+  text-decoration: none;
+}
+
+/* INSURANCE BANNER */
+
+.tm-insurance-banner {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 35px;
+  padding: 28px 32px;
+  border: 1px solid var(--tm-home-border);
+  background: #171a1d;
+}
+
+.tm-insurance-icon {
+  display: grid;
+  width: 55px;
+  height: 55px;
+  flex: 0 0 55px;
+  place-items: center;
+  background: color-mix(in srgb, var(--tm-home-accent) 15%, transparent);
+  color: var(--tm-home-accent);
+}
+
+.tm-insurance-banner > div:nth-child(2) {
+  flex: 1;
+}
+
+.tm-insurance-banner strong {
+  color: #fff;
+  font-size: 14px;
+}
+
+.tm-insurance-banner p {
+  margin: 7px 0 0;
+  color: var(--tm-home-muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.tm-insurance-banner > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--tm-home-accent);
+  font-size: 10px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+/* =========================================
+   SHARVARI MOTORS
+========================================= */
+
+.tm-sharvari-section {
+  background: #15181b;
+}
+
+.tm-sharvari-layout {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  align-items: start;
+  gap: 65px;
+}
+
+.tm-sharvari-copy {
+  position: sticky;
+  top: 120px;
+}
+
+.tm-sharvari-copy h2 {
+  margin: 22px 0;
+  color: #fff;
+  font-size: clamp(43px, 5.2vw, 65px);
+  font-weight: 950;
+  line-height: 0.97;
+  letter-spacing: -3px;
+}
+
+.tm-sharvari-copy h2 span {
+  color: var(--tm-home-accent);
+}
+
+.tm-sharvari-copy > p {
+  max-width: 420px;
+  margin: 0 0 28px;
+  color: var(--tm-home-muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.tm-sharvari-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.tm-sharvari-feature-card {
+  position: relative;
+  min-height: 390px;
+  overflow: hidden;
+  background: #080a0c;
+  color: white;
+  text-decoration: none;
+}
+
 .tm-sharvari-feature-card > img {
   position: absolute;
   inset: 0;
@@ -64,7 +791,157 @@
   opacity: 0.9;
 }
 
-/* Gallery images */
+.tm-sharvari-feature-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.95),
+    rgba(0, 0, 0, 0.08) 85%
+  );
+}
+
+.tm-sharvari-feature-content {
+  position: absolute;
+  right: 20px;
+  bottom: 22px;
+  left: 20px;
+}
+
+.tm-sharvari-feature-content > span {
+  color: var(--tm-home-accent);
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 1.2px;
+}
+
+.tm-sharvari-feature-content h3 {
+  margin: 12px 0 8px;
+  font-size: 21px;
+  font-weight: 850;
+}
+
+.tm-sharvari-feature-content p {
+  margin: 0 0 13px;
+  color: #c9ccce;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.tm-sharvari-feature-content > svg {
+  color: var(--tm-home-accent);
+}
+
+.tm-sharvari-service-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 22px;
+  margin-top: 24px;
+}
+
+.tm-sharvari-service-item {
+  display: flex;
+  min-height: 62px;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--tm-home-border);
+  color: #fff;
+  text-decoration: none;
+}
+
+.tm-sharvari-service-item > span {
+  color: var(--tm-home-accent);
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.tm-sharvari-service-item strong {
+  flex: 1;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.tm-sharvari-service-item > svg {
+  color: #999;
+  transition: color 0.2s ease;
+}
+
+.tm-sharvari-service-item:hover > svg {
+  color: var(--tm-home-accent);
+}
+
+/* =========================================
+   WHY CHOOSE US
+========================================= */
+
+.tm-why-section {
+  background: #0d1012;
+}
+
+.tm-why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.tm-why-grid article {
+  min-height: 235px;
+  padding: 28px 23px;
+  border: 1px solid var(--tm-home-border);
+  background: #15181b;
+}
+
+.tm-why-grid article > div {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 25px;
+  place-items: center;
+  background: color-mix(in srgb, var(--tm-home-accent) 15%, transparent);
+  color: var(--tm-home-accent);
+}
+
+.tm-why-grid h3 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 850;
+}
+
+.tm-why-grid p {
+  margin: 0;
+  color: var(--tm-home-muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+/* =========================================
+   GALLERY
+========================================= */
+
+.tm-gallery-section {
+  background: #15181b;
+}
+
+.tm-gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 250px 250px;
+  gap: 18px;
+}
+
+.tm-gallery-card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: #080a0c;
+  text-decoration: none;
+}
+
+.tm-gallery-card-1 {
+  grid-row: span 2;
+}
+
 .tm-gallery-card img {
   display: block;
   width: 100%;
@@ -82,7 +959,1054 @@
   opacity: 0.9;
 }
 
-/* Avoid expensive hover movement on touch devices */
+.tm-gallery-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 27px;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.9),
+    transparent 75%
+  );
+}
+
+.tm-gallery-overlay > span {
+  color: var(--tm-home-accent);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.5px;
+}
+
+.tm-gallery-overlay h3 {
+  margin: 10px 0;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+.tm-gallery-overlay > svg {
+  color: white;
+}
+
+.tm-proof-note {
+  margin: 20px 0 0;
+  color: #8f969a;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   INSURANCE SUPPORT
+========================================= */
+
+.tm-partners-section {
+  padding: 60px 0;
+  background: #0b0d0f;
+  border-top: 1px solid var(--tm-home-border);
+  border-bottom: 1px solid var(--tm-home-border);
+}
+
+.tm-partners-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.tm-partners-inner h2 {
+  margin: 13px 0;
+  color: #fff;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.tm-partners-inner p {
+  margin: 0;
+  color: var(--tm-home-muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.tm-partner-placeholder {
+  display: flex;
+  max-width: 430px;
+  align-items: center;
+  gap: 17px;
+  padding: 22px;
+  border: 1px solid var(--tm-home-border);
+  color: var(--tm-home-muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.tm-partner-placeholder svg {
+  flex: 0 0 auto;
+  color: var(--tm-home-accent);
+}
+
+/* =========================================
+   CUSTOMER REVIEWS
+========================================= */
+
+.tm-reviews-section {
+  background: #15181b;
+}
+
+.tm-reviews-content {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+  border: 1px solid var(--tm-home-border);
+  background: #101316;
+}
+
+.tm-review-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  place-items: center;
+  background: color-mix(in srgb, var(--tm-home-accent) 15%, transparent);
+  color: var(--tm-home-accent);
+}
+
+.tm-reviews-content > div:nth-child(2) {
+  flex: 1;
+}
+
+.tm-reviews-content h3 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.tm-reviews-content p {
+  margin: 0 0 8px;
+  color: #b3b8bb;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.tm-reviews-content > div:nth-child(2) > span {
+  color: #858c90;
+  font-size: 10px;
+}
+
+.tm-reviews-content > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--tm-home-accent);
+  font-size: 10px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+/* =========================================
+   FAQ
+========================================= */
+
+.tm-faq-section {
+  background: #0b0d0f;
+}
+
+.tm-faq-layout {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  align-items: start;
+  gap: 85px;
+}
+
+.tm-faq-intro h2 {
+  margin: 20px 0;
+  color: #fff;
+  font-size: clamp(38px, 4.6vw, 58px);
+  font-weight: 950;
+  line-height: 0.98;
+  letter-spacing: -2.5px;
+}
+
+.tm-faq-intro h2 span {
+  color: var(--tm-home-accent);
+}
+
+.tm-faq-intro p {
+  margin: 0 0 27px;
+  color: var(--tm-home-muted);
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.tm-faq-list {
+  border-top: 1px solid var(--tm-home-border);
+}
+
+.tm-faq-item {
+  border-bottom: 1px solid var(--tm-home-border);
+}
+
+.tm-faq-item button {
+  width: 100%;
+  min-height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  text-align: left;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tm-faq-item button svg {
+  flex: 0 0 auto;
+  color: var(--tm-home-accent);
+  transition: transform 0.2s ease;
+}
+
+.tm-faq-item.is-open button svg {
+  transform: rotate(180deg);
+}
+
+.tm-faq-item > p {
+  max-width: 650px;
+  margin: -2px 35px 22px 0;
+  color: var(--tm-home-muted);
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+/* =========================================
+   LOCATION
+========================================= */
+
+.tm-location-section {
+  background: #15181b;
+}
+
+.tm-location-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 35px;
+  margin-bottom: 35px;
+}
+
+.tm-location-heading h2 {
+  margin: 18px 0;
+  color: #fff;
+  font-size: clamp(36px, 4.5vw, 58px);
+  font-weight: 950;
+  line-height: 0.98;
+  letter-spacing: -2.5px;
+}
+
+.tm-location-heading h2 span {
+  color: var(--tm-home-accent);
+}
+
+.tm-location-heading p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--tm-home-muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.tm-map-frame {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--tm-home-border);
+  background: #080a0c;
+  line-height: 0;
+}
+
+.tm-map-frame iframe {
+  display: block;
+  width: 100%;
+  min-height: 390px;
+}
+
+.tm-location-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  padding: 25px 0;
+  border-bottom: 1px solid var(--tm-home-border);
+}
+
+.tm-location-bottom > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tm-location-bottom > div > svg {
+  flex: 0 0 auto;
+  color: var(--tm-home-accent);
+}
+
+.tm-location-bottom > div > span {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.tm-location-bottom strong {
+  color: #fff;
+  font-size: 13px;
+}
+
+.tm-location-bottom small {
+  color: var(--tm-home-muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.tm-location-bottom > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tm-location-bottom > a svg {
+  color: var(--tm-home-accent);
+}
+
+.tm-hours-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  color: #969da1;
+  font-size: 10px;
+}
+
+.tm-hours-note svg {
+  flex: 0 0 auto;
+  color: var(--tm-home-accent);
+}
+
+/* =========================================
+   QUICK ENQUIRY
+========================================= */
+
+.tm-quote-section {
+  background:
+    radial-gradient(
+      circle at 10% 50%,
+      color-mix(in srgb, var(--tm-home-accent) 10%, transparent),
+      transparent 35%
+    ),
+    #0b0d0f;
+}
+
+.tm-quote-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: center;
+  gap: 85px;
+}
+
+.tm-quote-copy h2 {
+  margin: 22px 0;
+  color: #fff;
+  font-size: clamp(43px, 5vw, 64px);
+  font-weight: 950;
+  line-height: 0.96;
+  letter-spacing: -3px;
+}
+
+.tm-quote-copy h2 span {
+  color: var(--tm-home-accent);
+}
+
+.tm-quote-copy > p {
+  max-width: 480px;
+  margin: 0;
+  color: var(--tm-home-muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.tm-quote-contact {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 35px;
+}
+
+.tm-quote-contact > svg {
+  color: var(--tm-home-accent);
+}
+
+.tm-quote-contact > span {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tm-quote-contact small {
+  color: #93999d;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.3px;
+}
+
+.tm-quote-contact strong {
+  color: #fff;
+  font-size: 17px;
+}
+
+.tm-quote-form {
+  padding: 38px;
+  border: 1px solid var(--tm-home-border);
+  background: #171a1d;
+}
+
+.tm-quote-form h3 {
+  margin: 0 0 9px;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+.tm-quote-form > p {
+  margin: 0 0 25px;
+  color: var(--tm-home-muted);
+  font-size: 11px;
+}
+
+.tm-quote-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+.tm-quote-fields input,
+.tm-quote-fields select {
+  width: 100%;
+  min-width: 0;
+  height: 52px;
+  padding: 0 15px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 0;
+  outline: none;
+  background: #0d1012;
+  color: #fff;
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.tm-quote-fields input::placeholder {
+  color: #858c90;
+}
+
+.tm-quote-fields select {
+  color: #aeb4b8;
+}
+
+.tm-quote-fields input:focus,
+.tm-quote-fields select:focus {
+  border-color: var(--tm-home-accent);
+}
+
+.tm-quote-fields select option {
+  background: #101316;
+  color: #fff;
+}
+
+.tm-quote-submit {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.tm-quote-disclaimer {
+  display: block;
+  margin-top: 15px;
+  color: #858c90;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+/* =========================================
+   FINAL CTA
+========================================= */
+
+.tm-final-cta {
+  padding: 75px 0;
+  background:
+    radial-gradient(
+      circle at 85% 50%,
+      color-mix(in srgb, var(--tm-home-accent) 16%, transparent),
+      transparent 38%
+    ),
+    #171a1d;
+  border-top: 1px solid var(--tm-home-border);
+}
+
+.tm-final-cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+.tm-final-cta-inner > div:first-child > span {
+  color: var(--tm-home-accent);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.7px;
+}
+
+.tm-final-cta h2 {
+  max-width: 750px;
+  margin: 18px 0 12px;
+  color: #fff;
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 950;
+  line-height: 0.98;
+  letter-spacing: -2.5px;
+}
+
+.tm-final-cta p {
+  margin: 0;
+  color: var(--tm-home-muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.tm-final-actions {
+  display: flex;
+  min-width: 170px;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tm-final-actions a {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  border: 1px solid var(--tm-home-border);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 850;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.tm-final-actions a svg {
+  color: var(--tm-home-accent);
+}
+
+.tm-final-actions a:hover {
+  border-color: var(--tm-home-accent);
+  background: color-mix(in srgb, var(--tm-home-accent) 12%, transparent);
+}
+
+/* =========================================
+   MOBILE STICKY CONTACT
+========================================= */
+
+.tm-mobile-sticky-contact {
+  display: none;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+  .tm-container {
+    width: calc(100% - 60px);
+  }
+
+  .tm-kolhapur-intro-grid {
+    grid-template-columns: 1fr;
+    gap: 45px;
+  }
+
+  .tm-kolhapur-stat-card {
+    min-height: 290px;
+  }
+
+  .tm-kolhapur-district {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .tm-services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tm-sharvari-layout {
+    grid-template-columns: 1fr;
+    gap: 45px;
+  }
+
+  .tm-sharvari-copy {
+    position: static;
+  }
+
+  .tm-why-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tm-faq-layout,
+  .tm-quote-layout {
+    grid-template-columns: 1fr;
+    gap: 45px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+  .tm-container {
+    width: calc(100% - 38px);
+  }
+
+  .tm-section {
+    padding: 72px 0;
+  }
+
+  .tm-main-hero {
+    min-height: 690px;
+  }
+
+  .tm-main-hero-image {
+    background-position: 58% center;
+  }
+
+  .tm-main-hero-overlay {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(4, 6, 8, 0.93),
+        rgba(4, 6, 8, 0.65)
+      ),
+      linear-gradient(
+        0deg,
+        rgba(4, 6, 8, 0.85),
+        transparent 70%
+      );
+  }
+
+  .tm-main-hero-content {
+    padding: 100px 0 115px;
+  }
+
+  .tm-hero-label {
+    max-width: 310px;
+    align-items: flex-start;
+    font-size: 8px;
+    line-height: 1.7;
+    letter-spacing: 1.1px;
+  }
+
+  .tm-main-hero h1 {
+    font-size: clamp(47px, 12.6vw, 68px);
+    letter-spacing: -3px;
+  }
+
+  .tm-main-hero-content > .tm-container > p {
+    margin: 23px 0;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .tm-hero-buttons {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tm-hero-buttons > a {
+    width: 100%;
+  }
+
+  .tm-hero-points {
+    gap: 13px 18px;
+    margin-top: 25px;
+  }
+
+  .tm-hero-points span {
+    font-size: 9px;
+  }
+
+  .tm-hero-bottom {
+    padding: 16px 19px;
+    font-size: 7px;
+    letter-spacing: 0.7px;
+  }
+
+  .tm-hero-bottom span:last-child {
+    gap: 6px;
+  }
+
+  .tm-quick-inner {
+    min-height: auto;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .tm-quick-inner > div {
+    min-height: 60px;
+  }
+
+  .tm-quick-inner > a {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .tm-kolhapur-intro {
+    padding: 72px 0;
+  }
+
+  .tm-kolhapur-intro-grid {
+    gap: 35px;
+  }
+
+  .tm-kolhapur-intro-copy h2 {
+    font-size: 42px;
+    letter-spacing: -2px;
+  }
+
+  .tm-kolhapur-intro-copy p {
+    font-size: 12px;
+  }
+
+  .tm-kolhapur-stat-card {
+    min-height: 260px;
+    padding: 28px;
+  }
+
+  .tm-kolhapur-stat-number {
+    font-size: 82px;
+    letter-spacing: -5px;
+  }
+
+  .tm-kolhapur-stat-unit {
+    font-size: 11px;
+  }
+
+  .tm-kolhapur-district {
+    gap: 25px;
+    margin-top: 65px;
+    padding-top: 45px;
+  }
+
+  .tm-kolhapur-district-heading h3 {
+    font-size: 32px;
+  }
+
+  .tm-kolhapur-town-list {
+    gap: 8px;
+  }
+
+  .tm-kolhapur-town-list span {
+    padding: 10px 11px;
+    font-size: 10px;
+  }
+
+  .tm-section-heading {
+    margin-bottom: 35px;
+  }
+
+  .tm-section-heading h2 {
+    font-size: 40px;
+    letter-spacing: -2px;
+  }
+
+  .tm-section-heading p {
+    font-size: 12px;
+  }
+
+  .tm-services-heading,
+  .tm-gallery-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 22px;
+    margin-bottom: 30px;
+  }
+
+  .tm-services-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .tm-service-image-card {
+    min-height: 365px;
+  }
+
+  .tm-service-card-content {
+    padding: 22px;
+  }
+
+  .tm-service-card-content h3 {
+    font-size: 22px;
+  }
+
+  .tm-insurance-banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 22px;
+  }
+
+  .tm-insurance-banner > div:nth-child(2) {
+    flex: 1 1 calc(100% - 75px);
+  }
+
+  .tm-insurance-banner > a {
+    margin-left: 71px;
+  }
+
+  .tm-sharvari-layout {
+    gap: 35px;
+  }
+
+  .tm-sharvari-copy h2 {
+    font-size: 43px;
+    letter-spacing: -2px;
+  }
+
+  .tm-sharvari-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-sharvari-feature-card {
+    min-height: 330px;
+  }
+
+  .tm-sharvari-service-list {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .tm-why-grid {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .tm-why-grid article {
+    min-height: auto;
+    padding: 23px;
+  }
+
+  .tm-why-grid article > div {
+    margin-bottom: 18px;
+  }
+
+  .tm-gallery-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    gap: 14px;
+  }
+
+  .tm-gallery-card,
+  .tm-gallery-card-1 {
+    min-height: 260px;
+    grid-row: auto;
+  }
+
+  .tm-gallery-card img {
+    min-height: 260px;
+  }
+
+  .tm-gallery-overlay {
+    padding: 20px;
+  }
+
+  .tm-gallery-overlay h3 {
+    font-size: 18px;
+  }
+
+  .tm-partners-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .tm-partner-placeholder {
+    padding: 18px;
+  }
+
+  .tm-reviews-content {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 17px;
+    padding: 23px;
+  }
+
+  .tm-reviews-content > div:nth-child(2) {
+    flex: 1 1 calc(100% - 80px);
+  }
+
+  .tm-reviews-content > a {
+    margin-left: 75px;
+  }
+
+  .tm-faq-layout {
+    gap: 35px;
+  }
+
+  .tm-faq-intro h2 {
+    font-size: 42px;
+    letter-spacing: -2px;
+  }
+
+  .tm-faq-item button {
+    min-height: 68px;
+    font-size: 12px;
+  }
+
+  .tm-faq-item > p {
+    font-size: 11px;
+  }
+
+  .tm-location-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 23px;
+  }
+
+  .tm-location-heading h2 {
+    font-size: 40px;
+    letter-spacing: -2px;
+  }
+
+  .tm-map-frame iframe {
+    min-height: 300px;
+  }
+
+  .tm-location-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .tm-location-bottom small {
+    max-width: 300px;
+  }
+
+  .tm-hours-note {
+    align-items: flex-start;
+    line-height: 1.7;
+  }
+
+  .tm-quote-layout {
+    gap: 35px;
+  }
+
+  .tm-quote-copy h2 {
+    font-size: 44px;
+    letter-spacing: -2px;
+  }
+
+  .tm-quote-form {
+    padding: 23px 18px;
+  }
+
+  .tm-quote-fields {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .tm-quote-fields input,
+  .tm-quote-fields select {
+    height: 50px;
+  }
+
+  .tm-final-cta {
+    padding: 60px 0 90px;
+  }
+
+  .tm-final-cta-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .tm-final-cta h2 {
+    font-size: 42px;
+    letter-spacing: -2px;
+  }
+
+  .tm-final-actions {
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .tm-final-actions a {
+    flex: 1;
+    justify-content: center;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+  .tm-mobile-sticky-contact {
+    position: fixed;
+    z-index: 999;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    padding: 8px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    background: #080a0c;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .tm-mobile-sticky-contact a {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    background: var(--tm-home-accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .tm-mobile-sticky-contact a:first-child {
+    background: #202529;
+  }
+}
+
+/* =========================================
+   PERFORMANCE — TOUCH DEVICES
+========================================= */
+
 @media (hover: none) {
   .tm-service-image-card,
   .tm-service-image-card:hover,
@@ -100,13 +2024,17 @@
   }
 }
 
-/* Accessibility */
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
 @media (prefers-reduced-motion: reduce) {
-  .tm-service-image-card,
-  .tm-service-image-wrap img,
-  .tm-sharvari-feature-card > img,
-  .tm-gallery-card img {
+  .tm-new-home *,
+  .tm-new-home *::before,
+  .tm-new-home *::after {
+    scroll-behavior: auto !important;
     transition: none !important;
     animation: none !important;
   }
 }
+
