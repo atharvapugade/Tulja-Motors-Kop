@@ -1,0 +1,2622 @@
+
+/* ============================================================
+   TULJA MOTORS × SHARVARI MOTORS
+   PREMIUM AUTOMOTIVE GALLERY
+   Black / Champagne Gold / Burnt Orange
+============================================================ */
+
+:root {
+  --gallery-bg: #080909;
+  --gallery-surface: #101313;
+  --gallery-surface-2: #171b1b;
+  --gallery-white: #f6f5f0;
+  --gallery-muted: #9da3a1;
+  --gallery-border: rgba(255,255,255,.10);
+  --gallery-gold: #e6bd55;
+  --gallery-orange: #ee8b42;
+}
+
+/* GLOBAL */
+
+.automotive-gallery {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--gallery-bg);
+  color: var(--gallery-white);
+  font-family: inherit;
+}
+
+.automotive-gallery *,
+.automotive-gallery *::before,
+.automotive-gallery *::after {
+  box-sizing: border-box;
+}
+
+.automotive-gallery a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.automotive-gallery button {
+  font: inherit;
+}
+
+.automotive-gallery img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--gallery-gold);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2.8px;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   HERO
+============================================================ */
+
+.gallery-hero {
+  min-height: 720px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 115px max(7%, calc((100% - 1300px) / 2)) 120px;
+  background: #090b0b;
+}
+
+.gallery-hero-background {
+  position: absolute;
+  z-index: -3;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5,7,7,.98) 0%,
+      rgba(5,7,7,.88) 37%,
+      rgba(5,7,7,.40) 72%,
+      rgba(5,7,7,.45) 100%
+    ),
+    linear-gradient(
+      0deg,
+      #080909 0%,
+      transparent 45%,
+      rgba(0,0,0,.30) 100%
+    ),
+    url("https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2200&q=90")
+      center 52% / cover no-repeat;
+  transform: scale(1.025);
+  animation: galleryHeroZoom 18s ease-in-out infinite alternate;
+}
+
+@keyframes galleryHeroZoom {
+  from {
+    transform: scale(1.025);
+  }
+  to {
+    transform: scale(1.09);
+  }
+}
+
+.gallery-hero-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  opacity: .18;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
+  background-size: 75px 75px;
+  mask-image: linear-gradient(to right, black, transparent 80%);
+}
+
+.gallery-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 190px;
+  z-index: -1;
+  background: linear-gradient(transparent, var(--gallery-bg));
+}
+
+.gallery-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 850px;
+  padding-top: 15px;
+}
+
+.gallery-live-dot {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--gallery-orange);
+  box-shadow: 0 0 15px var(--gallery-orange);
+}
+
+.gallery-hero-content h1 {
+  margin: 32px 0 23px;
+  color: #fff;
+  font-size: clamp(56px, 7.8vw, 112px);
+  line-height: .94;
+  font-weight: 950;
+  letter-spacing: -5px;
+}
+
+.gallery-hero-content h1 span {
+  color: var(--gallery-gold);
+}
+
+.gallery-hero-content > p {
+  max-width: 570px;
+  margin: 0;
+  color: rgba(255,255,255,.72);
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.gallery-hero-button {
+  width: fit-content;
+  min-height: 55px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 37px;
+  padding: 0 24px;
+  color: #111 !important;
+  background: var(--gallery-gold);
+  border: 1px solid var(--gallery-gold);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.6px;
+  transition: .3s ease;
+}
+
+.gallery-hero-button:hover {
+  color: #111 !important;
+  background: #fff;
+  border-color: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(230,189,85,.17);
+}
+
+.gallery-hero-side-label {
+  position: absolute;
+  top: 50%;
+  right: 35px;
+  color: rgba(255,255,255,.48);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%);
+}
+
+.gallery-hero-bottom {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  bottom: 48px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding-top: 23px;
+  border-top: 1px solid rgba(255,255,255,.22);
+}
+
+.gallery-hero-bottom span {
+  color: rgba(255,255,255,.67);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2px;
+}
+
+/* ============================================================
+   INTRO
+============================================================ */
+
+.gallery-intro {
+  width: min(1240px, calc(100% - 80px));
+  margin: auto;
+  padding: 115px 0 105px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  gap: 80px;
+}
+
+.gallery-intro-left h2 {
+  margin: 23px 0 0;
+  color: #fff;
+  font-size: clamp(42px, 5.3vw, 69px);
+  line-height: .99;
+  font-weight: 950;
+  letter-spacing: -3px;
+}
+
+.gallery-intro-left h2 span {
+  color: var(--gallery-gold);
+}
+
+.gallery-intro-right {
+  padding-bottom: 5px;
+}
+
+.gallery-intro-right p {
+  margin: 0;
+  color: #c0c5c2;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.gallery-intro-line {
+  width: 70px;
+  height: 2px;
+  margin: 26px 0 17px;
+  background: var(--gallery-orange);
+}
+
+.gallery-intro-right > span {
+  color: #fff;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2.5px;
+}
+
+/* ============================================================
+   BRAND HEADING
+============================================================ */
+
+.gallery-brand-heading {
+  width: min(1240px, calc(100% - 80px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding: 35px 0 27px;
+  border-top: 1px solid var(--gallery-border);
+}
+
+.gallery-brand-symbol {
+  width: 70px;
+  height: 70px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--gallery-orange);
+  border: 1px solid rgba(238,139,66,.45);
+  background: rgba(238,139,66,.07);
+  font-size: 36px;
+  font-weight: 950;
+}
+
+.sharvari-heading .gallery-brand-symbol {
+  color: var(--gallery-gold);
+  border-color: rgba(230,189,85,.45);
+  background: rgba(230,189,85,.07);
+}
+
+.gallery-brand-heading h2 {
+  margin: 7px 0 4px;
+  color: #fff;
+  font-size: 29px;
+  font-weight: 950;
+  letter-spacing: 1px;
+}
+
+.gallery-brand-heading p {
+  margin: 0;
+  color: var(--gallery-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   PROJECT CAROUSEL SECTION
+============================================================ */
+
+.gallery-service-section {
+  padding: 25px 0 100px;
+  overflow: hidden;
+}
+
+.gallery-service-section.orange {
+  --project-accent: var(--gallery-orange);
+}
+
+.gallery-service-section.gold {
+  --project-accent: var(--gallery-gold);
+}
+
+.gallery-section-heading {
+  width: min(1240px, calc(100% - 80px));
+  margin: 0 auto 35px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.gallery-section-heading h2 {
+  margin: 14px 0 9px;
+  color: #fff;
+  font-size: clamp(32px, 4.1vw, 49px);
+  font-weight: 950;
+  letter-spacing: -1.8px;
+}
+
+.gallery-section-heading > div > p {
+  margin: 0;
+  color: var(--gallery-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* CAROUSEL CONTROLS */
+
+.gallery-carousel-controls {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+}
+
+.gallery-carousel-controls button {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #171b1b;
+  border: 1px solid rgba(255,255,255,.17);
+  cursor: pointer;
+  transition: .25s ease;
+}
+
+.gallery-carousel-controls button:hover {
+  color: #101010;
+  background: var(--project-accent);
+  border-color: var(--project-accent);
+  transform: translateY(-3px);
+}
+
+.gallery-carousel-controls button:focus-visible {
+  outline: 2px solid var(--project-accent);
+  outline-offset: 4px;
+}
+
+/* PROJECT TRACK */
+
+.gallery-project-track {
+  display: flex;
+  gap: 22px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 5px max(40px, calc((100% - 1240px) / 2)) 25px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--project-accent) #191d1d;
+  overscroll-behavior-x: contain;
+}
+
+.gallery-project-track::-webkit-scrollbar {
+  height: 5px;
+}
+
+.gallery-project-track::-webkit-scrollbar-track {
+  background: #191d1d;
+}
+
+.gallery-project-track::-webkit-scrollbar-thumb {
+  background: var(--project-accent);
+}
+
+.gallery-project-card {
+  min-width: 340px;
+  width: 340px;
+  flex: 0 0 340px;
+  overflow: hidden;
+  background: var(--gallery-surface);
+  border: 1px solid rgba(255,255,255,.09);
+  scroll-snap-align: start;
+  transition:
+    transform .35s ease,
+    border-color .35s ease,
+    box-shadow .35s ease;
+}
+
+.gallery-project-card:hover {
+  transform: translateY(-7px);
+  border-color: color-mix(in srgb, var(--project-accent), transparent 35%);
+  box-shadow: 0 20px 55px rgba(0,0,0,.4);
+}
+
+.gallery-project-image {
+  position: relative;
+  height: 265px;
+  overflow: hidden;
+  background: #181c1c;
+}
+
+.gallery-project-image img {
+  transition: transform .8s cubic-bezier(.2,.7,.2,1);
+}
+
+.gallery-project-card:hover .gallery-project-image img {
+  transform: scale(1.08);
+}
+
+.gallery-image-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.72),
+    transparent 65%
+  );
+}
+
+.gallery-project-number {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  color: white;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.gallery-project-tag {
+  position: absolute;
+  right: 14px;
+  bottom: 15px;
+  z-index: 2;
+  padding: 8px 11px;
+  color: #111;
+  background: var(--project-accent);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.gallery-project-info {
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 22px 20px;
+}
+
+.gallery-project-info h3 {
+  margin: 0 0 9px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.gallery-project-info p {
+  max-width: 260px;
+  margin: 0;
+  color: #9ca3a0;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.gallery-project-info > svg {
+  flex-shrink: 0;
+  color: var(--project-accent);
+  transition: transform .25s ease;
+}
+
+.gallery-project-card:hover .gallery-project-info > svg {
+  transform: translate(4px,-4px);
+}
+
+/* ============================================================
+   COLLECTIONS
+============================================================ */
+
+.gallery-collections {
+  padding: 110px 0;
+  background:
+    radial-gradient(
+      ellipse at 80% 50%,
+      rgba(230,189,85,.055),
+      transparent 45%
+    ),
+    #101313;
+  border-top: 1px solid var(--gallery-border);
+  border-bottom: 1px solid var(--gallery-border);
+}
+
+.collection-heading {
+  margin-bottom: 35px;
+}
+
+.collection-heading h2 span,
+.gallery-indian-section .gallery-section-heading h2 span {
+  color: var(--gallery-gold);
+}
+
+.gallery-collection-tabs {
+  width: min(1240px, calc(100% - 80px));
+  margin: 0 auto 27px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.gallery-collection-tabs button {
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 15px;
+  color: #aeb4b1;
+  background: #171c1c;
+  border: 1px solid rgba(255,255,255,.08);
+  text-align: left;
+  cursor: pointer;
+  transition: .3s ease;
+}
+
+.gallery-collection-tabs button:hover {
+  color: #fff;
+  border-color: rgba(230,189,85,.4);
+}
+
+.gallery-collection-tabs button.active {
+  color: #111;
+  background: var(--gallery-gold);
+  border-color: var(--gallery-gold);
+}
+
+.gallery-collection-tabs button > svg {
+  flex-shrink: 0;
+}
+
+.gallery-collection-tabs button > span:nth-child(2) {
+  flex: 1;
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.collection-tab-number {
+  font-size: 9px;
+  font-weight: 900;
+  opacity: .7;
+}
+
+/* FEATURED COLLECTION */
+
+.gallery-featured-collection {
+  width: min(1240px, calc(100% - 80px));
+  min-height: 440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.3fr .7fr;
+  background: #080a0a;
+  border: 1px solid var(--gallery-border);
+  animation: galleryCollectionIn .45s ease both;
+}
+
+@keyframes galleryCollectionIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gallery-featured-image {
+  min-height: 440px;
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-featured-image img {
+  transition: transform .8s ease;
+}
+
+.gallery-featured-collection:hover .gallery-featured-image img {
+  transform: scale(1.04);
+}
+
+.gallery-featured-image-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.55),
+    transparent 60%
+  );
+}
+
+.gallery-featured-image-label {
+  position: absolute;
+  bottom: 25px;
+  left: 27px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2px;
+}
+
+.gallery-featured-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 45px;
+}
+
+.gallery-featured-content h3 {
+  margin: 20px 0 14px;
+  color: #fff;
+  font-size: clamp(29px, 3.5vw, 43px);
+  font-weight: 950;
+  line-height: 1.08;
+}
+
+.gallery-featured-content > p {
+  margin: 0;
+  color: var(--gallery-muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.gallery-featured-divider {
+  width: 55px;
+  height: 2px;
+  margin: 28px 0 21px;
+  background: var(--gallery-gold);
+}
+
+.gallery-temporary-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--gallery-gold);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.5px;
+}
+
+/* ============================================================
+   INDIAN CAR BRANDS
+============================================================ */
+
+.gallery-indian-section {
+  padding: 110px 0;
+}
+
+.gallery-indian-grid {
+  width: min(1240px, calc(100% - 80px));
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0,1fr));
+  gap: 15px;
+}
+
+.gallery-indian-card {
+  min-width: 0;
+  height: 340px;
+  position: relative;
+  overflow: hidden;
+  background: #151919;
+  border: 1px solid rgba(255,255,255,.10);
+  transition: transform .35s ease, border-color .35s ease;
+}
+
+.gallery-indian-card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(230,189,85,.5);
+}
+
+.gallery-indian-card > img {
+  transition: transform .7s ease;
+}
+
+.gallery-indian-card:hover > img {
+  transform: scale(1.09);
+}
+
+.gallery-indian-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.95),
+    rgba(0,0,0,.13) 75%
+  );
+}
+
+.gallery-indian-index {
+  position: absolute;
+  top: 17px;
+  left: 17px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.gallery-indian-info {
+  position: absolute;
+  left: 17px;
+  right: 12px;
+  bottom: 22px;
+}
+
+.gallery-indian-info h3 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 950;
+  letter-spacing: -.5px;
+}
+
+.gallery-indian-info p {
+  margin: 0;
+  color: rgba(255,255,255,.7);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.gallery-indian-arrow {
+  position: absolute;
+  right: 15px;
+  bottom: 24px;
+  color: var(--gallery-gold);
+  transition: transform .25s ease;
+}
+
+.gallery-indian-card:hover .gallery-indian-arrow {
+  transform: translate(4px,-4px);
+}
+
+/* ============================================================
+   WORKSHOP STRIP
+============================================================ */
+
+.gallery-workshop-strip {
+  min-height: 550px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #111515;
+  border-top: 1px solid var(--gallery-border);
+  border-bottom: 1px solid var(--gallery-border);
+}
+
+.gallery-workshop-image {
+  min-height: 550px;
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-workshop-image img {
+  position: absolute;
+  inset: 0;
+  transition: transform 1s ease;
+}
+
+.gallery-workshop-strip:hover .gallery-workshop-image img {
+  transform: scale(1.045);
+}
+
+.gallery-workshop-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 60%,
+    #111515 100%
+  );
+}
+
+.gallery-workshop-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 65px 9%;
+}
+
+.gallery-workshop-content h2 {
+  margin: 23px 0;
+  color: #fff;
+  font-size: clamp(45px, 5.5vw, 72px);
+  font-weight: 950;
+  line-height: .98;
+  letter-spacing: -3px;
+}
+
+.gallery-workshop-content h2 span {
+  color: var(--gallery-gold);
+}
+
+.gallery-workshop-content > p {
+  max-width: 440px;
+  margin: 0;
+  color: var(--gallery-muted);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.gallery-outline-button {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding: 0 20px;
+  color: var(--gallery-gold) !important;
+  border: 1px solid rgba(230,189,85,.55);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+  transition: .3s ease;
+}
+
+.gallery-outline-button:hover {
+  color: #111 !important;
+  background: var(--gallery-gold);
+  transform: translateY(-3px);
+}
+
+/* ============================================================
+   STOCK DISCLAIMER
+============================================================ */
+
+.gallery-stock-note {
+  width: min(1240px, calc(100% - 80px));
+  margin: 0 auto;
+  padding: 23px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border-bottom: 1px solid var(--gallery-border);
+}
+
+.gallery-stock-note > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--gallery-gold);
+}
+
+.gallery-stock-note p {
+  margin: 0;
+  color: #8f9894;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+/* ============================================================
+   FINAL CTA
+============================================================ */
+
+.gallery-final-cta {
+  position: relative;
+  padding: 120px 25px 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at 50% 100%,
+      rgba(230,189,85,.16),
+      transparent 55%
+    ),
+    #090b0b;
+}
+
+.gallery-final-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .12;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size: 70px 70px;
+  mask-image: radial-gradient(ellipse, black, transparent 75%);
+}
+
+.gallery-final-cta > * {
+  position: relative;
+}
+
+.gallery-final-cta h2 {
+  margin: 24px 0 20px;
+  color: #fff;
+  font-size: clamp(57px, 8vw, 100px);
+  font-weight: 950;
+  letter-spacing: -5px;
+  line-height: .93;
+}
+
+.gallery-final-cta h2 span {
+  color: var(--gallery-gold);
+}
+
+.gallery-final-cta > p {
+  max-width: 550px;
+  margin: 0;
+  color: var(--gallery-muted);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.gallery-cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 13px;
+  margin-top: 35px;
+}
+
+.gallery-cta-buttons a {
+  min-width: 170px;
+  min-height: 53px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  padding: 0 22px;
+  color: #111 !important;
+  background: var(--gallery-gold);
+  border: 1px solid var(--gallery-gold);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  transition: .3s ease;
+}
+
+.gallery-cta-buttons a:hover {
+  background: #fff;
+  border-color: #fff;
+  transform: translateY(-3px);
+}
+
+.gallery-cta-buttons a.secondary {
+  color: #fff !important;
+  background: transparent;
+  border-color: rgba(255,255,255,.35);
+}
+
+.gallery-cta-buttons a.secondary:hover {
+  color: #111 !important;
+  background: var(--gallery-gold);
+  border-color: var(--gallery-gold);
+}
+
+/* ============================================================
+   RESPONSIVE — TABLET
+============================================================ */
+
+@media (max-width: 1050px) {
+  .gallery-hero {
+    min-height: 650px;
+  }
+
+  .gallery-hero-content h1 {
+    font-size: clamp(58px, 8.5vw, 90px);
+  }
+
+  .gallery-intro {
+    gap: 40px;
+  }
+
+  .gallery-indian-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .gallery-indian-card {
+    height: 330px;
+  }
+
+  .gallery-featured-content {
+    padding: 30px;
+  }
+
+  .gallery-workshop-content {
+    padding: 50px 7%;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — MOBILE / SMALL TABLET
+============================================================ */
+
+@media (max-width: 760px) {
+  .gallery-hero {
+    min-height: 690px;
+    padding: 110px 28px 120px;
+  }
+
+  .gallery-hero-background {
+    background-position: 60% center;
+  }
+
+  .gallery-hero-content {
+    max-width: 620px;
+  }
+
+  .gallery-hero-content h1 {
+    margin: 27px 0 20px;
+    font-size: clamp(49px, 10vw, 75px);
+    letter-spacing: -2.8px;
+  }
+
+  .gallery-hero-content > p {
+    max-width: 450px;
+    font-size: 13px;
+  }
+
+  .gallery-hero-side-label {
+    display: none;
+  }
+
+  .gallery-hero-bottom {
+    left: 28px;
+    right: 28px;
+    bottom: 30px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 17px;
+  }
+
+  .gallery-hero-bottom span {
+    font-size: 9px;
+  }
+
+  .gallery-intro {
+    width: calc(100% - 48px);
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 80px 0;
+  }
+
+  .gallery-intro-left h2 {
+    font-size: clamp(43px, 9vw, 60px);
+  }
+
+  .gallery-intro-right p {
+    font-size: 13px;
+  }
+
+  .gallery-brand-heading {
+    width: calc(100% - 48px);
+  }
+
+  .gallery-section-heading {
+    width: calc(100% - 48px);
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 27px;
+  }
+
+  .gallery-section-heading h2 {
+    font-size: 34px;
+  }
+
+  .gallery-service-section {
+    padding-bottom: 70px;
+  }
+
+  .gallery-project-track {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .gallery-project-card {
+    min-width: 290px;
+    width: 290px;
+    flex-basis: 290px;
+  }
+
+  .gallery-project-image {
+    height: 230px;
+  }
+
+  .gallery-collections {
+    padding: 80px 0;
+  }
+
+  .gallery-collection-tabs {
+    width: calc(100% - 48px);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery-collection-tabs button {
+    min-height: 59px;
+    padding: 0 10px;
+  }
+
+  .gallery-featured-collection {
+    width: calc(100% - 48px);
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-featured-image {
+    min-height: 300px;
+    height: 300px;
+  }
+
+  .gallery-featured-content {
+    padding: 30px;
+  }
+
+  .gallery-indian-section {
+    padding: 80px 0;
+  }
+
+  .gallery-indian-grid {
+    width: calc(100% - 48px);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .gallery-indian-card {
+    height: 285px;
+  }
+
+  .gallery-indian-info h3 {
+    font-size: 16px;
+  }
+
+  .gallery-indian-info p {
+    max-width: 145px;
+  }
+
+  .gallery-indian-arrow {
+    width: 18px;
+    height: 18px;
+  }
+
+  .gallery-workshop-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-workshop-image {
+    min-height: 340px;
+    height: 340px;
+  }
+
+  .gallery-workshop-image::after {
+    background: linear-gradient(
+      to bottom,
+      transparent 65%,
+      #111515 100%
+    );
+  }
+
+  .gallery-workshop-content {
+    padding: 45px 28px 65px;
+  }
+
+  .gallery-stock-note {
+    width: calc(100% - 48px);
+  }
+
+  .gallery-final-cta {
+    padding: 90px 25px 100px;
+  }
+
+  .gallery-final-cta h2 {
+    font-size: clamp(55px, 11vw, 80px);
+    letter-spacing: -3px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — SMALL MOBILE
+============================================================ */
+
+@media (max-width: 480px) {
+  .gallery-hero {
+    min-height: 640px;
+    padding: 95px 20px 115px;
+  }
+
+  .gallery-hero-content h1 {
+    font-size: clamp(43px, 11vw, 57px);
+    letter-spacing: -2px;
+    line-height: .98;
+  }
+
+  .gallery-hero-content > p {
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .gallery-hero-button {
+    min-height: 49px;
+    margin-top: 28px;
+    padding: 0 16px;
+    font-size: 9px;
+  }
+
+  .gallery-hero-bottom {
+    left: 20px;
+    right: 20px;
+    gap: 15px;
+  }
+
+  .gallery-eyebrow {
+    font-size: 9px;
+    letter-spacing: 1.8px;
+  }
+
+  .gallery-intro {
+    width: calc(100% - 40px);
+    padding: 65px 0;
+  }
+
+  .gallery-intro-left h2 {
+    font-size: 43px;
+    letter-spacing: -2px;
+  }
+
+  .gallery-brand-heading {
+    width: calc(100% - 40px);
+    gap: 16px;
+    padding: 27px 0 22px;
+  }
+
+  .gallery-brand-symbol {
+    width: 55px;
+    height: 55px;
+    font-size: 27px;
+  }
+
+  .gallery-brand-heading h2 {
+    font-size: 20px;
+  }
+
+  .gallery-brand-heading p {
+    font-size: 10px;
+  }
+
+  .gallery-section-heading {
+    width: calc(100% - 40px);
+  }
+
+  .gallery-section-heading h2 {
+    font-size: 29px;
+  }
+
+  .gallery-carousel-controls button {
+    width: 41px;
+    height: 41px;
+  }
+
+  .gallery-project-track {
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 14px;
+  }
+
+  .gallery-project-card {
+    min-width: 270px;
+    width: 270px;
+    flex-basis: 270px;
+  }
+
+  .gallery-project-image {
+    height: 210px;
+  }
+
+  .gallery-project-info {
+    min-height: 100px;
+    padding: 16px;
+  }
+
+  .gallery-project-info h3 {
+    font-size: 15px;
+  }
+
+  .gallery-project-info p {
+    font-size: 10px;
+  }
+
+  .gallery-collection-tabs {
+    width: calc(100% - 40px);
+    gap: 8px;
+  }
+
+  .gallery-collection-tabs button {
+    gap: 7px;
+    min-height: 58px;
+  }
+
+  .gallery-collection-tabs button > svg {
+    width: 15px;
+  }
+
+  .gallery-collection-tabs button > span:nth-child(2) {
+    font-size: 9px;
+  }
+
+  .gallery-featured-collection {
+    width: calc(100% - 40px);
+  }
+
+  .gallery-featured-image {
+    min-height: 240px;
+    height: 240px;
+  }
+
+  .gallery-featured-content {
+    padding: 24px;
+  }
+
+  .gallery-featured-content h3 {
+    font-size: 31px;
+  }
+
+  .gallery-indian-grid {
+    width: calc(100% - 40px);
+    gap: 10px;
+  }
+
+  .gallery-indian-card {
+    height: 240px;
+  }
+
+  .gallery-indian-info {
+    left: 12px;
+    right: 10px;
+    bottom: 16px;
+  }
+
+  .gallery-indian-info h3 {
+    font-size: 14px;
+  }
+
+  .gallery-indian-info p {
+    font-size: 9px;
+  }
+
+  .gallery-indian-index {
+    top: 12px;
+    left: 12px;
+  }
+
+  .gallery-workshop-image {
+    min-height: 260px;
+    height: 260px;
+  }
+
+  .gallery-workshop-content {
+    padding: 35px 22px 50px;
+  }
+
+  .gallery-workshop-content h2 {
+    font-size: 48px;
+    letter-spacing: -2px;
+  }
+
+  .gallery-workshop-content > p {
+    font-size: 12px;
+  }
+
+  .gallery-stock-note {
+    width: calc(100% - 40px);
+    gap: 10px;
+  }
+
+  .gallery-stock-note p {
+    font-size: 10px;
+  }
+
+  .gallery-final-cta {
+    padding: 75px 18px 85px;
+  }
+
+  .gallery-final-cta h2 {
+    font-size: 53px;
+    letter-spacing: -2.5px;
+  }
+
+  .gallery-final-cta > p {
+    font-size: 12px;
+  }
+
+  .gallery-cta-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .gallery-cta-buttons a {
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY
+============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .automotive-gallery *,
+  .automotive-gallery *::before,
+  .automotive-gallery *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+
+/* =========================================
+   GALLERY — DYNAMIC THEME CONNECTION
+   Uses the global Tulja Motors ThemeSwitcher
+========================================= */
+
+.automotive-gallery {
+  --gallery-accent: var(--tm-orange, #ff7417);
+  --gallery-accent-light: var(--tm-orange-light, #ff9145);
+  --gallery-accent-rgb: var(--tm-ambient-rgb, 255, 116, 23);
+
+  --gallery-bg: #08090b;
+  --gallery-card: #111317;
+  --gallery-border: rgba(255, 255, 255, 0.10);
+  --gallery-text: #f5f5f5;
+  --gallery-muted: #a3a3a3;
+
+  color: var(--gallery-text);
+  background: var(--gallery-bg);
+}
+
+/* Accent text */
+.automotive-gallery .gallery-eyebrow,
+.automotive-gallery .gallery-live-dot,
+.automotive-gallery .gallery-intro-line,
+.automotive-gallery .gallery-project-tag,
+.automotive-gallery .gallery-featured-content .gallery-eyebrow,
+.automotive-gallery .gallery-temporary-label,
+.automotive-gallery .gallery-stock-note svg {
+  color: var(--gallery-accent);
+}
+
+/* Accent backgrounds */
+.automotive-gallery .gallery-live-dot,
+.automotive-gallery .gallery-brand-symbol,
+.automotive-gallery .gallery-carousel-controls button:hover,
+.automotive-gallery .gallery-collection-tabs button.active::before,
+.automotive-gallery .gallery-cta-buttons a:first-child {
+  background: var(--gallery-accent);
+}
+
+/* Hero ambient lighting */
+.automotive-gallery .gallery-hero {
+  position: relative;
+}
+
+.automotive-gallery .gallery-hero-background {
+  box-shadow: inset 0 -100px 140px
+    rgba(var(--gallery-accent-rgb), 0.10);
+}
+
+.automotive-gallery .gallery-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 50% 35%,
+      rgba(var(--gallery-accent-rgb), 0.19),
+      transparent 60%
+    );
+  z-index: 1;
+}
+
+.automotive-gallery .gallery-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Headings */
+.automotive-gallery .gallery-hero h1 span,
+.automotive-gallery .gallery-intro h2 span,
+.automotive-gallery .gallery-section-heading h2 span,
+.automotive-gallery .gallery-workshop-content h2 span,
+.automotive-gallery .gallery-final-cta h2 span {
+  color: var(--gallery-accent);
+}
+
+/* Buttons */
+.automotive-gallery .gallery-hero-button,
+.automotive-gallery .gallery-outline-button,
+.automotive-gallery .gallery-cta-buttons a {
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.automotive-gallery .gallery-hero-button {
+  background: var(--gallery-accent);
+  border-color: var(--gallery-accent);
+  color: #08090b;
+}
+
+.automotive-gallery .gallery-hero-button:hover {
+  background: var(--gallery-accent-light);
+  box-shadow: 0 10px 35px
+    rgba(var(--gallery-accent-rgb), 0.25);
+}
+
+.automotive-gallery .gallery-outline-button {
+  border-color: var(--gallery-accent);
+  color: var(--gallery-accent);
+}
+
+.automotive-gallery .gallery-outline-button:hover {
+  background: var(--gallery-accent);
+  color: #08090b;
+}
+
+/* Brand symbols */
+.automotive-gallery .gallery-brand-symbol {
+  color: #08090b;
+  box-shadow: 0 0 30px
+    rgba(var(--gallery-accent-rgb), 0.22);
+}
+
+/* Carousel */
+.automotive-gallery .gallery-carousel-controls button {
+  border: 1px solid var(--gallery-border);
+  color: var(--gallery-text);
+  background: var(--gallery-card);
+}
+
+.automotive-gallery .gallery-carousel-controls button:hover {
+  color: #08090b;
+  border-color: var(--gallery-accent);
+  background: var(--gallery-accent);
+}
+
+.automotive-gallery .gallery-project-card:hover {
+  border-color: rgba(var(--gallery-accent-rgb), 0.55);
+}
+
+.automotive-gallery .gallery-project-tag {
+  background: rgba(var(--gallery-accent-rgb), 0.14);
+  border: 1px solid rgba(var(--gallery-accent-rgb), 0.45);
+}
+
+/* Collection tabs */
+.automotive-gallery .gallery-collection-tabs button.active {
+  color: var(--gallery-accent);
+  border-color: var(--gallery-accent);
+  background: rgba(var(--gallery-accent-rgb), 0.08);
+}
+
+.automotive-gallery .gallery-collection-tabs button:hover {
+  border-color: var(--gallery-accent);
+}
+
+.automotive-gallery .gallery-collection-tabs button.active svg {
+  color: var(--gallery-accent);
+}
+
+/* Featured collection */
+.automotive-gallery .gallery-featured-collection {
+  border-color: rgba(var(--gallery-accent-rgb), 0.28);
+}
+
+.automotive-gallery .gallery-featured-divider {
+  background: linear-gradient(
+    90deg,
+    var(--gallery-accent),
+    transparent
+  );
+}
+
+/* Indian car cards */
+.automotive-gallery .gallery-indian-card:hover {
+  border-color: var(--gallery-accent);
+}
+
+.automotive-gallery .gallery-indian-index,
+.automotive-gallery .gallery-indian-arrow {
+  color: var(--gallery-accent);
+}
+
+.automotive-gallery .gallery-indian-card:hover .gallery-indian-arrow {
+  transform: translate(4px, -4px);
+}
+
+/* Workshop section */
+.automotive-gallery .gallery-workshop-content {
+  border-left: 2px solid var(--gallery-accent);
+}
+
+.automotive-gallery .gallery-workshop-content h2 span {
+  text-shadow: 0 0 35px
+    rgba(var(--gallery-accent-rgb), 0.20);
+}
+
+/* Stock note */
+.automotive-gallery .gallery-stock-note {
+  border-color: rgba(var(--gallery-accent-rgb), 0.20);
+}
+
+/* Final CTA */
+.automotive-gallery .gallery-final-cta {
+  position: relative;
+  overflow: hidden;
+}
+
+.automotive-gallery .gallery-final-cta::before {
+  content: "";
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(var(--gallery-accent-rgb), 0.13),
+    transparent 70%
+  );
+}
+
+.automotive-gallery .gallery-final-cta > * {
+  position: relative;
+  z-index: 1;
+}
+
+.automotive-gallery .gallery-cta-buttons a:first-child {
+  background: var(--gallery-accent);
+  color: #08090b;
+  border-color: var(--gallery-accent);
+}
+
+.automotive-gallery .gallery-cta-buttons a:first-child:hover {
+  background: var(--gallery-accent-light);
+}
+
+.automotive-gallery .gallery-cta-buttons a.secondary {
+  border-color: var(--gallery-accent);
+  color: var(--gallery-accent);
+}
+
+.automotive-gallery .gallery-cta-buttons a.secondary:hover {
+  background: var(--gallery-accent);
+  color: #08090b;
+}
+
+/* Smooth theme transitions */
+.automotive-gallery,
+.automotive-gallery * {
+  transition-property:
+    color,
+    background-color,
+    border-color,
+    box-shadow;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* Keep image movement animations smooth */
+.automotive-gallery img {
+  transition: transform 0.6s ease;
+}
+
+
+/* =========================================
+   TULJA MOTORS — WORK GALLERY
+   Theme accent follows website theme variables.
+========================================= */
+
+.automotive-gallery {
+  --gallery-accent: var(--theme-accent, var(--accent-color, #ff6a00));
+  --gallery-bg: #090a0c;
+  --gallery-panel: #111317;
+  --gallery-border: rgba(255, 255, 255, 0.10);
+  --gallery-text: #f6f6f6;
+  --gallery-muted: #999da5;
+
+  background: var(--gallery-bg);
+  color: var(--gallery-text);
+  min-height: 100vh;
+  padding: 65px 5.5% 45px;
+  overflow: hidden;
+}
+
+.automotive-gallery * {
+  box-sizing: border-box;
+}
+
+.automotive-gallery button,
+.automotive-gallery a {
+  font: inherit;
+}
+
+.gallery-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--gallery-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+}
+
+.gallery-live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--gallery-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--gallery-accent);
+}
+
+/* PAGE HEADING */
+
+.gallery-page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 10px 0 55px;
+  border-bottom: 1px solid var(--gallery-border);
+}
+
+.gallery-page-heading h1 {
+  font-size: clamp(48px, 7vw, 94px);
+  line-height: .95;
+  letter-spacing: -4px;
+  font-weight: 900;
+  margin: 22px 0 17px;
+}
+
+.gallery-page-heading h1 span,
+.gallery-brand-heading h2 span {
+  color: var(--gallery-accent);
+}
+
+.gallery-page-heading p {
+  color: var(--gallery-muted);
+  font-size: 15px;
+  max-width: 570px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.gallery-heading-side {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: var(--gallery-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  padding-bottom: 10px;
+  white-space: nowrap;
+}
+
+/* BRAND SECTIONS */
+
+.gallery-brand-section {
+  padding-top: 78px;
+}
+
+.gallery-brand-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  border-bottom: 1px solid var(--gallery-border);
+  padding-bottom: 27px;
+  margin-bottom: 48px;
+}
+
+.gallery-brand-heading > svg {
+  color: var(--gallery-accent);
+  opacity: .8;
+}
+
+.gallery-brand-heading h2 {
+  font-size: clamp(34px, 5vw, 58px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  margin: 12px 0 8px;
+}
+
+.gallery-brand-heading p {
+  margin: 0;
+  color: var(--gallery-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.sharvari-brand-section {
+  margin-top: 25px;
+  padding-top: 75px;
+  border-top: 1px solid var(--gallery-border);
+}
+
+.gallery-extra-section {
+  margin-top: 75px;
+  padding-top: 70px;
+  border-top: 1px solid var(--gallery-border);
+}
+
+/* PHOTO GROUP */
+
+.gallery-photo-group {
+  margin-bottom: 75px;
+}
+
+.gallery-group-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.gallery-group-heading h3 {
+  color: var(--gallery-text);
+  font-size: clamp(22px, 3vw, 31px);
+  font-weight: 800;
+  letter-spacing: -.8px;
+  margin: 10px 0 7px;
+}
+
+.gallery-group-heading p {
+  color: var(--gallery-muted);
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 650px;
+  margin: 0;
+}
+
+.gallery-group-count {
+  color: var(--gallery-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  padding-bottom: 5px;
+}
+
+/* MASONRY-LIKE PHOTO GRID */
+
+.gallery-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 190px;
+  gap: 13px;
+}
+
+.gallery-photo-tile {
+  display: block;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--gallery-border);
+  border-radius: 5px;
+  background: var(--gallery-panel);
+  cursor: pointer;
+  text-align: left;
+}
+
+.gallery-photo-tile:nth-child(5n + 1) {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.gallery-photo-tile:nth-child(5n + 3) {
+  grid-column: span 1;
+}
+
+.gallery-photo-tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .7s cubic-bezier(.2, .7, .2, 1),
+              filter .5s ease;
+  filter: saturate(.85);
+}
+
+.gallery-photo-tile:hover img {
+  transform: scale(1.075);
+  filter: saturate(1.1);
+}
+
+.gallery-photo-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, .83) 0%,
+    rgba(0, 0, 0, .12) 45%,
+    transparent 75%
+  );
+  transition: background .3s ease;
+}
+
+.gallery-photo-tile:hover .gallery-photo-shade {
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, .9),
+    rgba(0, 0, 0, .08)
+  );
+}
+
+.gallery-photo-caption {
+  position: absolute;
+  left: 19px;
+  right: 17px;
+  bottom: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+}
+
+.gallery-photo-caption svg {
+  flex-shrink: 0;
+  color: var(--gallery-accent);
+  transition: transform .3s ease;
+}
+
+.gallery-photo-tile:hover .gallery-photo-caption svg {
+  transform: translate(4px, -4px);
+}
+
+/* BOTTOM CTA */
+
+.gallery-bottom-cta {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+  padding: 32px;
+  margin-top: 45px;
+  background:
+    radial-gradient(
+      circle at 0% 50%,
+      color-mix(in srgb, var(--gallery-accent) 17%, transparent),
+      transparent 55%
+    ),
+    var(--gallery-panel);
+  border: 1px solid var(--gallery-border);
+  border-radius: 7px;
+}
+
+.gallery-bottom-icon {
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--gallery-accent);
+  background: color-mix(in srgb, var(--gallery-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gallery-accent) 35%, transparent);
+  border-radius: 5px;
+}
+
+.gallery-bottom-cta h2 {
+  font-size: clamp(18px, 2.5vw, 27px);
+  font-weight: 850;
+  margin: 8px 0;
+}
+
+.gallery-bottom-cta p {
+  margin: 0;
+  color: var(--gallery-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.gallery-bottom-cta > a {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 15px 20px;
+  background: var(--gallery-accent);
+  color: #090909;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  transition: transform .25s ease, filter .25s ease;
+}
+
+.gallery-bottom-cta > a:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.1);
+}
+
+/* STOCK PHOTO NOTE */
+
+.gallery-stock-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 0 5px;
+  color: var(--gallery-muted);
+}
+
+.gallery-stock-note svg {
+  color: var(--gallery-accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.gallery-stock-note p {
+  font-size: 11px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* POPUP */
+
+.gallery-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  background: rgba(0, 0, 0, .88);
+  backdrop-filter: blur(12px);
+  animation: galleryFadeIn .25s ease;
+}
+
+@keyframes galleryFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.gallery-modal {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
+  width: min(1120px, 100%);
+  max-height: 88vh;
+  overflow: hidden;
+  background: #111317;
+  border: 1px solid var(--gallery-border);
+  border-radius: 8px;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, .65);
+  animation: galleryModalIn .3s ease;
+}
+
+@keyframes galleryModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.gallery-modal-close {
+  position: absolute;
+  z-index: 5;
+  top: 15px;
+  right: 15px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  background: rgba(0,0,0,.65);
+  color: white;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+
+.gallery-modal-close:hover {
+  background: var(--gallery-accent);
+  color: #090909;
+}
+
+.gallery-modal-main {
+  position: relative;
+  min-height: 480px;
+  background: #08090b;
+  overflow: hidden;
+}
+
+.gallery-modal-main > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  max-height: 75vh;
+  object-fit: contain;
+}
+
+.gallery-modal-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  background: rgba(0,0,0,.65);
+  color: white;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+.gallery-modal-arrow:hover {
+  background: var(--gallery-accent);
+  color: #090909;
+}
+
+.gallery-modal-prev {
+  left: 18px;
+}
+
+.gallery-modal-next {
+  right: 18px;
+}
+
+.gallery-modal-counter {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  padding: 9px 13px;
+  background: rgba(0,0,0,.7);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.gallery-modal-content {
+  padding: 45px 30px 25px;
+  overflow-y: auto;
+}
+
+.gallery-modal-content h2 {
+  font-size: clamp(25px, 3vw, 35px);
+  line-height: 1.1;
+  margin: 14px 0;
+  font-weight: 900;
+}
+
+.gallery-modal-content > p {
+  color: var(--gallery-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.gallery-modal-caption {
+  display: block;
+  margin: 20px 0;
+  color: var(--gallery-accent);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.gallery-modal-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.gallery-modal-thumbnails button {
+  height: 65px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: #08090b;
+  cursor: pointer;
+  opacity: .65;
+}
+
+.gallery-modal-thumbnails button.active {
+  border-color: var(--gallery-accent);
+  opacity: 1;
+}
+
+.gallery-modal-thumbnails img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  border-top: 1px solid var(--gallery-border);
+  margin-top: 25px;
+  padding-top: 20px;
+}
+
+.gallery-modal-footer span,
+.gallery-modal-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .7px;
+}
+
+.gallery-modal-footer span {
+  color: var(--gallery-muted);
+}
+
+.gallery-modal-footer a {
+  color: var(--gallery-accent);
+  text-decoration: none;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+  .automotive-gallery {
+    padding-left: 4%;
+    padding-right: 4%;
+  }
+
+  .gallery-photo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 175px;
+  }
+
+  .gallery-modal {
+    grid-template-columns: 1fr;
+    max-width: 700px;
+    overflow-y: auto;
+  }
+
+  .gallery-modal-main {
+    min-height: 350px;
+  }
+
+  .gallery-modal-main > img {
+    min-height: 350px;
+    max-height: 48vh;
+  }
+
+  .gallery-modal-content {
+    padding: 28px;
+  }
+}
+
+@media (max-width: 650px) {
+  .automotive-gallery {
+    padding: 38px 17px 30px;
+  }
+
+  .gallery-page-heading {
+    padding-bottom: 35px;
+  }
+
+  .gallery-page-heading h1 {
+    font-size: 53px;
+    letter-spacing: -2.5px;
+  }
+
+  .gallery-page-heading p {
+    font-size: 13px;
+  }
+
+  .gallery-heading-side {
+    display: none;
+  }
+
+  .gallery-brand-section {
+    padding-top: 52px;
+  }
+
+  .gallery-brand-heading {
+    margin-bottom: 32px;
+  }
+
+  .gallery-brand-heading h2 {
+    font-size: 35px;
+    letter-spacing: -1.5px;
+  }
+
+  .gallery-brand-heading p {
+    font-size: 12px;
+  }
+
+  .gallery-brand-heading > svg {
+    width: 24px;
+  }
+
+  .gallery-photo-group {
+    margin-bottom: 50px;
+  }
+
+  .gallery-group-heading {
+    align-items: flex-start;
+  }
+
+  .gallery-group-heading h3 {
+    font-size: 22px;
+  }
+
+  .gallery-group-heading p {
+    font-size: 12px;
+  }
+
+  .gallery-group-count {
+    font-size: 9px;
+    padding-top: 15px;
+  }
+
+  .gallery-photo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 145px;
+    gap: 8px;
+  }
+
+  .gallery-photo-tile:nth-child(5n + 1) {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .gallery-photo-caption {
+    left: 11px;
+    right: 10px;
+    bottom: 11px;
+    font-size: 9px;
+  }
+
+  .gallery-photo-caption svg {
+    width: 16px;
+  }
+
+  .gallery-bottom-cta {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 22px;
+    gap: 15px;
+  }
+
+  .gallery-bottom-cta > div:nth-child(2) {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .gallery-bottom-cta > a {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .gallery-modal-backdrop {
+    padding: 10px;
+  }
+
+  .gallery-modal {
+    max-height: 94vh;
+    border-radius: 6px;
+  }
+
+  .gallery-modal-main {
+    min-height: 260px;
+  }
+
+  .gallery-modal-main > img {
+    min-height: 260px;
+    max-height: 42vh;
+  }
+
+  .gallery-modal-content {
+    padding: 24px 18px 20px;
+  }
+
+  .gallery-modal-content h2 {
+    font-size: 25px;
+    padding-right: 20px;
+  }
+
+  .gallery-modal-thumbnails button {
+    height: 55px;
+  }
+
+  .gallery-modal-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gallery-modal-close {
+    top: 10px;
+    right: 10px;
+    width: 37px;
+    height: 37px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .automotive-gallery *,
+  .automotive-gallery *::before,
+  .automotive-gallery *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* ==========================================
+   GLOBAL THEME SUPPORT — GALLERY
+   Reads colours from ThemeSwitcher
+========================================== */
+
+.automotive-gallery {
+  --theme-primary: var(--tm-orange, #ff7417);
+  --theme-primary-light: var(--tm-orange-light, #ff9145);
+  --primary: var(--tm-orange, #ff7417);
+  --gallery-accent: var(--tm-orange, #ff7417);
+  --gallery-accent-light: var(--tm-orange-light, #ff9145);
+}
+
+/* Main headings */
+.automotive-gallery .gallery-page-heading h1 span,
+.automotive-gallery .gallery-brand-heading h2 span {
+  color: var(--gallery-accent) !important;
+}
+
+/* Eyebrow text */
+.automotive-gallery .gallery-eyebrow {
+  color: var(--gallery-accent) !important;
+}
+
+/* Live indicator */
+.automotive-gallery .gallery-live-dot {
+  background: var(--gallery-accent) !important;
+  box-shadow: 0 0 12px
+    color-mix(in srgb, var(--gallery-accent) 65%, transparent) !important;
+}
+
+/* Brand heading icons */
+.automotive-gallery .gallery-brand-heading > svg {
+  color: var(--gallery-accent) !important;
+}
+
+/* Photo tile hover */
+.automotive-gallery .gallery-photo-tile {
+  border-color: transparent;
+}
+
+.automotive-gallery .gallery-photo-tile:hover {
+  border-color: var(--gallery-accent) !important;
+}
+
+/* Photo captions */
+.automotive-gallery .gallery-photo-caption svg {
+  color: var(--gallery-accent) !important;
+}
+
+/* Collection count */
+.automotive-gallery .gallery-group-count {
+  border-color: color-mix(
+    in srgb,
+    var(--gallery-accent) 45%,
+    transparent
+  ) !important;
+  color: var(--gallery-accent) !important;
+}
+
+/* Bottom CTA */
+.automotive-gallery .gallery-bottom-icon {
+  color: var(--gallery-accent) !important;
+  background: color-mix(
+    in srgb,
+    var(--gallery-accent) 12%,
+    transparent
+  ) !important;
+}
+
+.automotive-gallery .gallery-bottom-cta h2 {
+  color: var(--gallery-accent) !important;
+}
+
+.automotive-gallery .gallery-bottom-cta > a {
+  background: var(--gallery-accent) !important;
+  border-color: var(--gallery-accent) !important;
+  color: #fff !important;
+}
+
+.automotive-gallery .gallery-bottom-cta > a:hover {
+  background: var(--gallery-accent-light) !important;
+}
+
+/* Stock image note */
+.automotive-gallery .gallery-stock-note > svg {
+  color: var(--gallery-accent) !important;
+}
+
+/* Modal */
+.automotive-gallery .gallery-modal-close:hover,
+.automotive-gallery .gallery-modal-arrow:hover {
+  background: var(--gallery-accent) !important;
+  color: #fff !important;
+}
+
+.automotive-gallery .gallery-modal-content .gallery-eyebrow {
+  color: var(--gallery-accent) !important;
+}
+
+.automotive-gallery .gallery-modal-caption {
+  color: var(--gallery-accent) !important;
+}
+
+/* Modal thumbnails */
+.automotive-gallery .gallery-modal-thumbnails button.active {
+  border-color: var(--gallery-accent) !important;
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--gallery-accent) 25%, transparent) !important;
+}
+
+/* Modal enquiry link */
+.automotive-gallery .gallery-modal-footer a {
+  color: var(--gallery-accent) !important;
+}
+
+.automotive-gallery .gallery-modal-footer a:hover {
+  color: var(--gallery-accent-light) !important;
+}
