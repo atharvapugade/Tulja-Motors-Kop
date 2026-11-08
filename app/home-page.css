@@ -1,27 +1,9 @@
-/* =========================================
-   TULJA MOTORS — IMAGE CARD SYSTEM
-   Premium dark automotive presentation
-========================================= */
-
-.tm-new-home {
-  --tm-card-bg: #111317;
-  --tm-card-border: rgba(255, 255, 255, 0.09);
-  --tm-image-overlay: rgba(5, 7, 10, 0.35);
-  --tm-image-overlay-bottom: rgba(5, 7, 10, 0.96);
-  --tm-card-radius: 14px;
-}
 
 /* =========================================
-   TULJA SERVICE GRID
+   TULJA MOTORS — PERFORMANCE OPTIMIZATION
 ========================================= */
 
-.tm-services-image-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-  align-items: stretch;
-}
-
+/* Service cards */
 .tm-service-image-card {
   position: relative;
   min-width: 0;
@@ -31,468 +13,100 @@
   border-radius: var(--tm-card-radius);
   background: var(--tm-card-bg);
   isolation: isolate;
-  transition:
-    transform 0.4s ease,
-    border-color 0.4s ease,
-    box-shadow 0.4s ease;
+  transition: border-color 0.2s ease;
 }
 
 .tm-service-image-card:hover {
-  transform: translateY(-7px);
   border-color: var(--tm-orange, #ff7417);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.36);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* Image area */
-
-.tm-service-image-wrap {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  background: #17191d;
-}
-
+/* Service images */
 .tm-service-image-wrap img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  opacity: 0.78;
-  filter: saturate(0.82) contrast(1.08) brightness(0.82);
-  transform: scale(1);
-  transition:
-    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
-    filter 0.6s ease,
-    opacity 0.6s ease;
+  opacity: 0.85;
+  filter: none;
+  transform: none;
+  transition: opacity 0.25s ease;
 }
 
 .tm-service-image-card:hover .tm-service-image-wrap img {
-  transform: scale(1.08);
-  filter: saturate(1) contrast(1.08) brightness(0.92);
-  opacity: 0.95;
+  opacity: 1;
+  transform: none;
+  filter: none;
 }
 
-/* Dark gradient for readable text */
-
-.tm-service-image-overlay {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(5, 7, 10, 0.12) 0%,
-      rgba(5, 7, 10, 0.12) 25%,
-      rgba(5, 7, 10, 0.55) 52%,
-      rgba(5, 7, 10, 0.97) 100%
-    ),
-    linear-gradient(
-      90deg,
-      rgba(5, 7, 10, 0.18),
-      transparent 75%
-    );
-  pointer-events: none;
-}
-
-/* Vehicle label */
-
+/* Remove expensive backdrop blur */
 .tm-service-vehicle-tag {
-  position: absolute;
-  top: 17px;
-  left: 17px;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  min-height: 28px;
-  padding: 6px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 4px;
-  background: rgba(7, 8, 10, 0.7);
-  color: #fff;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(7, 8, 10, 0.88);
 }
 
-/* Card content */
-
-.tm-service-card-content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-height: 390px;
-  padding: 25px 23px 24px;
-  color: #fff;
-}
-
-.tm-service-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 17px;
-}
-
-.tm-service-card-top > span {
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
-
-.tm-service-card-top svg {
-  color: var(--tm-orange, #ff7417);
-  filter: drop-shadow(0 0 12px rgba(255, 116, 23, 0.2));
-}
-
-.tm-service-image-card h3 {
-  margin: 0 0 10px;
-  color: #fff;
-  font-family: "Manrope", sans-serif;
-  font-size: clamp(19px, 2vw, 23px);
-  font-weight: 800;
-  line-height: 1.25;
-}
-
-.tm-service-image-card p {
-  max-width: 330px;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
-  line-height: 1.8;
-}
-
-.tm-service-image-card .tm-service-card-content > a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 39px;
-  height: 39px;
-  margin-top: 19px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  color: #fff;
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease,
-    transform 0.3s ease;
-}
-
-.tm-service-image-card .tm-service-card-content > a:hover {
-  border-color: var(--tm-orange, #ff7417);
-  background: var(--tm-orange, #ff7417);
-  transform: rotate(45deg);
-}
-
-/* =========================================
-   SHARVARI — TWO LARGE FEATURE IMAGES
-========================================= */
-
-.tm-sharvari-services-content {
-  width: 100%;
-  min-width: 0;
-}
-
-.tm-sharvari-feature-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  width: 100%;
-}
-
-.tm-sharvari-feature-card {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  min-width: 0;
-  min-height: 330px;
-  overflow: hidden;
-  border: 1px solid var(--tm-card-border);
-  border-radius: var(--tm-card-radius);
-  background: #15171b;
-  isolation: isolate;
-  text-decoration: none;
-}
-
+/* Sharvari feature images */
 .tm-sharvari-feature-card > img {
   position: absolute;
   inset: 0;
-  z-index: -1;
-  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  filter: saturate(0.85) brightness(0.8) contrast(1.08);
-  transition:
-    transform 0.8s ease,
-    filter 0.6s ease;
+  filter: none;
+  transform: none;
+  transition: opacity 0.25s ease;
 }
 
 .tm-sharvari-feature-card:hover > img {
-  transform: scale(1.08);
-  filter: saturate(1) brightness(0.92) contrast(1.08);
+  transform: none;
+  filter: none;
+  opacity: 0.9;
 }
 
-.tm-sharvari-feature-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(5, 7, 10, 0.05) 0%,
-      rgba(5, 7, 10, 0.25) 35%,
-      rgba(5, 7, 10, 0.96) 100%
-    );
-  pointer-events: none;
-}
-
-.tm-sharvari-feature-content {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  padding: 23px;
-  color: #fff;
-}
-
-.tm-sharvari-feature-content > span {
-  display: inline-block;
-  margin-bottom: 11px;
-  color: var(--tm-orange, #ff7417);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-}
-
-.tm-sharvari-feature-content h3 {
-  margin: 0 0 9px;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.tm-sharvari-feature-content p {
-  max-width: 330px;
-  margin: 0 0 14px;
-  color: rgba(255, 255, 255, 0.73);
-  font-size: 12px;
-  line-height: 1.75;
-}
-
-.tm-sharvari-feature-content > svg {
-  color: var(--tm-orange, #ff7417);
-  transition: transform 0.3s ease;
-}
-
-.tm-sharvari-feature-card:hover
-.tm-sharvari-feature-content > svg {
-  transform: translate(4px, -4px);
-}
-
-/* Sharvari text-only service links */
-
-.tm-sharvari-service-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 25px;
-  margin-top: 20px;
-  border-top: 1px solid var(--tm-card-border);
-}
-
-.tm-sharvari-service-item {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  min-width: 0;
-  min-height: 62px;
-  border-bottom: 1px solid var(--tm-card-border);
-  color: #fff;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.tm-sharvari-service-item > span {
-  color: var(--tm-orange, #ff7417);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
-
-.tm-sharvari-service-item strong {
-  flex: 1;
-  min-width: 0;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.tm-sharvari-service-item > svg {
-  flex-shrink: 0;
-  color: rgba(255, 255, 255, 0.55);
-  transition:
-    color 0.3s ease,
-    transform 0.3s ease;
-}
-
-.tm-sharvari-service-item:hover {
-  color: var(--tm-orange, #ff7417);
-}
-
-.tm-sharvari-service-item:hover > svg {
-  color: var(--tm-orange, #ff7417);
-  transform: translate(3px, -3px);
-}
-
-/* =========================================
-   GALLERY IMAGE PRESENTATION
-========================================= */
-
-.tm-gallery-card {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  isolation: isolate;
-  background: #14161a;
-}
-
+/* Gallery images */
 .tm-gallery-card img {
   display: block;
   width: 100%;
   height: 100%;
   min-height: 300px;
   object-fit: cover;
-  filter: brightness(0.78) saturate(0.85);
-  transition:
-    transform 0.8s ease,
-    filter 0.6s ease;
+  filter: none;
+  transform: none;
+  transition: opacity 0.25s ease;
 }
 
 .tm-gallery-card:hover img {
-  transform: scale(1.07);
-  filter: brightness(0.95) saturate(1);
+  transform: none;
+  filter: none;
+  opacity: 0.9;
 }
 
-.tm-gallery-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-start;
-  padding: 23px;
-  background: linear-gradient(
-    180deg,
-    transparent 20%,
-    rgba(5, 7, 10, 0.88) 100%
-  );
-}
-
-.tm-gallery-overlay > span {
-  color: var(--tm-orange, #ff7417);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 1.7px;
-}
-
-.tm-gallery-overlay h3 {
-  max-width: 85%;
-  margin: 9px 0;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.tm-gallery-overlay > svg {
-  color: #fff;
-}
-
-/* =========================================
-   RESPONSIVE — TABLET
-========================================= */
-
-@media (max-width: 1050px) {
-  .tm-services-image-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 17px;
-  }
-
+/* Avoid expensive hover movement on touch devices */
+@media (hover: none) {
   .tm-service-image-card,
-  .tm-service-card-content {
-    min-height: 370px;
+  .tm-service-image-card:hover,
+  .tm-sharvari-feature-card:hover,
+  .tm-gallery-card:hover {
+    transform: none;
+    box-shadow: none;
   }
 
-  .tm-sharvari-feature-card {
-    min-height: 290px;
-  }
-}
-
-/* =========================================
-   RESPONSIVE — MOBILE
-========================================= */
-
-@media (max-width: 650px) {
-  .tm-services-image-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
-  .tm-service-image-card,
-  .tm-service-card-content {
-    min-height: 360px;
-  }
-
-  .tm-service-card-content {
-    padding: 22px;
-  }
-
-  .tm-service-image-card h3 {
-    font-size: 21px;
-  }
-
-  .tm-service-image-card p {
-    font-size: 12px;
-  }
-
-  .tm-sharvari-feature-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
-  .tm-sharvari-feature-card {
-    min-height: 310px;
-  }
-
-  .tm-sharvari-feature-content {
-    padding: 21px;
-  }
-
-  .tm-sharvari-service-list {
-    grid-template-columns: 1fr;
-    margin-top: 15px;
-  }
-
-  .tm-sharvari-service-item {
-    min-height: 57px;
-  }
-
+  .tm-service-image-wrap img,
+  .tm-sharvari-feature-card > img,
   .tm-gallery-card img {
-    min-height: 260px;
+    transform: none !important;
+    filter: none !important;
   }
 }
 
-/* =========================================
-   REDUCED MOTION ACCESSIBILITY
-========================================= */
-
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   .tm-service-image-card,
   .tm-service-image-wrap img,
   .tm-sharvari-feature-card > img,
   .tm-gallery-card img {
     transition: none !important;
+    animation: none !important;
   }
 }
