@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -5,9 +6,13 @@ import {
   Phone,
   Mail,
   ArrowUpRight,
+  
 } from "lucide-react";
 import CurrentYear from "./CurrentYear";
+import "./footer.css";
+
 const PHONE = "9130129205";
+const WHATSAPP = "919130129205";
 const EMAIL = "tuljamotors@gmail.com";
 
 const ADDRESS =
@@ -19,83 +24,148 @@ const MAP_URL =
 
 export default function Footer() {
   return (
-    <footer className="site-footer">
-      <div className="footer-main">
+    <footer className="tm-footer">
+      {/* FOOTER TOP CTA */}
+      <div className="tm-footer-cta">
+        <div>
+          <span className="tm-footer-eyebrow">
+            YOUR AUTOMOTIVE JOURNEY STARTS HERE
+          </span>
+          <h2>
+            YOUR CAR DESERVES
+            <br />
+            <em>THE RIGHT CARE.</em>
+          </h2>
+        </div>
 
-        <div className="footer-brand">
-          <Link href="/">
+        <Link href="/contact" className="tm-footer-cta-button">
+          LET&apos;S TALK ABOUT YOUR CAR
+          <ArrowUpRight size={19} />
+        </Link>
+      </div>
+
+      {/* MAIN FOOTER */}
+      <div className="tm-footer-main">
+        {/* BRAND */}
+        <div className="tm-footer-brand">
+          <Link href="/" className="tm-footer-logo">
             <Image
               src="/logos/tulja-motors-logo.png"
               alt="Tulja Motors"
-              width={200}
-              height={95}
+              width={190}
+              height={90}
             />
           </Link>
 
           <p>
-            Accident repair, denting, painting and vehicle
-            restoration solutions in Kolhapur. Bringing
-            professional automotive care closer to you.
+            Two identities. One automotive destination. From accident
+            repair and restoration to detailing and customisation,
+            discover complete automotive care in Kolhapur.
           </p>
 
           <a
-            href={`https://wa.me/91${PHONE}`}
+            href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
+              "Hello Tulja Motors, I would like to enquire about your services."
+            )}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="footer-whatsapp"
+            className="tm-footer-whatsapp"
           >
-            Chat on WhatsApp <ArrowUpRight size={16} />
+            CHAT WITH OUR TEAM
+            <ArrowUpRight size={16} />
           </a>
         </div>
 
-        <div className="footer-column">
-          <h4>QUICK LINKS</h4>
+        {/* QUICK LINKS */}
+        <div className="tm-footer-column">
+          <h3>EXPLORE</h3>
           <Link href="/">Home</Link>
           <Link href="/about">About Us</Link>
-          <Link href="/tulja-motors">Tulja Motors</Link>
-          <Link href="/sharvari-motors">Sharvari Motors</Link>
           <Link href="/gallery">Our Work</Link>
           <Link href="/contact">Contact Us</Link>
         </div>
 
-        <div className="footer-column">
-          <h4>TULJA MOTORS</h4>
-          <Link href="/tulja-motors#accident-repair">Accident Repair</Link>
-          <Link href="/tulja-motors#denting-painting">Denting & Painting</Link>
-          <Link href="/tulja-motors#restoration">Car Restoration</Link>
-          <Link href="/tulja-motors#mechanical">Mechanical Repairs</Link>
-          <Link href="/tulja-motors#insurance">Insurance Assistance</Link>
+        {/* TULJA */}
+        <div className="tm-footer-column">
+          <h3>TULJA MOTORS</h3>
+          <Link href="/tulja-motors#accident-repair">
+            Accident Repair
+          </Link>
+          <Link href="/tulja-motors#denting-painting">
+            Denting & Painting
+          </Link>
+          <Link href="/tulja-motors#restoration">
+            Car Restoration
+          </Link>
+          <Link href="/tulja-motors#mechanical">
+            Mechanical Work
+          </Link>
         </div>
 
-        <div className="footer-column footer-contact">
-          <h4>CONTACT DETAILS</h4>
+        {/* SHARVARI */}
+        <div className="tm-footer-column">
+          <h3>SHARVARI MOTORS</h3>
+          <Link href="/sharvari-motors#exterior">
+            Exterior Modification
+          </Link>
+          <Link href="/sharvari-motors#interior">
+            Interior Modification
+          </Link>
+          <Link href="/sharvari-motors#detailing">
+            Ceramic Coating & Detailing
+          </Link>
+          <Link href="/sharvari-motors#accessories">
+            Accessories
+          </Link>
+        </div>
+
+        {/* CONTACT */}
+        <div className="tm-footer-column tm-footer-contact">
+          <h3>GET IN TOUCH</h3>
 
           <a href={`tel:+91${PHONE}`}>
             <Phone size={17} />
-            +91 {PHONE}
+            <span>+91 {PHONE}</span>
           </a>
 
           <a href={`mailto:${EMAIL}`}>
             <Mail size={17} />
-            {EMAIL}
+            <span>{EMAIL}</span>
           </a>
 
           <a href={MAP_URL} target="_blank" rel="noopener noreferrer">
             <MapPin size={17} />
-            {ADDRESS}
+            <span>{ADDRESS}</span>
           </a>
 
-          <Link href="/contact" className="footer-directions">
-            Visit Our Workshop <ArrowUpRight size={16} />
+          <Link href="/contact" className="tm-footer-directions">
+            FIND OUR WORKSHOP
+            <ArrowUpRight size={16} />
           </Link>
         </div>
       </div>
 
-      <div className="footer-bottom">
+      {/* BOTTOM BAR */}
+      <div className="tm-footer-bottom">
         <p>
-         © <CurrentYear /> Tulja Motors. All rights reserved.
+          © <CurrentYear /> TULJA MOTORS. ALL RIGHTS RESERVED.
         </p>
-        <p>Accident Repair & Automotive Care · Kolhapur</p>
+
+        <span className="tm-footer-bottom-center">
+          REPAIR <i>✳</i> RESTORE <i>✳</i> CUSTOMISE
+        </span>
+
+        <div className="tm-footer-socials">
+          <a
+            href={`https://wa.me/${WHATSAPP}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+          >
+            <Phone size={16} />
+          </a>
+       
+        </div>
       </div>
     </footer>
   );

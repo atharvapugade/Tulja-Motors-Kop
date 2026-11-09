@@ -1,11 +1,9 @@
-
 import type { Metadata } from "next";
 import "./globals.css";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import WhatsAppFloat from "./components/WhatsAppFloat";
-import ThemeSwitcher from "./components/ThemeSwitcher";
 
 export const metadata: Metadata = {
   title: {
@@ -34,10 +32,8 @@ export const metadata: Metadata = {
   openGraph: {
     title:
       "Tulja Motors | Accident Repair & Denting Painting in Kolhapur",
-
     description:
       "Professional vehicle repair, restoration and automotive customisation in Kolhapur.",
-
     url: "https://www.tuljamotors.com",
     siteName: "Tulja Motors",
     type: "website",
@@ -62,20 +58,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* NAVBAR WITH DYNAMIC AMBIENT LIGHT */}
         <Navbar />
 
-        {/* MAIN WEBSITE CONTENT */}
-        <main>{children}</main>
+        <div className="site-content">{children}</div>
 
-        {/* WEBSITE FOOTER */}
         <Footer />
 
-        {/* FLOATING WHATSAPP BUTTON */}
         <WhatsAppFloat />
-
-        {/* CLIENT THEME SWITCHER */}
-        <ThemeSwitcher />
       </body>
     </html>
   );

@@ -1,139 +1,815 @@
-
 /* =========================================
-   TULJA MOTORS - NAVBAR AMBIENT LIGHT
+   TULJA MOTORS
+   PREMIUM WHITE NAVBAR
 ========================================= */
 
 :root {
-  --tm-orange: #ff7417;
-  --tm-orange-light: #ff9145;
-  --tm-ambient-rgb: 255, 116, 23;
+  --tm-nav-bg: #f8f7f0;
+  --tm-nav-text: #073e3b;
+  --tm-nav-muted: #536765;
+  --tm-nav-yellow: #ffd21c;
+  --tm-nav-yellow-hover: #f2bd00;
+  --tm-nav-border: rgba(0, 80, 75, 0.12);
+  --tm-nav-teal: #00766e;
 }
 
-/* Navbar positioning and layering */
+/* =========================================
+   HEADER
+========================================= */
+
 .site-header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  overflow: visible;
+  width: 100%;
+  background: rgba(248, 247, 240, 0.97);
+  border-bottom: 1px solid var(--tm-nav-border);
   isolation: isolate;
+  overflow: visible;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-/* Keep navbar content above the ambient glow */
-.site-header .nav-container {
+/* =========================================
+   NAV CONTAINER
+========================================= */
+
+.nav-container {
   position: relative;
-  z-index: 3;
+  z-index: 5;
+
+  width: min(1380px, calc(100% - 64px));
+  min-height: 86px;
+
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
 }
 
-/* Thin illuminated line at navbar bottom */
+/* =========================================
+   LOGO
+========================================= */
+
+.nav-logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 112px;
+  height: 76px;
+
+  overflow: hidden;
+}
+
+.nav-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.35s ease;
+}
+
+.nav-logo:hover img {
+  transform: scale(1.04);
+}
+
+/* =========================================
+   DESKTOP NAV LINKS
+========================================= */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 2vw, 30px);
+
+  flex: 1;
+}
+
+.nav-links > a,
+.nav-dropdown > a {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 12px 0;
+
+  color: var(--tm-nav-text);
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.015em;
+
+  white-space: nowrap;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.nav-links > a::after,
+.nav-dropdown > a::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+
+  width: 0;
+  height: 2px;
+
+  background: var(--tm-nav-teal);
+  border-radius: 10px;
+
+  transition: width 0.3s ease;
+}
+
+.nav-links > a:hover,
+.nav-dropdown > a:hover {
+  color: var(--tm-nav-teal);
+}
+
+.nav-links > a:hover::after,
+.nav-dropdown > a:hover::after {
+  width: 100%;
+}
+
+/* =========================================
+   DROPDOWN
+========================================= */
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown > a {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-dropdown > a svg {
+  transition: transform 0.3s ease;
+}
+
+.nav-dropdown:hover > a svg {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+
+  top: calc(100% + 12px);
+  left: -20px;
+
+  width: 235px;
+
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  background: #fff;
+  border: 1px solid rgba(0, 80, 75, 0.12);
+  border-radius: 12px;
+
+  box-shadow:
+    0 16px 45px rgba(12, 43, 40, 0.12),
+    0 3px 10px rgba(12, 43, 40, 0.04);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease,
+    transform 0.25s ease;
+
+  z-index: 100;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-dropdown-menu a {
+  display: flex;
+  align-items: center;
+
+  padding: 12px 13px;
+
+  color: var(--tm-nav-text);
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 650;
+
+  border-radius: 7px;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    padding 0.2s ease;
+}
+
+.nav-dropdown-menu a:hover {
+  color: var(--tm-nav-teal);
+  background: #eef6f2;
+  padding-left: 18px;
+}
+
+/* =========================================
+   RIGHT ACTIONS
+========================================= */
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+/* CALL LINK */
+
+.nav-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  color: var(--tm-nav-text);
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+
+  transition: color 0.25s ease;
+}
+
+.nav-call svg {
+  color: var(--tm-nav-teal);
+  transition: transform 0.25s ease;
+}
+
+.nav-call:hover {
+  color: var(--tm-nav-teal);
+}
+
+.nav-call:hover svg {
+  transform: rotate(-10deg);
+}
+
+/* =========================================
+   GET A QUOTE BUTTON
+========================================= */
+
+.nav-cta {
+  min-height: 45px;
+  padding: 0 19px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  color: #111b17;
+  background: var(--tm-nav-yellow);
+
+  border: 1px solid var(--tm-nav-yellow);
+  border-radius: 4px;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.015em;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.nav-cta:hover {
+  background: var(--tm-nav-yellow-hover);
+  border-color: var(--tm-nav-yellow-hover);
+  transform: translateY(-2px);
+
+  box-shadow: 0 7px 18px rgba(190, 145, 0, 0.2);
+}
+
+.nav-cta svg {
+  transition: transform 0.25s ease;
+}
+
+.nav-cta:hover svg {
+  transform: translate(3px, -3px);
+}
+
+/* =========================================
+   MOBILE CALL LINK
+========================================= */
+
+.mobile-call-link {
+  display: none !important;
+}
+
+/* =========================================
+   MOBILE MENU BUTTON
+========================================= */
+
+.nav-menu-toggle {
+  display: none;
+
+  width: 44px;
+  height: 44px;
+
+  align-items: center;
+  justify-content: center;
+
+  color: var(--tm-nav-text);
+  background: #edf3ee;
+
+  border: 1px solid var(--tm-nav-border);
+  border-radius: 8px;
+
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.nav-menu-toggle:hover {
+  background: #e1eee7;
+}
+
+/* =========================================
+   SUBTLE TEAL AMBIENT LIGHT
+========================================= */
+
 .site-header::after {
   content: "";
+
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+
   height: 1px;
-  z-index: 4;
-  pointer-events: none;
 
   background: linear-gradient(
     90deg,
-    transparent 0%,
-    rgba(var(--tm-ambient-rgb), 0.18) 12%,
-    rgba(var(--tm-ambient-rgb), 0.95) 50%,
-    rgba(var(--tm-ambient-rgb), 0.18) 88%,
-    transparent 100%
+    transparent,
+    rgba(0, 118, 110, 0.12),
+    rgba(0, 118, 110, 0.55),
+    rgba(255, 210, 28, 0.45),
+    rgba(0, 118, 110, 0.12),
+    transparent
   );
 
-  box-shadow:
-    0 0 7px rgba(var(--tm-ambient-rgb), 0.75),
-    0 0 18px rgba(var(--tm-ambient-rgb), 0.4);
-
-  transition: background 0.5s ease, box-shadow 0.5s ease;
+  pointer-events: none;
 }
 
-/* Main downward light beam */
 .nav-ambient-light {
   position: absolute;
+
   top: calc(100% - 1px);
   left: 0;
+
   width: 100%;
-  height: 240px;
+  height: 150px;
+
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
 
   background: radial-gradient(
-    ellipse 75% 65% at 50% 0%,
-    rgba(var(--tm-ambient-rgb), 0.22) 0%,
-    rgba(var(--tm-ambient-rgb), 0.12) 28%,
-    rgba(var(--tm-ambient-rgb), 0.045) 52%,
+    ellipse 70% 70% at 50% 0%,
+    rgba(0, 118, 110, 0.10) 0%,
+    rgba(0, 118, 110, 0.045) 40%,
     transparent 78%
   );
 
-  filter: blur(17px);
-  opacity: 0.9;
-
-  transition:
-    background 0.65s ease,
-    opacity 0.65s ease;
+  filter: blur(16px);
+  opacity: 0.85;
 }
 
-/* Brighter central ambient beam */
 .nav-ambient-core {
   position: absolute;
+
   top: 0;
   left: 50%;
+
   transform: translateX(-50%);
 
-  width: min(850px, 90%);
-  height: 130px;
+  width: min(800px, 90%);
+  height: 100px;
 
   background: radial-gradient(
     ellipse at top,
-    rgba(var(--tm-ambient-rgb), 0.19) 0%,
-    rgba(var(--tm-ambient-rgb), 0.075) 38%,
+    rgba(0, 118, 110, 0.09) 0%,
+    rgba(0, 118, 110, 0.035) 42%,
     transparent 75%
   );
 
-  filter: blur(25px);
-  animation: tmAmbientBreathing 5s ease-in-out infinite;
+  filter: blur(24px);
+  animation: tmAmbientBreathing 6s ease-in-out infinite;
 }
 
-/* Subtle premium breathing animation */
 @keyframes tmAmbientBreathing {
   0%,
   100% {
-    opacity: 0.65;
-    transform: translateX(-50%) scale(0.94);
+    opacity: 0.6;
+    transform: translateX(-50%) scale(0.95);
   }
 
   50% {
     opacity: 1;
-    transform: translateX(-50%) scale(1.06);
+    transform: translateX(-50%) scale(1.05);
   }
 }
 
-/* Mobile adjustments */
-@media (max-width: 768px) {
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1150px) {
+  .nav-container {
+    width: calc(100% - 40px);
+    gap: 20px;
+  }
+
+  .nav-links {
+    gap: 15px;
+  }
+
+  .nav-links > a,
+  .nav-dropdown > a {
+    font-size: 11px;
+  }
+
+  .nav-actions {
+    gap: 13px;
+  }
+
+  .nav-call {
+    font-size: 11px;
+  }
+
+  .nav-cta {
+    padding: 0 14px;
+  }
+}
+
+/* =========================================
+   MOBILE NAVIGATION
+========================================= */
+
+@media (max-width: 900px) {
+  .nav-container {
+    width: calc(100% - 32px);
+    min-height: 76px;
+    gap: 12px;
+  }
+
+  .nav-logo {
+    width: 105px;
+    height: 68px;
+  }
+
+  .nav-actions {
+    margin-left: auto;
+  }
+
+  .nav-call {
+    display: none;
+  }
+
+  .nav-menu-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    position: absolute;
+
+    top: calc(100% + 1px);
+    left: -16px;
+    right: -16px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+
+    max-height: calc(100vh - 76px);
+    overflow-y: auto;
+
+    padding: 14px 22px 22px;
+
+    background: #f8f7f0;
+
+    border-top: 1px solid var(--tm-nav-border);
+    border-bottom: 1px solid var(--tm-nav-border);
+
+    box-shadow: 0 18px 35px rgba(0, 45, 40, 0.10);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateY(-8px);
+
+    transition:
+      opacity 0.25s ease,
+      visibility 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .nav-links.nav-links-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .nav-links > a,
+  .nav-dropdown > a {
+    width: 100%;
+    min-height: 48px;
+
+    padding: 13px 5px;
+
+    border-bottom: 1px solid rgba(0, 80, 75, 0.09);
+
+    font-size: 13px;
+  }
+
+  .nav-links > a::after,
+  .nav-dropdown > a::after {
+    display: none;
+  }
+
+  /* MOBILE DROPDOWNS */
+
+  .nav-dropdown {
+    width: 100%;
+  }
+
+  .nav-dropdown > a {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .nav-dropdown-menu {
+    position: static;
+
+    display: none;
+
+    width: 100%;
+
+    padding: 5px 0 10px 12px;
+
+    background: transparent;
+
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu {
+    display: flex;
+  }
+
+  .nav-dropdown-menu a {
+    min-height: 40px;
+    padding: 10px 12px;
+
+    font-size: 12px;
+  }
+
+  .nav-dropdown-menu a:hover {
+    padding-left: 16px;
+  }
+
+  .mobile-call-link {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 12px;
+    padding: 14px !important;
+
+    color: #fff !important;
+    background: var(--tm-nav-teal);
+
+    border-radius: 7px;
+    border: 0 !important;
+  }
+
+  .mobile-call-link svg {
+    color: #fff;
+  }
+
   .nav-ambient-light {
-    height: 175px;
-    background: radial-gradient(
-      ellipse 100% 60% at 50% 0%,
-      rgba(var(--tm-ambient-rgb), 0.19) 0%,
-      rgba(var(--tm-ambient-rgb), 0.075) 42%,
-      transparent 78%
-    );
+    height: 100px;
   }
 
   .nav-ambient-core {
-    width: 100%;
-    height: 105px;
+    height: 80px;
   }
 }
 
-/* Respect reduced-motion preferences */
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+  .nav-container {
+    min-height: 70px;
+    width: calc(100% - 24px);
+  }
+
+  .nav-logo {
+    width: 95px;
+    height: 62px;
+  }
+
+  .nav-cta {
+    min-height: 40px;
+    padding: 0 11px;
+    gap: 5px;
+
+    font-size: 10px;
+  }
+
+  .nav-cta svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .nav-menu-toggle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-links {
+    left: -12px;
+    right: -12px;
+  }
+}
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
+
 @media (prefers-reduced-motion: reduce) {
   .nav-ambient-core {
     animation: none;
+  }
+
+  .nav-links,
+  .nav-dropdown-menu,
+  .nav-cta,
+  .nav-logo img {
+    transition: none;
+  }
+}
+
+
+/* =========================================
+   TULJA MOTORS × SHARVARI MOTORS NAV LOGO
+========================================= */
+
+.nav-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  gap: 13px;
+  position: relative;
+  z-index: 20;
+  text-decoration: none;
+  color: #10121b;
+  min-width: 0;
+}
+
+.nav-brand-lockup .nav-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.nav-brand-lockup .nav-logo img {
+  display: block;
+  width: 145px;
+  height: 69px;
+  object-fit: contain;
+}
+
+.nav-brand-cross {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #a80019;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1;
+  margin: 0 1px;
+}
+
+.nav-sharvari-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 145px;
+  flex-shrink: 0;
+  color: #10121b;
+}
+
+.nav-sharvari-logo svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.sharvari-wordmark {
+  fill: currentColor;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 39px;
+  font-weight: 900;
+  letter-spacing: -2px;
+}
+
+.sharvari-motors-text {
+  fill: currentColor;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* =========================================
+   MOBILE BRANDING
+========================================= */
+
+@media (max-width: 768px) {
+  .nav-brand-lockup {
+    gap: 7px;
+    max-width: calc(100% - 65px);
+  }
+
+  .nav-brand-lockup .nav-logo img {
+    width: 105px;
+    height: 54px;
+  }
+
+  .nav-brand-cross {
+    font-size: 19px;
+  }
+
+  .nav-sharvari-logo {
+    width: 105px;
+  }
+}
+
+@media (max-width: 380px) {
+  .nav-brand-lockup {
+    gap: 5px;
+  }
+
+  .nav-brand-lockup .nav-logo img {
+    width: 91px;
+    height: 47px;
+  }
+
+  .nav-brand-cross {
+    font-size: 16px;
+  }
+
+  .nav-sharvari-logo {
+    width: 91px;
   }
 }

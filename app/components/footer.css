@@ -1,0 +1,350 @@
+
+/* =========================================
+   TULJA MOTORS — PREMIUM LIGHT FOOTER
+========================================= */
+
+.tm-footer {
+  --footer-teal: #006d68;
+  --footer-red: #b20b1c;
+  --footer-yellow: #ffca05;
+  --footer-cream: #f4f1e8;
+  --footer-text: #53666a;
+
+  position: relative;
+  overflow: hidden;
+  background: var(--footer-cream);
+  color: #122c30;
+  border-top: 1px solid rgba(0, 109, 104, 0.13);
+}
+
+/* TOP CTA */
+
+.tm-footer-cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 35px;
+  padding: 65px max(7%, calc((100% - 1350px) / 2));
+  border-bottom: 1px solid rgba(0, 109, 104, 0.16);
+  background:
+    radial-gradient(
+      ellipse at 85% 50%,
+      rgba(0, 109, 104, 0.09),
+      transparent 50%
+    ),
+    var(--footer-cream);
+}
+
+.tm-footer-eyebrow {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--footer-red);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.tm-footer-cta h2 {
+  margin: 0;
+  color: var(--footer-teal);
+  font-size: clamp(34px, 5vw, 66px);
+  line-height: 0.98;
+  font-weight: 950;
+  letter-spacing: -3px;
+}
+
+.tm-footer-cta h2 em {
+  color: var(--footer-red);
+  font-style: normal;
+}
+
+.tm-footer-cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  min-height: 56px;
+  padding: 0 24px;
+  flex-shrink: 0;
+  background: var(--footer-yellow);
+  color: #111b1d;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
+}
+
+.tm-footer-cta-button:hover {
+  transform: translateY(-4px);
+  background: #f2b900;
+}
+
+/* MAIN FOOTER */
+
+.tm-footer-main {
+  width: min(1350px, 86%);
+  margin: auto;
+  padding: 75px 0 65px;
+  display: grid;
+  grid-template-columns: 1.45fr 0.8fr 1fr 1.1fr 1.5fr;
+  gap: 42px;
+}
+
+/* BRAND */
+
+.tm-footer-brand {
+  max-width: 290px;
+}
+
+.tm-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 23px;
+}
+
+.tm-footer-logo img {
+  width: 175px;
+  height: auto;
+  object-fit: contain;
+}
+
+.tm-footer-brand p {
+  margin: 0;
+  color: var(--footer-text);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.tm-footer-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 25px;
+  padding: 13px 16px;
+  background: #087c50;
+  color: #fff;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  transition: 0.3s ease;
+}
+
+.tm-footer-whatsapp:hover {
+  background: #075f3e;
+  transform: translateY(-3px);
+}
+
+/* FOOTER COLUMNS */
+
+.tm-footer-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.tm-footer-column h3 {
+  margin: 5px 0 12px;
+  color: var(--footer-teal);
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 1.6px;
+}
+
+.tm-footer-column > a {
+  color: var(--footer-text);
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.6;
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.tm-footer-column > a:hover {
+  color: var(--footer-red);
+  transform: translateX(4px);
+}
+
+/* CONTACT */
+
+.tm-footer-contact > a:not(.tm-footer-directions) {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  width: 100%;
+}
+
+.tm-footer-contact > a svg {
+  flex-shrink: 0;
+  color: var(--footer-teal);
+  margin-top: 2px;
+}
+
+.tm-footer-contact > a span {
+  overflow-wrap: anywhere;
+}
+
+.tm-footer-directions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+  color: var(--footer-red) !important;
+  font-size: 10px !important;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+/* BOTTOM BAR */
+
+.tm-footer-bottom {
+  min-height: 75px;
+  padding: 18px 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  border-top: 1px solid rgba(0, 109, 104, 0.16);
+  background: #ebe8de;
+}
+
+.tm-footer-bottom p {
+  margin: 0;
+  color: #657477;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.tm-footer-bottom-center {
+  color: var(--footer-teal);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.tm-footer-bottom-center i {
+  margin: 0 8px;
+  color: var(--footer-red);
+  font-style: normal;
+}
+
+.tm-footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.tm-footer-socials a {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(0, 109, 104, 0.2);
+  border-radius: 50%;
+  color: var(--footer-teal);
+  text-decoration: none;
+  transition: 0.25s ease;
+}
+
+.tm-footer-socials a:hover {
+  background: var(--footer-teal);
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+/* TABLET */
+
+@media (max-width: 1100px) {
+  .tm-footer-main {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 45px 30px;
+  }
+
+  .tm-footer-brand {
+    max-width: 340px;
+  }
+
+  .tm-footer-contact {
+    grid-column: span 2;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+  .tm-footer-cta {
+    padding: 48px 7%;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .tm-footer-cta h2 {
+    font-size: clamp(37px, 10vw, 52px);
+    letter-spacing: -2px;
+  }
+
+  .tm-footer-cta-button {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tm-footer-main {
+    width: 86%;
+    padding: 50px 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 38px 22px;
+  }
+
+  .tm-footer-brand {
+    grid-column: 1 / -1;
+    max-width: 420px;
+  }
+
+  .tm-footer-contact {
+    grid-column: 1 / -1;
+  }
+
+  .tm-footer-bottom {
+    padding: 22px 7%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .tm-footer-bottom-center {
+    order: 2;
+  }
+
+  .tm-footer-socials {
+    order: 3;
+  }
+}
+
+@media (max-width: 380px) {
+  .tm-footer-main {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-footer-brand,
+  .tm-footer-contact {
+    grid-column: auto;
+  }
+}
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+  .tm-footer *,
+  .tm-footer *::before,
+  .tm-footer *::after {
+    transition: none !important;
+  }
+}
