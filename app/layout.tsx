@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import ScrollReveal from "./components/ScrollReveal";
 import RoutePreloader from "./components/RoutePreloader";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: {
@@ -80,6 +81,9 @@ export default function RootLayout({
 
         {/* FLOATING WHATSAPP */}
         <WhatsAppFloat />
+
+        {/* VERCEL WEB ANALYTICS */}
+        <Analytics />
       </body>
     </html>
   );
