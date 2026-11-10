@@ -17714,3 +17714,254 @@ body {
     font-size: 15px !important;
   }
 }
+/* =========================================
+   HOMEPAGE GALLERY PHOTO LIGHTBOX
+========================================= */
+
+.tm-gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 55px 90px;
+  background: rgba(5, 8, 12, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: tmGalleryLightboxFade 0.25s ease;
+}
+
+.tm-gallery-lightbox-content {
+  width: min(100%, 1050px);
+  max-height: calc(100vh - 110px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: tmGalleryLightboxZoom 0.3s ease;
+}
+
+.tm-gallery-lightbox-image-wrap {
+  width: 100%;
+  height: min(72vh, 720px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #101419;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: 0 25px 90px rgba(0, 0, 0, 0.5);
+}
+
+.tm-gallery-lightbox-image-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tm-gallery-lightbox-caption {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 4px 0;
+  color: #fff;
+}
+
+.tm-gallery-lightbox-caption > div > span {
+  display: block;
+  margin-bottom: 5px;
+  color: #69c5bd;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.tm-gallery-lightbox-caption h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: 0.5px;
+}
+
+.tm-gallery-lightbox-caption p {
+  margin: 5px 0 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+}
+
+.tm-gallery-lightbox-counter {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.tm-gallery-lightbox-close,
+.tm-gallery-lightbox-arrow {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.tm-gallery-lightbox-close:hover,
+.tm-gallery-lightbox-arrow:hover {
+  background: #086565;
+  transform: scale(1.06);
+}
+
+.tm-gallery-lightbox-close {
+  top: 24px;
+  right: 28px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+}
+
+.tm-gallery-lightbox-arrow {
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.tm-gallery-lightbox-arrow:hover {
+  transform: translateY(-50%) scale(1.06);
+}
+
+.tm-gallery-lightbox-prev {
+  left: 25px;
+}
+
+.tm-gallery-lightbox-next {
+  right: 25px;
+}
+
+/* Gallery photos show clickable cursor */
+
+.tm-category-photo[role="button"] {
+  cursor: zoom-in;
+}
+
+.tm-category-photo[role="button"]:focus-visible {
+  outline: 3px solid #086565;
+  outline-offset: 4px;
+}
+
+/* Animations */
+
+@keyframes tmGalleryLightboxFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tmGalleryLightboxZoom {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Tablet */
+
+@media (max-width: 768px) {
+  .tm-gallery-lightbox {
+    padding: 65px 55px 35px;
+  }
+
+  .tm-gallery-lightbox-content {
+    max-height: calc(100vh - 110px);
+  }
+
+  .tm-gallery-lightbox-image-wrap {
+    height: 65vh;
+    border-radius: 9px;
+  }
+
+  .tm-gallery-lightbox-arrow {
+    width: 40px;
+    height: 40px;
+  }
+
+  .tm-gallery-lightbox-prev {
+    left: 8px;
+  }
+
+  .tm-gallery-lightbox-next {
+    right: 8px;
+  }
+
+  .tm-gallery-lightbox-close {
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 480px) {
+  .tm-gallery-lightbox {
+    padding: 65px 42px 25px;
+  }
+
+  .tm-gallery-lightbox-image-wrap {
+    height: 58vh;
+    border-radius: 7px;
+  }
+
+  .tm-gallery-lightbox-caption {
+    padding-top: 14px;
+    gap: 10px;
+  }
+
+  .tm-gallery-lightbox-caption h3 {
+    font-size: 15px;
+  }
+
+  .tm-gallery-lightbox-caption p {
+    font-size: 11px;
+  }
+
+  .tm-gallery-lightbox-caption > div > span {
+    font-size: 9px;
+  }
+
+  .tm-gallery-lightbox-counter {
+    font-size: 10px;
+  }
+
+  .tm-gallery-lightbox-arrow {
+    width: 34px;
+    height: 34px;
+  }
+
+  .tm-gallery-lightbox-arrow svg {
+    width: 19px;
+    height: 19px;
+  }
+}

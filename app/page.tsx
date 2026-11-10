@@ -481,6 +481,20 @@ const categoryGallery: CategoryGallery[] = [
   ...buildCategoryGallery(sharvariGallery, "SHARVARI MOTORS", "sharvari"),
 ];
 
+/* ALL GALLERY PHOTOS FOR THE POPUP */
+
+type GalleryLightboxPhoto = GalleryPhoto & {
+  brand: CategoryGallery["brand"];
+};
+
+const allGalleryPhotos: GalleryLightboxPhoto[] = categoryGallery.flatMap(
+  (category) =>
+    category.photos.map((photo) => ({
+      ...photo,
+      brand: category.brand,
+    }))
+);
+
 /* HOME PAGE */
 
 export default function HomePage() {
@@ -491,6 +505,12 @@ export default function HomePage() {
   const [sliderPaused, setSliderPaused] = useState(false);
   const [activeService, setActiveService] = useState<string | null>(null);
   const [serviceImageIndex, setServiceImageIndex] = useState(0);
+
+  /* NEW: GALLERY LIGHTBOX STATE */
+
+  const [activeGalleryPhoto, setActiveGalleryPhoto] = useState<number | null>(
+    null
+  );
 
   const [form, setForm] = useState({
     name: "",
@@ -508,6 +528,11 @@ export default function HomePage() {
   const activeMedia: ServiceMedia | null = activeService
     ? serviceMedia[activeService] ?? null
     : null;
+
+  const currentGalleryPhoto =
+    activeGalleryPhoto === null
+      ? null
+      : allGalleryPhotos[activeGalleryPhoto];
 
   /* GOOGLE TRANSLATE */
 
@@ -587,6 +612,74 @@ export default function HomePage() {
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [activeService]);
+
+  /* NEW: GALLERY POPUP KEYBOARD + SCROLL CONTROL */
+
+  useEffect(() => {
+    if (activeGalleryPhoto === null) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleGalleryKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setActiveGalleryPhoto(null);
+      }
+
+      if (event.key === "ArrowRight") {
+        setActiveGalleryPhoto((current) =>
+          current === null
+            ? null
+            : (current + 1) % allGalleryPhotos.length
+        );
+      }
+
+      if (event.key === "ArrowLeft") {
+        setActiveGalleryPhoto((current) =>
+          current === null
+            ? null
+            : (current - 1 + allGalleryPhotos.length) %
+              allGalleryPhotos.length
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleGalleryKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleGalleryKeyDown);
+    };
+  }, [activeGalleryPhoto]);
+
+  /* GALLERY POPUP CONTROLS */
+
+  const openGalleryPhoto = (photo: GalleryPhoto) => {
+    const photoIndex = allGalleryPhotos.findIndex(
+      (item) => item.image === photo.image
+    );
+
+    if (photoIndex !== -1) {
+      setActiveGalleryPhoto(photoIndex);
+    }
+  };
+
+  const showPreviousGalleryPhoto = () => {
+    setActiveGalleryPhoto((current) =>
+      current === null
+        ? null
+        : (current - 1 + allGalleryPhotos.length) %
+          allGalleryPhotos.length
+    );
+  };
+
+  const showNextGalleryPhoto = () => {
+    setActiveGalleryPhoto((current) =>
+      current === null
+        ? null
+        : (current + 1) % allGalleryPhotos.length
+    );
+  };
 
   /* SERVICE IMAGE AUTO SWITCH */
 
@@ -954,8 +1047,6 @@ Please contact me regarding this enquiry.`;
         id="work"
       >
         <div className="tm-wrap">
-          {/* GALLERY MAIN HEADING */}
-
           <div className="tm-category-gallery-heading">
             <div>
               <span className="tm-section-tag">AUTOMOTIVE SHOWCASE</span>
@@ -1034,6 +1125,19 @@ Please contact me regarding this enquiry.`;
                         <div
                           className="tm-category-photo"
                           key={photo.image}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`View larger photo of ${photo.name}`}
+                          onClick={() => openGalleryPhoto(photo)}
+                          onKeyDown={(event) => {
+                            if (
+                              event.key === "Enter" ||
+                              event.key === " "
+                            ) {
+                              event.preventDefault();
+                              openGalleryPhoto(photo);
+                            }
+                          }}
                         >
                           <img
                             src={photo.image}
@@ -1113,6 +1217,19 @@ Please contact me regarding this enquiry.`;
                         <div
                           className="tm-category-photo"
                           key={photo.image}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`View larger photo of ${photo.name}`}
+                          onClick={() => openGalleryPhoto(photo)}
+                          onKeyDown={(event) => {
+                            if (
+                              event.key === "Enter" ||
+                              event.key === " "
+                            ) {
+                              event.preventDefault();
+                              openGalleryPhoto(photo);
+                            }
+                          }}
                         >
                           <img
                             src={photo.image}
@@ -1611,6 +1728,76 @@ Please contact me regarding this enquiry.`;
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* NEW: GALLERY PHOTO LIGHTBOX */}
+
+      {currentGalleryPhoto && (
+        <div
+          className="tm-gallery-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Photo viewer: ${currentGalleryPhoto.name}`}
+          onClick={() => setActiveGalleryPhoto(null)}
+        >
+          <button
+            type="button"
+            className="tm-gallery-lightbox-close"
+            onClick={() => setActiveGalleryPhoto(null)}
+            aria-label="Close photo viewer"
+          >
+            <X size={25} />
+          </button>
+
+          <button
+            type="button"
+            className="tm-gallery-lightbox-arrow tm-gallery-lightbox-prev"
+            onClick={(event) => {
+              event.stopPropagation();
+              showPreviousGalleryPhoto();
+            }}
+            aria-label="Previous photo"
+          >
+            <ArrowLeft size={25} />
+          </button>
+
+          <div
+            className="tm-gallery-lightbox-content"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="tm-gallery-lightbox-image-wrap">
+              <img
+                src={currentGalleryPhoto.image}
+                alt={`${currentGalleryPhoto.name} - ${currentGalleryPhoto.category}`}
+              />
+            </div>
+
+            <div className="tm-gallery-lightbox-caption">
+              <div>
+                <span>{currentGalleryPhoto.brand}</span>
+                <h3>{currentGalleryPhoto.name}</h3>
+                <p>{currentGalleryPhoto.category}</p>
+              </div>
+
+              <span className="tm-gallery-lightbox-counter">
+                {String(activeGalleryPhoto! + 1).padStart(2, "0")} /{" "}
+                {String(allGalleryPhotos.length).padStart(2, "0")}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="tm-gallery-lightbox-arrow tm-gallery-lightbox-next"
+            onClick={(event) => {
+              event.stopPropagation();
+              showNextGalleryPhoto();
+            }}
+            aria-label="Next photo"
+          >
+            <ArrowRight size={25} />
+          </button>
         </div>
       )}
 
