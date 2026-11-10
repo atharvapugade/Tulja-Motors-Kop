@@ -1,9 +1,11 @@
+
 import type { Metadata } from "next";
 import "./globals.css";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import WhatsAppFloat from "./components/WhatsAppFloat";
+import ScrollReveal from "./components/ScrollReveal";
 
 export const metadata: Metadata = {
   title: {
@@ -58,12 +60,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* GLOBAL SCROLL ANIMATION */}
+        <ScrollReveal />
+
+        {/* WEBSITE NAVIGATION */}
         <Navbar />
 
-        <div className="site-content">{children}</div>
+        {/* ALL WEBSITE PAGES */}
+        <div className="site-content">
+          {children}
+        </div>
 
+        {/* WEBSITE FOOTER */}
         <Footer />
 
+        {/* FLOATING WHATSAPP */}
         <WhatsAppFloat />
       </body>
     </html>

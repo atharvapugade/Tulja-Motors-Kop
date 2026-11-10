@@ -3302,3 +3302,32 @@ a[href^="#"] {
     right: auto !important;
   }
 }
+
+/* =========================================
+   GLOBAL WEBSITE SCROLL REVEAL ANIMATION
+========================================= */
+
+main > section {
+  opacity: 0;
+  transform: translateY(38px);
+  transition:
+    opacity 0.85s ease,
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+main > section.scroll-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Avoid animation when browser requests reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  main > section {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
