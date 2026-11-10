@@ -6,8 +6,6 @@ import {
   ArrowUpRight,
   ArrowLeft,
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   Phone,
   Mail,
   MapPin,
@@ -15,7 +13,6 @@ import {
   ShieldCheck,
   CarFront,
   CheckCircle2,
-  MessageCircle,
   Languages,
   X,
 } from "lucide-react";
@@ -139,6 +136,8 @@ const services = [
     href: "#restoration",
   },
 ];
+
+/* SERVICE MEDIA */
 
 type ServiceMedia = {
   image: string;
@@ -352,113 +351,6 @@ const detailedServices = [
   },
 ];
 
-/* GALLERY */
-
-const galleryProjects = [
-  {
-    id: 1,
-    title: "Accident Repair & Restoration",
-    vehicle: "MAHINDRA SCORPIO",
-    brand: "TULJA MOTORS",
-    category: "Accident Repair",
-    image:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=90",
-    description: "Automotive bodywork and restoration inspiration.",
-  },
-  {
-    id: 2,
-    title: "Premium Paint Finish",
-    vehicle: "TATA NEXON",
-    brand: "TULJA MOTORS",
-    category: "Denting & Painting",
-    image:
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1600&q=90",
-    description: "Paintwork and exterior finish inspiration.",
-  },
-  {
-    id: 3,
-    title: "Ceramic Coating",
-    vehicle: "HYUNDAI CRETA",
-    brand: "SHARVARI MOTORS",
-    category: "Detailing",
-    image:
-      "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=1600&q=90",
-    description: "Gloss enhancement and paint protection inspiration.",
-  },
-  {
-    id: 4,
-    title: "Luxury Interior Styling",
-    vehicle: "KIA SELTOS",
-    brand: "SHARVARI MOTORS",
-    category: "Interior Modification",
-    image:
-      "https://images.unsplash.com/photo-1614200187524-dc4b892acf16?auto=format&fit=crop&w=1600&q=90",
-    description: "Premium cabin styling and interior design inspiration.",
-  },
-  {
-    id: 5,
-    title: "Exterior Styling",
-    vehicle: "MAHINDRA THAR",
-    brand: "SHARVARI MOTORS",
-    category: "Exterior Modification",
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1600&q=90",
-    description: "Exterior styling and modification inspiration.",
-  },
-  {
-    id: 6,
-    title: "Professional Detailing",
-    vehicle: "TOYOTA FORTUNER",
-    brand: "SHARVARI MOTORS",
-    category: "Detailing",
-    image:
-      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1600&q=90",
-    description: "Exterior detailing and vehicle care inspiration.",
-  },
-  {
-    id: 7,
-    title: "Automotive Workshop",
-    vehicle: "MULTI-BRAND",
-    brand: "TULJA MOTORS",
-    category: "Mechanical Work",
-    image:
-      "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1600&q=90",
-    description: "Professional automotive workshop environment.",
-  },
-  {
-    id: 8,
-    title: "Premium Car Finish",
-    vehicle: "LUXURY AUTOMOTIVE",
-    brand: "SHARVARI MOTORS",
-    category: "PPF & Wrap",
-    image:
-      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1600&q=90",
-    description: "Vehicle protection and styling inspiration.",
-  },
-  {
-    id: 9,
-    title: "Vehicle Restoration",
-    vehicle: "MARUTI SUZUKI",
-    brand: "TULJA MOTORS",
-    category: "Restoration",
-    image:
-      "https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=1600&q=90",
-    description: "Bodywork and vehicle restoration inspiration.",
-  },
-];
-
-const galleryCategories = [
-  "All Projects",
-  "Accident Repair",
-  "Denting & Painting",
-  "Detailing",
-  "Interior Modification",
-  "Exterior Modification",
-  "PPF & Wrap",
-  "Mechanical Work",
-  "Restoration",
-];
-
 /* CAR BRAND LOGOS */
 
 const indianCarBrands = [
@@ -475,6 +367,120 @@ const indianCarBrands = [
   { name: "Jeep", logo: "/images/brands/jeep-logo.svg" },
 ];
 
+/* CATEGORY-WISE GALLERY PHOTOS */
+
+type GalleryPhoto = {
+  name: string;
+  image: string;
+  category: string;
+};
+
+type CategoryGallery = {
+  id: string;
+  brand: "TULJA MOTORS" | "SHARVARI MOTORS";
+  title: string;
+  photos: GalleryPhoto[];
+};
+
+const tuljaGallery: GalleryPhoto[] = [
+  {
+    name: "MAHINDRA SCORPIO",
+    image: "/images/tulja/scorpio.jpeg",
+    category: "Accident Repair",
+  },
+  {
+    name: "TATA NEXON",
+    image: "/images/tulja/nexon.jpeg",
+    category: "Accident Repair",
+  },
+  {
+    name: "HYUNDAI CRETA",
+    image: "/images/tulja/creta.jpeg",
+    category: "Accident Repair",
+  },
+  {
+    name: "TATA PUNCH",
+    image: "/images/tulja/punch.jpeg",
+    category: "Denting & Painting",
+  },
+  {
+    name: "HINDUSTAN AMBASSADOR",
+    image: "/images/tulja/ambassador.jpeg",
+    category: "Restoration",
+  },
+  {
+    name: "MARUTI 800",
+    image: "/images/tulja/maruti-800.jpeg",
+    category: "Restoration",
+  },
+];
+
+const sharvariGallery: GalleryPhoto[] = [
+  {
+    name: "KIA SELTOS",
+    image: "/images/sharvari/seltos.jpeg",
+    category: "Interior Modification",
+  },
+  {
+    name: "TOYOTA INNOVA",
+    image: "/images/sharvari/innova.jpeg",
+    category: "Interior Modification",
+  },
+  {
+    name: "MAHINDRA THAR",
+    image: "/images/sharvari/thar.jpeg",
+    category: "Exterior Modification",
+  },
+  {
+    name: "MAHINDRA SCORPIO-N",
+    image: "/images/sharvari/scorpio-n.jpeg",
+    category: "Exterior Modification",
+  },
+  {
+    name: "MARUTI BREZZA",
+    image: "/images/sharvari/brezza.jpeg",
+    category: "Detailing",
+  },
+  {
+    name: "HONDA CITY",
+    image: "/images/sharvari/city.jpeg",
+    category: "Detailing",
+  },
+  {
+    name: "KIA CARENS",
+    image: "/images/sharvari/carens.jpeg",
+    category: "Detailing",
+  },
+];
+
+/* BUILD CATEGORY GALLERY FROM THE PHOTO ARRAYS */
+
+function buildCategoryGallery(
+  photos: GalleryPhoto[],
+  brand: CategoryGallery["brand"],
+  prefix: string
+): CategoryGallery[] {
+  const grouped = new Map<string, GalleryPhoto[]>();
+
+  photos.forEach((photo) => {
+    const existing = grouped.get(photo.category) ?? [];
+    existing.push(photo);
+    grouped.set(photo.category, existing);
+  });
+
+  return Array.from(grouped.entries()).map(([title, categoryPhotos]) => ({
+    id: `${prefix}-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+    brand,
+    title,
+    photos: categoryPhotos,
+  }));
+}
+
+const categoryGallery: CategoryGallery[] = [
+  ...buildCategoryGallery(tuljaGallery, "TULJA MOTORS", "tulja"),
+  ...buildCategoryGallery(sharvariGallery, "SHARVARI MOTORS", "sharvari"),
+];
+
 /* HOME PAGE */
 
 export default function HomePage() {
@@ -484,26 +490,15 @@ export default function HomePage() {
   const [activeProject, setActiveProject] = useState(0);
   const [sliderPaused, setSliderPaused] = useState(false);
   const [activeService, setActiveService] = useState<string | null>(null);
-  const [galleryCategory, setGalleryCategory] = useState("All Projects");
-  const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<
-    number | null
-  >(null);
+  const [serviceImageIndex, setServiceImageIndex] = useState(0);
 
-  const filteredGallery = galleryProjects
-    .map((project, index) => ({
-      ...project,
-      originalIndex: index,
-    }))
-    .filter(
-      (project) =>
-        galleryCategory === "All Projects" ||
-        project.category === galleryCategory
-    );
-
-  const selectedGallery =
-    selectedGalleryIndex !== null
-      ? galleryProjects[selectedGalleryIndex]
-      : null;
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    car: "",
+    service: "",
+    message: "",
+  });
 
   const currentProject = beforeAfterProjects[activeProject];
 
@@ -513,14 +508,6 @@ export default function HomePage() {
   const activeMedia: ServiceMedia | null = activeService
     ? serviceMedia[activeService] ?? null
     : null;
-
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    car: "",
-    service: "",
-    message: "",
-  });
 
   /* GOOGLE TRANSLATE */
 
@@ -556,12 +543,10 @@ export default function HomePage() {
 
     if (!existingScript) {
       const script = document.createElement("script");
-
       script.id = "google-translate-script";
       script.src =
         "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       script.async = true;
-
       document.body.appendChild(script);
     }
 
@@ -573,7 +558,7 @@ export default function HomePage() {
   /* AUTOMATIC PROJECT SLIDER */
 
   useEffect(() => {
-    if (sliderPaused) return;
+    if (sliderPaused || beforeAfterProjects.length <= 1) return;
 
     const interval = window.setInterval(() => {
       setActiveProject(
@@ -594,7 +579,6 @@ export default function HomePage() {
     };
 
     const previousOverflow = document.body.style.overflow;
-
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKeyDown);
 
@@ -604,62 +588,17 @@ export default function HomePage() {
     };
   }, [activeService]);
 
-  /* GALLERY LIGHTBOX */
+  /* SERVICE IMAGE AUTO SWITCH */
 
   useEffect(() => {
-    if (selectedGalleryIndex === null) return;
+    const interval = window.setInterval(() => {
+      setServiceImageIndex((prev) => (prev === 0 ? 1 : 0));
+    }, 3800);
 
-    const handleGalleryKeys = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setSelectedGalleryIndex(null);
-      }
+    return () => window.clearInterval(interval);
+  }, []);
 
-      if (event.key === "ArrowRight") {
-        setSelectedGalleryIndex((current) => {
-          if (current === null || filteredGallery.length === 0) return null;
-
-          const currentPosition = filteredGallery.findIndex(
-            (project) => project.originalIndex === current
-          );
-
-          const nextPosition =
-            currentPosition < 0
-              ? 0
-              : (currentPosition + 1) % filteredGallery.length;
-
-          return filteredGallery[nextPosition].originalIndex;
-        });
-      }
-
-      if (event.key === "ArrowLeft") {
-        setSelectedGalleryIndex((current) => {
-          if (current === null || filteredGallery.length === 0) return null;
-
-          const currentPosition = filteredGallery.findIndex(
-            (project) => project.originalIndex === current
-          );
-
-          const previousPosition =
-            currentPosition < 0
-              ? 0
-              : (currentPosition - 1 + filteredGallery.length) %
-                filteredGallery.length;
-
-          return filteredGallery[previousPosition].originalIndex;
-        });
-      }
-    };
-
-    const previousOverflow = document.body.style.overflow;
-
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleGalleryKeys);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleGalleryKeys);
-    };
-  }, [selectedGalleryIndex, filteredGallery]);
+  /* PROJECT SLIDER CONTROLS */
 
   const showPreviousProject = () => {
     setActiveProject((current) =>
@@ -672,6 +611,8 @@ export default function HomePage() {
       (current) => (current + 1) % beforeAfterProjects.length
     );
   };
+
+  /* LANGUAGE SWITCHER */
 
   const changeLanguage = (languageCode: string) => {
     const select = document.querySelector(
@@ -704,6 +645,8 @@ export default function HomePage() {
     setLanguageOpen(false);
   };
 
+  /* WHATSAPP ENQUIRY */
+
   const openWhatsApp = (message: string) => {
     window.open(
       `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`,
@@ -727,6 +670,8 @@ Please contact me regarding this enquiry.`;
 
     openWhatsApp(message);
   };
+
+  /* FAQ DATA */
 
   const faqs = [
     {
@@ -773,7 +718,7 @@ Please contact me regarding this enquiry.`;
               <div className="tm-ba-image tm-ba-before">
                 <img
                   src={currentProject.beforeImage}
-                  alt={`${currentProject.vehicle} before work — illustrative image`}
+                  alt={`${currentProject.vehicle} before work`}
                 />
                 <span className="tm-ba-label">BEFORE</span>
               </div>
@@ -781,7 +726,7 @@ Please contact me regarding this enquiry.`;
               <div className="tm-ba-image tm-ba-after">
                 <img
                   src={currentProject.afterImage}
-                  alt={`${currentProject.vehicle} after work — illustrative image`}
+                  alt={`${currentProject.vehicle} after work`}
                 />
                 <span className="tm-ba-label">AFTER</span>
               </div>
@@ -796,9 +741,7 @@ Please contact me regarding this enquiry.`;
                     {currentProject.brand} <span>·</span>{" "}
                     {currentProject.vehicle}
                   </small>
-
                   <h3>{currentProject.title}</h3>
-
                   <span className="tm-ba-service">
                     {currentProject.service}
                   </span>
@@ -815,9 +758,7 @@ Please contact me regarding this enquiry.`;
                 <span className="tm-ba-current-number">
                   {currentProject.number}
                 </span>
-
                 <span className="tm-ba-slide-line" />
-
                 <span className="tm-ba-current-name">
                   {currentProject.vehicle}
                 </span>
@@ -889,8 +830,6 @@ Please contact me regarding this enquiry.`;
         </div>
       </div>
 
-    
-
       {/* SERVICES */}
 
       <section className="tm-section tm-services-section" id="services">
@@ -922,18 +861,26 @@ Please contact me regarding this enquiry.`;
                   aria-label={`View details: ${service.title}`}
                 >
                   <span className="tm-svc-card-media">
-                    <img
-                      src={media.image}
-                      alt={`${service.title} — ${media.cars}`}
-                      loading="lazy"
-                    />
+                    <div className="tm-service-card-image-slider">
+                      <img
+                        key={serviceImageIndex}
+                        src={
+                          serviceImageIndex === 0
+                            ? media.image
+                            : media.image2
+                        }
+                        alt={`${service.title} — ${media.cars}`}
+                        loading="lazy"
+                      />
+                      <span className="tm-service-image-counter">
+                        0{serviceImageIndex + 1} / 02
+                      </span>
+                    </div>
 
                     <span className="tm-svc-card-number">
                       {service.number}
                     </span>
-
                     <span className="tm-svc-card-car">{media.cars}</span>
-
                     <span className="tm-svc-card-brand">
                       {service.brand}
                     </span>
@@ -943,11 +890,9 @@ Please contact me regarding this enquiry.`;
                     <span className="tm-svc-card-title">
                       {service.title}
                     </span>
-
                     <span className="tm-svc-card-text">
                       {service.description}
                     </span>
-
                     <span className="tm-svc-card-action">
                       VIEW DETAILS <ArrowUpRight size={16} />
                     </span>
@@ -967,7 +912,7 @@ Please contact me regarding this enquiry.`;
         </div>
       </section>
 
-        {/* INDIAN CAR BRANDS MARQUEE */}
+      {/* INDIAN CAR BRANDS MARQUEE */}
 
       <section className="tm-brand-marquee-section" id="brands">
         <div className="tm-brand-marquee-heading">
@@ -1002,158 +947,220 @@ Please contact me regarding this enquiry.`;
           </div>
         </div>
       </section>
-{/* PREMIUM AUTOMOTIVE GALLERY - THREE ROWS */}
+            {/* PREMIUM CATEGORY-WISE AUTOMOTIVE GALLERY */}
 
-<section className="tm-section tm-premium-gallery-section" id="work">
-  <div className="tm-wrap">
+      <section
+        className="tm-section tm-category-gallery-section"
+        id="work"
+      >
+        <div className="tm-wrap">
+          {/* GALLERY MAIN HEADING */}
 
-    <div className="tm-premium-gallery-heading">
-      <div>
-        <span className="tm-section-tag">AUTOMOTIVE SHOWCASE</span>
-        <h2>OUR WORK & PROJECTS</h2>
-        <p className="tm-premium-gallery-intro">
-          Explore our automotive repair, restoration and customization projects.
-        </p>
-      </div>
-
-      <div className="tm-gallery-count">
-        <strong>{galleryProjects.length.toString().padStart(2, "0")}</strong>
-        <span>PROJECTS</span>
-      </div>
-    </div>
-
-    {/*
-      Reusable gallery row.
-      Each project is displayed twice for seamless auto-scrolling.
-    */}
-    {[
-      {
-        title: "ALL PROJECTS",
-        subtitle: "A complete showcase of our automotive work",
-        projects: galleryProjects,
-        className: "tm-gallery-row-all",
-      },
-      {
-        title: "TULJA MOTORS",
-        subtitle: "Accident repair, restoration and mechanical work",
-        projects: galleryProjects.filter(
-          (project) => project.brand.toUpperCase() === "TULJA MOTORS"
-        ),
-        className: "tm-gallery-row-tulja",
-      },
-      {
-        title: "SHARVARI MOTORS",
-        subtitle: "Premium detailing, modification and customization",
-        projects: galleryProjects.filter(
-          (project) => project.brand.toUpperCase() === "SHARVARI MOTORS"
-        ),
-        className: "tm-gallery-row-sharvari",
-      },
-    ].map((row, rowIndex) => (
-      <div className={`tm-gallery-row ${row.className}`} key={row.title}>
-
-        <div className="tm-gallery-row-heading">
-          <div>
-            <span className="tm-gallery-row-number">
-              0{rowIndex + 1}
-            </span>
+          <div className="tm-category-gallery-heading">
             <div>
-              <h3>{row.title}</h3>
-              <p>{row.subtitle}</p>
+              <span className="tm-section-tag">AUTOMOTIVE SHOWCASE</span>
+
+              <h2>
+                OUR WORK.
+                <em> OUR SPECIALITIES.</em>
+              </h2>
+
+              <p>
+                Explore the vehicles and automotive categories associated
+                with Tulja Motors and Sharvari Motors.
+              </p>
+            </div>
+
+            <div className="tm-category-gallery-count">
+              <strong>
+                {categoryGallery
+                  .reduce(
+                    (total, category) => total + category.photos.length,
+                    0
+                  )
+                  .toString()
+                  .padStart(2, "0")}
+              </strong>
+              <span>CAR PHOTOS</span>
             </div>
           </div>
 
-          <span className="tm-gallery-row-total">
-            {row.projects.length.toString().padStart(2, "0")} PROJECTS
-          </span>
+          {/* TULJA MOTORS */}
+
+          <div className="tm-category-brand-section tm-category-tulja">
+            <div className="tm-category-brand-heading">
+              <div>
+                <span className="tm-category-brand-number">
+                  01 / AUTOMOTIVE REPAIR
+                </span>
+
+                <h3>
+                  TULJA <span>MOTORS.</span>
+                </h3>
+
+                <p>
+                  Accident repair, denting, painting and complete vehicle
+                  restoration.
+                </p>
+              </div>
+
+              <span className="tm-category-brand-side">
+                REPAIR · RESTORE · RENEW
+              </span>
+            </div>
+
+            <div className="tm-category-grid">
+              {categoryGallery
+                .filter((category) => category.brand === "TULJA MOTORS")
+                .map((category, categoryIndex) => (
+                  <div className="tm-category-card" key={category.id}>
+                    <div className="tm-category-card-heading">
+                      <span>
+                        {String(categoryIndex + 1).padStart(2, "0")}
+                      </span>
+
+                      <h4>{category.title}</h4>
+
+                      <span className="tm-category-photo-count">
+                        {category.photos.length
+                          .toString()
+                          .padStart(2, "0")}{" "}
+                        PHOTOS
+                      </span>
+                    </div>
+
+                    <div className="tm-category-photo-grid">
+                      {category.photos.map((photo, photoIndex) => (
+                        <div
+                          className="tm-category-photo"
+                          key={photo.image}
+                        >
+                          <img
+                            src={photo.image}
+                            alt={`${photo.name} - ${category.title}`}
+                            loading="lazy"
+                          />
+
+                          <div className="tm-category-photo-shade" />
+
+                          <span className="tm-category-photo-number">
+                            {String(photoIndex + 1).padStart(2, "0")}
+                          </span>
+
+                          <div className="tm-category-photo-caption">
+                            <span>TULJA MOTORS</span>
+                            <h5>{photo.name}</h5>
+                            <p>{category.title}</p>
+                          </div>
+
+                          <span className="tm-category-photo-arrow">
+                            <ArrowUpRight size={19} />
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          {/* SHARVARI MOTORS */}
+
+          <div className="tm-category-brand-section tm-category-sharvari">
+            <div className="tm-category-brand-heading">
+              <div>
+                <span className="tm-category-brand-number">
+                  02 / AUTOMOTIVE CUSTOMISATION
+                </span>
+
+                <h3>
+                  SHARVARI <span>MOTORS.</span>
+                </h3>
+
+                <p>
+                  Premium interiors, exterior styling, detailing and
+                  personalised automotive upgrades.
+                </p>
+              </div>
+
+              <span className="tm-category-brand-side">
+                STYLE · DETAIL · PROTECT
+              </span>
+            </div>
+
+            <div className="tm-category-grid">
+              {categoryGallery
+                .filter((category) => category.brand === "SHARVARI MOTORS")
+                .map((category, categoryIndex) => (
+                  <div className="tm-category-card" key={category.id}>
+                    <div className="tm-category-card-heading">
+                      <span>
+                        {String(categoryIndex + 1).padStart(2, "0")}
+                      </span>
+
+                      <h4>{category.title}</h4>
+
+                      <span className="tm-category-photo-count">
+                        {category.photos.length
+                          .toString()
+                          .padStart(2, "0")}{" "}
+                        PHOTOS
+                      </span>
+                    </div>
+
+                    <div className="tm-category-photo-grid">
+                      {category.photos.map((photo, photoIndex) => (
+                        <div
+                          className="tm-category-photo"
+                          key={photo.image}
+                        >
+                          <img
+                            src={photo.image}
+                            alt={`${photo.name} - ${category.title}`}
+                            loading="lazy"
+                          />
+
+                          <div className="tm-category-photo-shade" />
+
+                          <span className="tm-category-photo-number">
+                            {String(photoIndex + 1).padStart(2, "0")}
+                          </span>
+
+                          <div className="tm-category-photo-caption">
+                            <span>SHARVARI MOTORS</span>
+                            <h5>{photo.name}</h5>
+                            <p>{category.title}</p>
+                          </div>
+
+                          <span className="tm-category-photo-arrow">
+                            <ArrowUpRight size={19} />
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          {/* GALLERY BOTTOM LINE */}
+
+          <div className="tm-category-gallery-footer">
+            <span>BUILT AROUND EVERY VEHICLE.</span>
+
+            <span>
+              TULJA MOTORS <i>×</i> SHARVARI MOTORS
+            </span>
+          </div>
         </div>
-
-        {row.projects.length > 0 ? (
-          <div className="tm-gallery-viewport">
-            <div className="tm-gallery-track">
-
-              {[0, 1].map((copy) => (
-                <div
-                  className="tm-gallery-group"
-                  key={`${row.title}-${copy}`}
-                  aria-hidden={copy === 1 ? "true" : undefined}
-                >
-                  {row.projects.map((project) => {
-                    const originalIndex = galleryProjects.findIndex(
-                      (item) => item.id === project.id
-                    );
-
-                    return (
-                      <button
-                        type="button"
-                        className="tm-premium-gallery-item"
-                        key={`${copy}-${project.id}`}
-                        onClick={() =>
-                          setSelectedGalleryIndex(originalIndex)
-                        }
-                        tabIndex={copy === 1 ? -1 : 0}
-                      >
-                        <img
-                          src={project.image}
-                          alt={`${project.title} - ${project.vehicle}`}
-                          className="tm-gallery-card-image"
-                        />
-
-                        <div className="tm-gallery-shade" />
-
-                        <div className="tm-gallery-card-top">
-                          <span className="tm-gallery-category">
-                            {project.category}
-                          </span>
-                          <span className="tm-gallery-brand">
-                            {project.brand}
-                          </span>
-                        </div>
-
-                        <div className="tm-gallery-card-info">
-                          <span className="tm-gallery-vehicle">
-                            {project.vehicle}
-                          </span>
-
-                          <h4>{project.title}</h4>
-
-                          <span className="tm-gallery-open">
-                            VIEW PROJECT <ArrowUpRight size={17} />
-                          </span>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
-
-            </div>
-          </div>
-        ) : (
-          <p className="tm-gallery-empty">
-            Projects will be added soon.
-          </p>
-        )}
-
-      </div>
-    ))}
-
-    <div className="tm-premium-gallery-footer">
-      <span>CRAFTED WITH PRECISION</span>
-      <span>TULJA MOTORS × SHARVARI MOTORS</span>
-    </div>
-
-  </div>
-</section>
-
-    
+      </section>
 
       {/* SHARVARI MOTORS SHOWCASE */}
 
       <section className="tm-sharvari-stats-section">
         <div className="tm-sharvari-stats-inner">
           <div className="tm-sharvari-stats-content">
-            <span className="tm-section-tag"></span>
+            <span className="tm-section-tag" />
 
             <h2>
               EXPERIENCE THAT
@@ -1176,7 +1183,9 @@ Please contact me regarding this enquiry.`;
           <div className="tm-sharvari-stats-grid">
             <div className="tm-stat-card">
               <span className="tm-stat-number">7+</span>
-              <span className="tm-stat-label">YEARS IN AUTOMOBILE TRADE</span>
+              <span className="tm-stat-label">
+                YEARS IN AUTOMOBILE TRADE
+              </span>
             </div>
 
             <div className="tm-stat-card">
@@ -1204,11 +1213,8 @@ Please contact me regarding this enquiry.`;
           <div className="tm-section-heading">
             <div>
               <div className="tm-section-tag">HOW WE WORK</div>
-              
-                FROM FIRST LOOK TO FINAL FINISH
+              FROM FIRST LOOK TO FINAL FINISH
             </div>
-
-          
           </div>
 
           <div className="tm-process-grid">
@@ -1257,8 +1263,6 @@ Please contact me regarding this enquiry.`;
         </div>
       </section>
 
-     
-
       {/* FAQ */}
 
       <section className="tm-faq-section" id="faq">
@@ -1268,7 +1272,7 @@ Please contact me regarding this enquiry.`;
               <div className="tm-section-tag">GOT QUESTIONS?</div>
               <h2>
                 GOOD TO KNOW
-                
+                <br />
                 BEFORE YOU VISIT.
               </h2>
             </div>
@@ -1345,10 +1349,12 @@ Please contact me regarding this enquiry.`;
                 <span className="tm-contact-detail-icon">
                   <Phone size={20} />
                 </span>
+
                 <span>
                   <small>CALL US</small>
                   <strong>{PHONE}</strong>
                 </span>
+
                 <ArrowUpRight size={17} />
               </a>
 
@@ -1356,10 +1362,12 @@ Please contact me regarding this enquiry.`;
                 <span className="tm-contact-detail-icon">
                   <Mail size={20} />
                 </span>
+
                 <span>
                   <small>EMAIL US</small>
                   <strong>{EMAIL}</strong>
                 </span>
+
                 <ArrowUpRight size={17} />
               </a>
 
@@ -1372,10 +1380,12 @@ Please contact me regarding this enquiry.`;
                 <span className="tm-contact-detail-icon">
                   <MapPin size={20} />
                 </span>
+
                 <span>
                   <small>FIND OUR LOCATION</small>
                   <strong>GET DIRECTIONS</strong>
                 </span>
+
                 <ArrowUpRight size={17} />
               </a>
             </div>
@@ -1478,36 +1488,37 @@ Please contact me regarding this enquiry.`;
 
       {/* MAP / DIRECTIONS */}
 
-<section className="tm-map-section">
-  <div className="tm-map-heading">
-    <div>
-      <span className="tm-section-tag">COME VISIT US</span>
-      <h2>FIND YOUR WAY TO US.</h2>
-      <p>
-        Visit Tulja Motors for professional automotive repair,
-        restoration and customisation.
-      </p>
-    </div>
+      <section className="tm-map-section">
+        <div className="tm-map-heading">
+          <div>
+            <span className="tm-section-tag">COME VISIT US</span>
+            <h2>FIND YOUR WAY TO US.</h2>
+            <p>
+              Visit Tulja Motors for professional automotive repair,
+              restoration and customisation.
+            </p>
+          </div>
 
-    <a
-      href={MAP_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="tm-map-directions"
-    >
-      OPEN DIRECTIONS <ArrowUpRight size={17} />
-    </a>
-  </div>
+          <a
+            href={MAP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tm-map-directions"
+          >
+            OPEN DIRECTIONS <ArrowUpRight size={17} />
+          </a>
+        </div>
 
-  <div className="tm-map-frame">
-    <iframe
-      title="Tulja Motors workshop location"
-      src="https://www.openstreetmap.org/export/embed.html?bbox=74.279622%2C16.793993%2C74.289622%2C16.803993&layer=mapnik&marker=16.798993%2C74.284622"
-      loading="lazy"
-      referrerPolicy="no-referrer-when-downgrade"
-    />
-  </div>
-</section>
+        <div className="tm-map-frame">
+          <iframe
+            title="Tulja Motors workshop location"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=74.279622%2C16.793993%2C74.289622%2C16.803993&layer=mapnik&marker=16.798993%2C74.284622"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+      </section>
+
       {/* SERVICE DETAILS MODAL */}
 
       {activeService && activeDetails && activeMedia && (
@@ -1530,12 +1541,26 @@ Please contact me regarding this enquiry.`;
               <X size={23} />
             </button>
 
-            <div className="tm-service-modal-image">
-              <img
-                src={activeMedia.image}
-                alt={activeDetails.title}
-              />
-              <span>{activeDetails.number}</span>
+            <div className="tm-service-modal-gallery">
+              <div className="tm-service-modal-image">
+                <img
+                  src={activeMedia.image}
+                  alt={`${activeDetails.title} - First view`}
+                />
+                <span className="tm-service-image-label">01</span>
+              </div>
+
+              <div className="tm-service-modal-image">
+                <img
+                  src={activeMedia.image2}
+                  alt={`${activeDetails.title} - Second view`}
+                />
+                <span className="tm-service-image-label">02</span>
+              </div>
+
+              <div className="tm-service-gallery-brand">
+                {activeDetails.number}
+              </div>
             </div>
 
             <div className="tm-service-modal-content">
@@ -1544,7 +1569,6 @@ Please contact me regarding this enquiry.`;
               </span>
 
               <h2>{activeDetails.title}</h2>
-
               <p>{activeDetails.description}</p>
 
               <h4>WHAT IS THIS SERVICE?</h4>

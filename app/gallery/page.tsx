@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +11,7 @@ import {
   Wrench,
   ShieldCheck,
 } from "lucide-react";
+
 import "./gallery-3d.css";
 
 /* =========================================================
@@ -44,8 +44,7 @@ const photo = (id: string, width = 1100) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=85`;
 
 /* =========================================================
-   ACTUAL BEFORE & AFTER PROJECTS
-   SAME IMAGES USED ON THE HOME PAGE
+   BEFORE & AFTER PROJECTS
 ========================================================= */
 
 const beforeAfterProjects = [
@@ -106,7 +105,7 @@ const beforeAfterProjects = [
 ];
 
 /* =========================================================
-   BEFORE & AFTER GALLERY
+   BEFORE & AFTER COLLECTION
 ========================================================= */
 
 const beforeAfterGroup: GalleryGroup = {
@@ -130,7 +129,7 @@ const beforeAfterGroup: GalleryGroup = {
 };
 
 /* =========================================================
-   TULJA MOTORS COLLECTIONS
+   TULJA MOTORS COLLECTION
 ========================================================= */
 
 const tuljaGroups: GalleryGroup[] = [
@@ -237,7 +236,7 @@ const tuljaGroups: GalleryGroup[] = [
 ];
 
 /* =========================================================
-   SHARVARI MOTORS COLLECTIONS
+   SHARVARI MOTORS COLLECTION
 ========================================================= */
 
 const sharvariGroups: GalleryGroup[] = [
@@ -382,7 +381,26 @@ const sharvariGroups: GalleryGroup[] = [
 ];
 
 /* =========================================================
-   PHOTO GROUP WITH CONTINUOUS LEFT-TO-RIGHT MOVEMENT
+   COMBINED COLLECTIONS
+   One collection per brand, not category-wise
+========================================================= */
+
+const tuljaCollection: GalleryGroup = {
+  title: "Tulja Motors Collection",
+  description:
+    "Accident repair, denting, painting, vehicle restoration and mechanical care.",
+  photos: tuljaGroups.flatMap((group) => group.photos),
+};
+
+const sharvariCollection: GalleryGroup = {
+  title: "Sharvari Motors Collection",
+  description:
+    "Premium interior styling, exterior modifications, detailing and paint protection.",
+  photos: sharvariGroups.flatMap((group) => group.photos),
+};
+
+/* =========================================================
+   PHOTO GROUP — CONTINUOUS AUTO SCROLL
 ========================================================= */
 
 function PhotoGroup({
@@ -415,7 +433,6 @@ function PhotoGroup({
     const setupTrack = () => {
       loopWidth = track.scrollWidth / 2;
 
-      // Begin at the second set so cards move towards the right.
       if (track.scrollLeft === 0 && loopWidth > 0) {
         track.scrollLeft = loopWidth;
       }
@@ -608,7 +625,43 @@ export default function GalleryPage() {
   return (
     <main className="automotive-gallery">
 
-      {/* TULJA MOTORS */}
+      {/* =========================================
+          01 — BEFORE & AFTER
+      ========================================= */}
+
+      <section
+        className="gallery-brand-section"
+        id="before-after-gallery"
+      >
+        <div className="gallery-brand-heading">
+          <div>
+            <span className="gallery-eyebrow">
+              <span className="gallery-live-dot" />
+              01 / VEHICLE TRANSFORMATIONS
+            </span>
+
+            <h2>
+              BEFORE <span>&</span> AFTER.
+            </h2>
+
+            <p>
+              Real vehicle transformations from our featured projects.
+            </p>
+          </div>
+
+          <Images size={30} />
+        </div>
+
+        <PhotoGroup
+          group={beforeAfterGroup}
+          groupIndex={0}
+          onOpen={openPhoto}
+        />
+      </section>
+
+      {/* =========================================
+          02 — TULJA MOTORS
+      ========================================= */}
 
       <section
         className="gallery-brand-section"
@@ -618,7 +671,7 @@ export default function GalleryPage() {
           <div>
             <span className="gallery-eyebrow">
               <span className="gallery-live-dot" />
-              01 / REPAIR & RESTORATION
+              02 / REPAIR & RESTORATION
             </span>
 
             <h2>
@@ -634,29 +687,25 @@ export default function GalleryPage() {
         </div>
 
         <PhotoGroup
-          group={beforeAfterGroup}
-          groupIndex={0}
+          group={tuljaCollection}
+          groupIndex={1}
           onOpen={openPhoto}
         />
-
-        {tuljaGroups.map((group, index) => (
-          <PhotoGroup
-            key={group.title}
-            group={group}
-            groupIndex={index + 1}
-            onOpen={openPhoto}
-          />
-        ))}
       </section>
 
-      {/* SHARVARI MOTORS */}
+      {/* =========================================
+          03 — SHARVARI MOTORS
+      ========================================= */}
 
-      <section className="gallery-brand-section sharvari-brand-section">
+      <section
+        className="gallery-brand-section sharvari-brand-section"
+        id="sharvari-gallery"
+      >
         <div className="gallery-brand-heading">
           <div>
             <span className="gallery-eyebrow">
               <span className="gallery-live-dot" />
-              02 / STYLE & PERSONALISATION
+              03 / STYLE & PERSONALISATION
             </span>
 
             <h2>
@@ -671,17 +720,16 @@ export default function GalleryPage() {
           <Camera size={30} />
         </div>
 
-        {sharvariGroups.map((group, index) => (
-          <PhotoGroup
-            key={group.title}
-            group={group}
-            groupIndex={index + 1}
-            onOpen={openPhoto}
-          />
-        ))}
+        <PhotoGroup
+          group={sharvariCollection}
+          groupIndex={2}
+          onOpen={openPhoto}
+        />
       </section>
 
-      {/* CONTACT CTA */}
+      {/* =========================================
+          CONTACT CTA
+      ========================================= */}
 
       <section className="gallery-bottom-cta">
         <div className="gallery-bottom-icon">
@@ -706,7 +754,9 @@ export default function GalleryPage() {
         </a>
       </section>
 
-      {/* IMAGE NOTE */}
+      {/* =========================================
+          IMAGE NOTE
+      ========================================= */}
 
       <div className="gallery-stock-note">
         <ShieldCheck size={18} />
@@ -718,7 +768,9 @@ export default function GalleryPage() {
         </p>
       </div>
 
-      {/* IMAGE VIEWER */}
+      {/* =========================================
+          IMAGE VIEWER / LIGHTBOX
+      ========================================= */}
 
       {selected && (
         <div

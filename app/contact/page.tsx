@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, type FormEvent } from "react";
@@ -11,13 +10,23 @@ import {
   Send,
   CheckCircle2,
   ShieldCheck,
+  Clock3,
+  Navigation,
+  Building2,
 } from "lucide-react";
 
 import "../inner-pages.css";
+import "./contact-page.css";
 
 const PHONE = "9130129205";
 const WHATSAPP = "919130129205";
 const EMAIL = "tuljamotors@gmail.com";
+
+const MAP_URL =
+  "https://www.google.com/maps/dir/?api=1&destination=16.798993,74.284622";
+
+const MAP_EMBED_URL =
+  "https://www.google.com/maps?q=16.798993,74.284622&z=15&output=embed";
 
 type FormStatus = "idle" | "sending" | "success" | "error";
 
@@ -78,149 +87,186 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="inner-page contact-page">
+    <main className="inner-page contact-page contact-light-page">
+      <section className="contact-light-section">
+        <div className="contact-light-container">
+          {/* INTRODUCTION — NOT A HERO BANNER */}
+          <div className="contact-intro">
+            <div className="contact-intro-copy">
+              <span className="contact-eyebrow">
+                <span className="contact-eyebrow-dot" />
+                TULJA MOTORS × SHARVARI MOTORS
+              </span>
 
-      {/* CONTACT INTRO */}
-      <section className="ip-section contact-main-section">
-        <div className="ip-container">
+              <h1>
+                LET&apos;S TALK
+                <span> ABOUT YOUR CAR.</span>
+              </h1>
 
-          <div className="ip-heading contact-page-heading">
-            <span className="ip-eyebrow">TULJA MOTORS × SHARVARI MOTORS</span>
+              <p>
+                Whether it&apos;s a repair, restoration or a fresh
+                customisation, we&apos;re here to help you take the next step.
+              </p>
+            </div>
 
-            <h1>
-              LET&apos;S TALK
-              <span> ABOUT YOUR CAR.</span>
-            </h1>
-
-            <p>
-              Have a repair, restoration or customisation requirement?
-              Get in touch with our team. We&apos;re ready to help.
-            </p>
+            <div className="contact-intro-side">
+              <span className="contact-intro-side-label">HAVE A PROJECT?</span>
+              <a href={`tel:+91${PHONE}`}>
+                TALK TO OUR TEAM
+                <ArrowUpRight size={17} />
+              </a>
+            </div>
           </div>
 
-          {/* CONTACT DETAILS + FORM */}
-          <div className="ip-contact-grid">
-
-            {/* LEFT CONTACT DETAILS */}
-            <div className="ip-contact-info">
-
-              <div className="contact-info-heading">
-                <span className="ip-eyebrow">CONTACT INFORMATION</span>
+          {/* MAIN CONTACT LAYOUT */}
+          <div className="contact-main-grid">
+            {/* LEFT: CONTACT DETAILS */}
+            <aside className="contact-details-panel">
+              <div className="contact-panel-heading">
+                <span className="contact-eyebrow">GET IN TOUCH</span>
                 <h2>
-                  CONNECT WITH
-                  <span> OUR TEAM.</span>
+                  WE&apos;RE
+                  <span> HERE TO HELP.</span>
                 </h2>
                 <p>
-                  Choose your preferred way to reach us.
+                  Reach out through your preferred channel. Our team will be
+                  happy to assist with your vehicle requirements.
                 </p>
               </div>
 
-              <a
-                href={`tel:+91${PHONE}`}
-                className="contact-method-card"
-              >
-                <span className="contact-method-icon">
-                  <Phone size={22} />
-                </span>
+              <div className="contact-detail-list">
+                <a
+                  href={`tel:+91${PHONE}`}
+                  className="contact-detail-item"
+                >
+                  <span className="contact-detail-icon">
+                    <Phone size={20} />
+                  </span>
 
-                <span className="contact-method-content">
-                  <small>CALL OUR TEAM</small>
-                  <strong>+91 {PHONE}</strong>
-                </span>
+                  <span className="contact-detail-text">
+                    <small>CALL OUR TEAM</small>
+                    <strong>+91 {PHONE}</strong>
+                    <span>Speak directly with us</span>
+                  </span>
 
-                <ArrowUpRight size={19} className="contact-method-arrow" />
-              </a>
+                  <ArrowUpRight
+                    size={18}
+                    className="contact-detail-arrow"
+                  />
+                </a>
 
-              <a
-                href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
-                  "Hello Tulja Motors, I would like to enquire about your services."
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="contact-method-card whatsapp-method"
-              >
-                <span className="contact-method-icon">
-                  <MessageCircle size={22} />
-                </span>
+                <a
+                  href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
+                    "Hello Tulja Motors, I would like to enquire about your services."
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-detail-item"
+                >
+                  <span className="contact-detail-icon contact-whatsapp-icon">
+                    <MessageCircle size={20} />
+                  </span>
 
-                <span className="contact-method-content">
-                  <small>WHATSAPP DIRECTLY</small>
-                  <strong>Chat with us</strong>
-                </span>
+                  <span className="contact-detail-text">
+                    <small>WHATSAPP</small>
+                    <strong>Chat with our team</strong>
+                    <span>Send us your enquiry</span>
+                  </span>
 
-                <ArrowUpRight size={19} className="contact-method-arrow" />
-              </a>
+                  <ArrowUpRight
+                    size={18}
+                    className="contact-detail-arrow"
+                  />
+                </a>
 
-              <a
-                href={`mailto:${EMAIL}`}
-                className="contact-method-card"
-              >
-                <span className="contact-method-icon">
-                  <Mail size={22} />
-                </span>
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="contact-detail-item"
+                >
+                  <span className="contact-detail-icon">
+                    <Mail size={20} />
+                  </span>
 
-                <span className="contact-method-content">
-                  <small>EMAIL ADDRESS</small>
-                  <strong>{EMAIL}</strong>
-                </span>
+                  <span className="contact-detail-text">
+                    <small>EMAIL ADDRESS</small>
+                    <strong>{EMAIL}</strong>
+                    <span>Write to us anytime</span>
+                  </span>
 
-                <ArrowUpRight size={19} className="contact-method-arrow" />
-              </a>
+                  <ArrowUpRight
+                    size={18}
+                    className="contact-detail-arrow"
+                  />
+                </a>
 
-              <div className="contact-method-card contact-address-card">
-                <span className="contact-method-icon">
-                  <MapPin size={22} />
-                </span>
+                <div className="contact-detail-item contact-address-item">
+                  <span className="contact-detail-icon">
+                    <MapPin size={20} />
+                  </span>
 
-                <span className="contact-method-content">
-                  <small>WORKSHOP ADDRESS</small>
-                  <strong>
-                    Pune–Bengaluru NH48, near Shetimal Petrol Pump,
-                    Top Sambhapur, Kolhapur, Maharashtra 416122
-                  </strong>
-                </span>
+                  <span className="contact-detail-text">
+                    <small>WORKSHOP ADDRESS</small>
+                    <strong>
+                      Pune–Bengaluru NH48, near Shetimal Petrol Pump,
+                      Top Sambhapur, Kolhapur, Maharashtra 416122
+                    </strong>
+                    <span>Visit our workshop</span>
+                  </span>
+                </div>
               </div>
 
-              <div className="contact-brand-note">
-                <ShieldCheck size={21} />
+              <div className="contact-brand-card">
+                <div className="contact-brand-card-icon">
+                  <Building2 size={21} />
+                </div>
+
                 <div>
                   <strong>Tulja Motors × Sharvari Motors</strong>
                   <p>
-                    Automotive repair, restoration and personalisation
-                    for your vehicle.
+                    Complete automotive care, repair, restoration and
+                    personalisation under one roof.
                   </p>
                 </div>
               </div>
-            </div>
+            </aside>
 
-            {/* EMAIL ENQUIRY FORM */}
-            <div className="ip-contact-form contact-email-panel">
-              <div className="contact-form-heading">
-                <span className="ip-eyebrow">SEND US A MESSAGE</span>
-                <h2>EMAIL ENQUIRY</h2>
-                <p>
-                  Share your details and requirements. Our team will
-                  get back to you.
-                </p>
+            {/* RIGHT: ENQUIRY FORM */}
+            <section className="contact-form-panel">
+              <div className="contact-form-top">
+                <div>
+                  <span className="contact-eyebrow">LET&apos;S GET STARTED</span>
+                  <h2>Send an enquiry.</h2>
+                  <p>
+                    Fill in the details below and our team will get back to you.
+                  </p>
+                </div>
+
+                <span className="contact-form-top-icon">
+                  <Send size={22} />
+                </span>
               </div>
 
-              <form onSubmit={submitEnquiry}>
-                <div className="ip-form-grid">
-                  <div className="contact-form-field">
-                    <label htmlFor="contact-name">Full Name *</label>
+              <form onSubmit={submitEnquiry} className="contact-clean-form">
+                <div className="contact-fields-grid">
+                  <div className="contact-field">
+                    <label htmlFor="contact-name">
+                      Full Name <span>*</span>
+                    </label>
                     <input
                       id="contact-name"
                       name="name"
                       type="text"
-                      placeholder="Enter your full name"
+                      placeholder="Your full name"
                       maxLength={100}
                       autoComplete="name"
                       required
                     />
                   </div>
 
-                  <div className="contact-form-field">
-                    <label htmlFor="contact-phone">Phone Number *</label>
+                  <div className="contact-field">
+                    <label htmlFor="contact-phone">
+                      Phone Number <span>*</span>
+                    </label>
                     <input
                       id="contact-phone"
                       name="phone"
@@ -235,20 +281,22 @@ export default function ContactPage() {
                     />
                   </div>
 
-                  <div className="contact-form-field full-width">
+                  <div className="contact-field contact-field-full">
                     <label htmlFor="contact-email">Email Address</label>
                     <input
                       id="contact-email"
                       name="email"
                       type="email"
-                      placeholder="Enter your email address"
+                      placeholder="Your email address"
                       maxLength={150}
                       autoComplete="email"
                     />
                   </div>
 
-                  <div className="contact-form-field full-width">
-                    <label htmlFor="contact-service">Service Required *</label>
+                  <div className="contact-field contact-field-full">
+                    <label htmlFor="contact-service">
+                      Service Required <span>*</span>
+                    </label>
                     <select
                       id="contact-service"
                       name="service"
@@ -256,7 +304,7 @@ export default function ContactPage() {
                       required
                     >
                       <option value="" disabled>
-                        Select a service
+                        Choose the service you&apos;re interested in
                       </option>
 
                       <optgroup label="Tulja Motors">
@@ -282,34 +330,36 @@ export default function ContactPage() {
                       <option>Other</option>
                     </select>
                   </div>
-                </div>
 
-                <div className="contact-form-field contact-message-field">
-                  <label htmlFor="contact-message">
-                    Tell Us About Your Requirement
-                  </label>
-                  <textarea
-                    id="contact-message"
-                    name="message"
-                    rows={5}
-                    maxLength={3000}
-                    placeholder="Tell us about your vehicle, repair or customisation requirement..."
-                  />
+                  <div className="contact-field contact-field-full">
+                    <label htmlFor="contact-message">
+                      Tell Us About Your Requirement
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      name="message"
+                      rows={4}
+                      maxLength={3000}
+                      placeholder="Tell us about your car and what you are looking for..."
+                    />
+                  </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="contact-email-submit"
+                  className="contact-submit-button"
                   disabled={status === "sending"}
                 >
-                  {status === "sending"
-                    ? "SENDING ENQUIRY..."
-                    : "SEND EMAIL ENQUIRY"}
+                  <span>
+                    {status === "sending"
+                      ? "SENDING YOUR ENQUIRY"
+                      : "SEND ENQUIRY"}
+                  </span>
 
                   {status === "sending" ? (
-                    <span className="contact-button-loader" />
+                    <span className="contact-submit-loader" />
                   ) : (
-                    <Send size={18} />
+                    <ArrowUpRight size={19} />
                   )}
                 </button>
 
@@ -319,6 +369,7 @@ export default function ContactPage() {
                       status === "error" ? "is-error" : ""
                     }`}
                     role="status"
+                    aria-live="polite"
                   >
                     {status === "success" ? (
                       <CheckCircle2 size={19} />
@@ -330,54 +381,99 @@ export default function ContactPage() {
                   </div>
                 )}
 
-                <div className="contact-form-privacy">
+                <div className="contact-privacy-note">
                   <ShieldCheck size={16} />
                   <span>
-                    Your information is used only to respond to your enquiry.
+                    Your information is kept private and used only to respond
+                    to your enquiry.
                   </span>
                 </div>
               </form>
-            </div>
+            </section>
           </div>
 
-          {/* MAP */}
-          <div className="contact-map-section">
-            <div className="contact-map-heading">
+          {/* WORKSHOP LOCATION */}
+          <section className="contact-location-section">
+            <div className="contact-location-heading">
               <div>
-                <span className="ip-eyebrow">FIND OUR WORKSHOP</span>
+                <span className="contact-eyebrow">
+                  <span className="contact-eyebrow-dot" />
+                  COME SEE US
+                </span>
+
                 <h2>
-                  VISIT <span>US.</span>
+                  FIND OUR
+                  <span> WORKSHOP.</span>
                 </h2>
+
                 <p>
-                  Pune–Bengaluru National Highway, NH48,
-                  near Shetimal Petrol Pump, Kolhapur.
+                  Visit Tulja Motors × Sharvari Motors at our workshop in
+                  Kolhapur.
                 </p>
               </div>
 
               <a
-                href="https://www.google.com/maps/dir/?api=1&destination=16.783019595807485,74.28685209367279"
+                href={MAP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="contact-directions-link"
+                className="contact-directions-button"
               >
+                <Navigation size={17} />
                 GET DIRECTIONS
-                <ArrowUpRight size={18} />
+                <ArrowUpRight size={17} />
               </a>
             </div>
 
-            <div className="ip-map contact-map">
+            <div className="contact-map-frame">
               <iframe
-                title="Tulja Motors location"
-                src="https://www.google.com/maps?q=16.783019595807485,74.28685209367279&z=15&output=embed"
+                title="Tulja Motors and Sharvari Motors workshop location"
+                src={MAP_EMBED_URL}
                 width="100%"
-                height="380"
+                height="430"
                 style={{ border: 0 }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
               />
-            </div>
-          </div>
 
+              <div className="contact-map-caption">
+                <span className="contact-map-caption-icon">
+                  <MapPin size={18} />
+                </span>
+
+                <span>
+                  <strong>Tulja Motors × Sharvari Motors</strong>
+                  <small>
+                    NH48, Top Sambhapur, Kolhapur, Maharashtra 416122
+                  </small>
+                </span>
+
+                <a
+                  href={MAP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open workshop directions"
+                >
+                  <ArrowUpRight size={19} />
+                </a>
+              </div>
+            </div>
+          </section>
+
+          {/* BOTTOM CONTACT STRIP */}
+          <div className="contact-bottom-strip">
+            <div>
+              <Clock3 size={19} />
+              <span>
+                <strong>Need assistance?</strong>
+                <small>Call or message our team directly.</small>
+              </span>
+            </div>
+
+            <a href={`tel:+91${PHONE}`}>
+              CALL NOW <ArrowUpRight size={16} />
+            </a>
+          </div>
         </div>
       </section>
     </main>

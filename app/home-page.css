@@ -16010,3 +16010,1707 @@ body {
     width: 100%;
   }
 }
+
+/* =========================================
+   PREMIUM TWO-IMAGE SERVICE MODAL
+========================================= */
+
+.tm-service-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  background: rgba(5, 10, 13, 0.82);
+  backdrop-filter: blur(12px);
+  overflow-y: auto;
+  animation: tm-service-overlay-in 0.3s ease both;
+}
+
+.tm-service-modal {
+  position: relative;
+  width: min(100%, 1000px);
+  max-height: 92vh;
+  overflow-y: auto;
+  display: block;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.35);
+  animation: tm-service-modal-in 0.4s cubic-bezier(.2,.8,.2,1) both;
+}
+
+/* CLOSE BUTTON */
+
+.tm-service-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 43px;
+  height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 50%;
+  background: rgba(12, 20, 23, .78);
+  color: #ffffff;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: .3s ease;
+}
+
+.tm-service-modal-close:hover {
+  background: #086565;
+  transform: rotate(90deg);
+}
+
+/* TWO IMAGE GALLERY */
+
+.tm-service-modal-gallery {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  padding: 5px;
+  background: #11191c;
+  border-radius: 18px 18px 0 0;
+}
+
+.tm-service-modal-gallery .tm-service-modal-image {
+  position: relative;
+  width: 100%;
+  height: clamp(210px, 32vw, 340px);
+  overflow: hidden;
+  border-radius: 11px;
+  background: #e8eeee;
+}
+
+.tm-service-modal-gallery .tm-service-modal-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .7s cubic-bezier(.2,.7,.2,1);
+}
+
+.tm-service-modal-gallery .tm-service-modal-image:hover img {
+  transform: scale(1.055);
+}
+
+/* IMAGE NUMBER */
+
+.tm-service-image-label {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  min-width: 34px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 5px;
+  background: rgba(0,0,0,.65);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  backdrop-filter: blur(8px);
+}
+
+/* BRAND STRIP */
+
+.tm-service-gallery-brand {
+  position: absolute;
+  left: 20px;
+  bottom: 17px;
+  z-index: 2;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px rgba(0,0,0,.8);
+}
+
+/* SERVICE CONTENT */
+
+.tm-service-modal-content {
+  padding: 35px 42px 40px;
+}
+
+.tm-service-modal-content .tm-section-tag {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #086565;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.tm-service-modal-content h2 {
+  margin: 0 0 15px;
+  color: #171d20;
+  font-size: clamp(25px, 4vw, 36px);
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.tm-service-modal-content p {
+  margin: 0 0 20px;
+  color: #687174;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.tm-service-modal-content h4 {
+  margin: 25px 0 10px;
+  color: #086565;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 1.7px;
+}
+
+.tm-service-modal-content ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 22px;
+  margin: 15px 0 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.tm-service-modal-content li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #3e494c;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.tm-service-modal-content li svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #086565;
+}
+
+.tm-service-modal-content .tm-contact-submit {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ANIMATIONS */
+
+@keyframes tm-service-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tm-service-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(25px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* TABLET */
+
+@media (max-width: 768px) {
+  .tm-service-modal-overlay {
+    padding: 15px;
+  }
+
+  .tm-service-modal {
+    max-height: 94vh;
+  }
+
+  .tm-service-modal-gallery .tm-service-modal-image {
+    height: 230px;
+  }
+
+  .tm-service-modal-content {
+    padding: 28px 25px 32px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 520px) {
+  .tm-service-modal-overlay {
+    padding: 9px;
+    align-items: center;
+  }
+
+  .tm-service-modal {
+    max-height: 94dvh;
+    border-radius: 13px;
+  }
+
+  .tm-service-modal-gallery {
+    gap: 4px;
+    padding: 4px;
+    border-radius: 13px 13px 0 0;
+  }
+
+  .tm-service-modal-gallery .tm-service-modal-image {
+    height: 165px;
+    border-radius: 8px;
+  }
+
+  .tm-service-image-label {
+    top: 8px;
+    left: 8px;
+    min-width: 27px;
+    height: 24px;
+    font-size: 9px;
+  }
+
+  .tm-service-gallery-brand {
+    left: 12px;
+    bottom: 12px;
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  .tm-service-modal-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .tm-service-modal-content {
+    padding: 24px 18px 25px;
+  }
+
+  .tm-service-modal-content h2 {
+    font-size: 24px;
+  }
+
+  .tm-service-modal-content p {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .tm-service-modal-content ul {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .tm-service-modal-content li {
+    font-size: 12px;
+  }
+}
+/* SERVICE CARD AUTOMATIC TWO-IMAGE SLIDER */
+
+.tm-service-card-image-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #e9eeee;
+}
+
+.tm-service-card-image-slider img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: tmServiceImageFade 0.8s ease;
+}
+
+.tm-service-image-counter {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.68);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  backdrop-filter: blur(6px);
+}
+
+@keyframes tmServiceImageFade {
+  from {
+    opacity: 0.35;
+    transform: scale(1.035);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =========================================
+   BEFORE & AFTER PROJECT GALLERY
+========================================= */
+
+.tm-gallery-phase {
+  position: absolute;
+  top: 58px;
+  left: 16px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 13px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.7px;
+  backdrop-filter: blur(12px);
+}
+
+.tm-gallery-phase-before {
+  background: rgba(25, 29, 33, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.tm-gallery-phase-after {
+  background: #086565;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.tm-gallery-phase-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* IMAGE CARDS */
+
+.tm-premium-gallery-item {
+  position: relative;
+  flex: 0 0 330px;
+  width: 330px;
+  height: 390px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 9px;
+  padding: 0;
+  background: #17191d;
+  text-align: left;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.tm-gallery-card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.tm-premium-gallery-item:hover .tm-gallery-card-image {
+  transform: scale(1.09);
+}
+
+.tm-gallery-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.48) 0%,
+    transparent 36%,
+    rgba(0, 0, 0, 0.08) 48%,
+    rgba(0, 0, 0, 0.88) 100%
+  );
+  pointer-events: none;
+}
+
+.tm-gallery-card-top {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tm-gallery-category,
+.tm-gallery-brand {
+  padding: 7px 9px;
+  border-radius: 3px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.tm-gallery-brand {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* CARD TEXT */
+
+.tm-gallery-card-info {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  z-index: 3;
+  color: #fff;
+}
+
+.tm-gallery-vehicle {
+  display: block;
+  margin-bottom: 8px;
+  color: #bce8e2;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.tm-gallery-card-info h4 {
+  margin: 0;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.tm-gallery-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 18px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.4px;
+  transition: gap 0.3s ease;
+}
+
+.tm-premium-gallery-item:hover .tm-gallery-open {
+  gap: 15px;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+  .tm-premium-gallery-item {
+    flex-basis: 260px;
+    width: 260px;
+    height: 330px;
+  }
+
+  .tm-gallery-card-info {
+    left: 15px;
+    right: 15px;
+    bottom: 16px;
+  }
+
+  .tm-gallery-card-info h4 {
+    font-size: 18px;
+  }
+
+  .tm-gallery-phase {
+    top: 58px;
+    left: 13px;
+    padding: 8px 10px;
+    font-size: 9px;
+  }
+
+  .tm-gallery-card-top {
+    left: 12px;
+    right: 12px;
+  }
+
+  .tm-gallery-category,
+  .tm-gallery-brand {
+    font-size: 8px;
+    padding: 6px 7px;
+  }
+}
+/* =========================================
+   MINIMAL PREMIUM AUTOMOTIVE GALLERY
+   ONLY CAR NAME ON EACH IMAGE
+========================================= */
+
+.tm-premium-gallery-item {
+  position: relative;
+  display: block;
+  flex: 0 0 330px;
+  width: 330px;
+  height: 390px;
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: #15191b;
+  cursor: pointer;
+  isolation: isolate;
+  text-decoration: none;
+  text-align: left;
+}
+
+.tm-gallery-card-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.tm-premium-gallery-item:hover .tm-gallery-card-image {
+  transform: scale(1.07);
+}
+
+/* SUBTLE DARK GRADIENT */
+
+.tm-gallery-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.78) 0%,
+    rgba(0, 0, 0, 0.25) 27%,
+    transparent 58%
+  );
+  pointer-events: none;
+}
+
+/* CAR NAME */
+
+.tm-gallery-car-name {
+  position: absolute;
+  left: 22px;
+  right: 15px;
+  bottom: 22px;
+  z-index: 2;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+  transition: transform 0.35s ease;
+}
+
+.tm-premium-gallery-item:hover .tm-gallery-car-name {
+  transform: translateY(-5px);
+}
+
+/* KEYBOARD ACCESSIBILITY */
+
+.tm-premium-gallery-item:focus-visible {
+  outline: 3px solid #0b7775;
+  outline-offset: 4px;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+  .tm-premium-gallery-item {
+    flex: 0 0 260px;
+    width: 260px;
+    height: 330px;
+    border-radius: 8px;
+  }
+
+  .tm-gallery-car-name {
+    left: 15px;
+    right: 12px;
+    bottom: 16px;
+    font-size: 14px;
+    letter-spacing: 1.3px;
+  }
+}
+/* =========================================================
+   PREMIUM CATEGORY-WISE AUTOMOTIVE GALLERY
+========================================================= */
+
+.tm-category-gallery-section {
+  position: relative;
+  overflow: hidden;
+  padding: 110px 0 100px;
+  background:
+    radial-gradient(
+      ellipse at 5% 15%,
+      rgba(8, 113, 108, 0.07),
+      transparent 35%
+    ),
+    radial-gradient(
+      ellipse at 95% 75%,
+      rgba(225, 29, 46, 0.055),
+      transparent 35%
+    ),
+    #f5f6f5;
+  color: #101b1b;
+}
+
+.tm-category-gallery-section .tm-wrap {
+  width: min(1440px, calc(100% - 80px));
+  margin: 0 auto;
+}
+
+/* MAIN HEADING */
+
+.tm-category-gallery-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 35px;
+  margin-bottom: 75px;
+}
+
+.tm-category-gallery-heading > div:first-child {
+  max-width: 780px;
+}
+
+.tm-category-gallery-heading .tm-section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: #08716c;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 3px;
+}
+
+.tm-category-gallery-heading .tm-section-tag::before {
+  width: 28px;
+  height: 2px;
+  background: #08716c;
+  content: "";
+}
+
+.tm-category-gallery-heading h2 {
+  margin: 0;
+  color: #111b1b;
+  font-size: clamp(36px, 5.3vw, 76px);
+  font-weight: 950;
+  letter-spacing: -3.5px;
+  line-height: 0.98;
+}
+
+.tm-category-gallery-heading h2 em {
+  display: block;
+  margin-top: 8px;
+  color: #8a9693;
+  font-style: normal;
+}
+
+.tm-category-gallery-heading p {
+  max-width: 590px;
+  margin: 23px 0 0;
+  color: #66716e;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.tm-category-gallery-count {
+  display: flex;
+  flex: 0 0 145px;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-bottom: 7px;
+}
+
+.tm-category-gallery-count strong {
+  color: #08716c;
+  font-size: 62px;
+  font-weight: 950;
+  letter-spacing: -4px;
+  line-height: 1;
+}
+
+.tm-category-gallery-count span {
+  margin-top: 9px;
+  color: #697572;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2px;
+}
+
+/* BRAND SECTIONS */
+
+.tm-category-brand-section {
+  position: relative;
+  margin-top: 75px;
+}
+
+.tm-category-brand-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 30px;
+  padding-bottom: 25px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid rgba(20, 35, 33, 0.14);
+}
+
+.tm-category-brand-heading > div {
+  max-width: 700px;
+}
+
+.tm-category-brand-number {
+  display: inline-block;
+  margin-bottom: 13px;
+  color: #75817e;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2.5px;
+}
+
+.tm-category-brand-heading h3 {
+  margin: 0;
+  color: #101b1b;
+  font-size: clamp(32px, 4.5vw, 55px);
+  font-weight: 950;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+.tm-category-brand-heading h3 span {
+  color: #08716c;
+}
+
+.tm-category-brand-heading p {
+  margin: 13px 0 0;
+  color: #6b7774;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.tm-category-brand-side {
+  padding-bottom: 7px;
+  color: #7b8582;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* SHARVARI BRAND COLOUR */
+
+.tm-category-sharvari .tm-category-brand-heading h3 span {
+  color: #e11d2e;
+}
+
+.tm-category-sharvari .tm-category-brand-number {
+  color: #d52a38;
+}
+
+/* CATEGORY GRID */
+
+.tm-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.tm-category-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(18, 39, 36, 0.09);
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 12px 35px rgba(15, 35, 32, 0.045);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.tm-category-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(8, 113, 108, 0.25);
+  box-shadow: 0 22px 50px rgba(15, 35, 32, 0.1);
+}
+
+.tm-category-sharvari .tm-category-card:hover {
+  border-color: rgba(225, 29, 46, 0.25);
+}
+
+/* CATEGORY TITLE BAR */
+
+.tm-category-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 75px;
+  padding: 17px 19px;
+  border-bottom: 1px solid rgba(18, 39, 36, 0.08);
+}
+
+.tm-category-card-heading > span:first-child {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(8, 113, 108, 0.09);
+  color: #08716c;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tm-category-card-heading h4 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: #172321;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+}
+
+.tm-category-photo-count {
+  color: #84908c;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+}
+
+.tm-category-sharvari .tm-category-card-heading > span:first-child {
+  background: rgba(225, 29, 46, 0.09);
+  color: #e11d2e;
+}
+
+/* PHOTO GRID */
+
+.tm-category-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  padding: 3px;
+}
+
+.tm-category-photo {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 1.28 / 1;
+  overflow: hidden;
+  background: #dce1df;
+  isolation: isolate;
+}
+
+.tm-category-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition:
+    transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.55s ease;
+}
+
+.tm-category-photo:hover img {
+  transform: scale(1.09);
+  filter: saturate(1.08);
+}
+
+.tm-category-photo-shade {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.23) 0%,
+    transparent 35%,
+    rgba(0, 0, 0, 0.12) 48%,
+    rgba(0, 0, 0, 0.82) 100%
+  );
+  pointer-events: none;
+}
+
+.tm-category-photo-number {
+  position: absolute;
+  z-index: 2;
+  top: 13px;
+  left: 14px;
+  display: grid;
+  width: 29px;
+  height: 29px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 850;
+  backdrop-filter: blur(8px);
+}
+
+.tm-category-photo-caption {
+  position: absolute;
+  z-index: 2;
+  right: 42px;
+  bottom: 17px;
+  left: 15px;
+  color: #fff;
+  pointer-events: none;
+}
+
+.tm-category-photo-caption > span {
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 1.7px;
+}
+
+.tm-category-photo-caption h5 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(12px, 1.2vw, 16px);
+  font-weight: 950;
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+}
+
+.tm-category-photo-caption p {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.4px;
+}
+
+.tm-category-photo-arrow {
+  position: absolute;
+  z-index: 3;
+  right: 12px;
+  bottom: 15px;
+  display: grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  color: #fff;
+  transition:
+    color 0.3s ease,
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.tm-category-photo:hover .tm-category-photo-arrow {
+  transform: rotate(45deg);
+  border-color: #fff;
+  background: #fff;
+  color: #111;
+}
+
+/* TULJA AND SHARVARI BRAND DETAILS */
+
+.tm-category-tulja .tm-category-card-heading > span:first-child {
+  color: #08716c;
+}
+
+.tm-category-sharvari .tm-category-photo-arrow:hover {
+  background: #e11d2e;
+  color: #fff;
+}
+
+/* GALLERY FOOTER */
+
+.tm-category-gallery-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding-top: 24px;
+  margin-top: 70px;
+  border-top: 1px solid rgba(20, 35, 33, 0.16);
+  color: #697572;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 2px;
+}
+
+.tm-category-gallery-footer span:last-child {
+  color: #182321;
+}
+
+.tm-category-gallery-footer i {
+  padding: 0 7px;
+  color: #e11d2e;
+  font-size: 16px;
+  font-style: normal;
+}
+
+/* =========================================================
+   RESPONSIVE CATEGORY GALLERY
+========================================================= */
+
+@media (max-width: 1000px) {
+  .tm-category-gallery-section {
+    padding: 85px 0;
+  }
+
+  .tm-category-gallery-section .tm-wrap {
+    width: min(100% - 48px, 850px);
+  }
+
+  .tm-category-gallery-heading {
+    margin-bottom: 55px;
+  }
+
+  .tm-category-grid {
+    gap: 17px;
+  }
+
+  .tm-category-card-heading {
+    gap: 9px;
+    padding: 14px;
+  }
+
+  .tm-category-card-heading h4 {
+    font-size: 14px;
+  }
+
+  .tm-category-photo {
+    aspect-ratio: 1.05 / 1;
+  }
+
+  .tm-category-photo-caption {
+    right: 36px;
+    bottom: 13px;
+    left: 11px;
+  }
+
+  .tm-category-photo-caption h5 {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 700px) {
+  .tm-category-gallery-section {
+    padding: 65px 0 60px;
+  }
+
+  .tm-category-gallery-section .tm-wrap {
+    width: calc(100% - 30px);
+  }
+
+  .tm-category-gallery-heading {
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 42px;
+  }
+
+  .tm-category-gallery-heading h2 {
+    font-size: clamp(32px, 8vw, 48px);
+    letter-spacing: -1.8px;
+    line-height: 1.02;
+  }
+
+  .tm-category-gallery-heading p {
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .tm-category-gallery-count {
+    flex-basis: 75px;
+    padding-top: 26px;
+  }
+
+  .tm-category-gallery-count strong {
+    font-size: 37px;
+    letter-spacing: -2px;
+  }
+
+  .tm-category-gallery-count span {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  .tm-category-brand-section {
+    margin-top: 48px;
+  }
+
+  .tm-category-brand-heading {
+    align-items: flex-start;
+    gap: 10px;
+    padding-bottom: 17px;
+    margin-bottom: 17px;
+  }
+
+  .tm-category-brand-heading h3 {
+    font-size: clamp(29px, 7vw, 40px);
+    letter-spacing: -1.3px;
+  }
+
+  .tm-category-brand-heading p {
+    max-width: 310px;
+    margin-top: 9px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .tm-category-brand-number {
+    margin-bottom: 10px;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+  }
+
+  .tm-category-brand-side {
+    max-width: 105px;
+    padding-top: 25px;
+    font-size: 7px;
+    letter-spacing: 1px;
+    line-height: 1.7;
+    white-space: normal;
+  }
+
+  .tm-category-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .tm-category-card {
+    border-radius: 4px;
+  }
+
+  .tm-category-card-heading {
+    min-height: 61px;
+    padding: 12px;
+  }
+
+  .tm-category-card-heading > span:first-child {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+  }
+
+  .tm-category-card-heading h4 {
+    font-size: 14px;
+  }
+
+  .tm-category-photo-count {
+    font-size: 8px;
+    letter-spacing: 0.7px;
+  }
+
+  .tm-category-photo {
+    aspect-ratio: 1.05 / 1;
+  }
+
+  .tm-category-photo-number {
+    top: 9px;
+    left: 9px;
+    width: 25px;
+    height: 25px;
+    font-size: 8px;
+  }
+
+  .tm-category-photo-caption {
+    right: 32px;
+    bottom: 10px;
+    left: 9px;
+  }
+
+  .tm-category-photo-caption > span {
+    margin-bottom: 4px;
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+
+  .tm-category-photo-caption h5 {
+    font-size: clamp(10px, 3vw, 13px);
+  }
+
+  .tm-category-photo-caption p {
+    margin-top: 4px;
+    font-size: 8px;
+  }
+
+  .tm-category-photo-arrow {
+    right: 7px;
+    bottom: 9px;
+    width: 25px;
+    height: 25px;
+  }
+
+  .tm-category-photo-arrow svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .tm-category-gallery-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 45px;
+    padding-top: 18px;
+    font-size: 8px;
+    letter-spacing: 1.2px;
+  }
+}
+
+@media (max-width: 380px) {
+  .tm-category-gallery-section .tm-wrap {
+    width: calc(100% - 22px);
+  }
+
+  .tm-category-gallery-heading h2 {
+    font-size: 30px;
+  }
+
+  .tm-category-gallery-count {
+    flex-basis: 65px;
+  }
+
+  .tm-category-gallery-count strong {
+    font-size: 32px;
+  }
+
+  .tm-category-card-heading h4 {
+    font-size: 12px;
+  }
+
+  .tm-category-photo-caption h5 {
+    font-size: 10px;
+  }
+}
+
+/* REDUCE MOTION FOR ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+  .tm-category-card,
+  .tm-category-photo img,
+  .tm-category-photo-arrow {
+    transition: none;
+  }
+}
+
+/* =========================================
+   CATEGORY GALLERY — FULL WIDTH ROW LAYOUT
+========================================= */
+
+.tm-category-gallery-section {
+  width: 100%;
+  padding: 100px 6%;
+  background: #f7f8f8;
+}
+
+.tm-category-gallery-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+}
+
+.tm-category-gallery-card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  align-items: stretch;
+  gap: 30px;
+  padding: 22px;
+  border-radius: 22px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow: 0 12px 35px rgba(0,0,0,.045);
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+
+.tm-category-gallery-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 45px rgba(0,0,0,.09);
+}
+
+.tm-category-gallery-card-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.tm-category-gallery-card-title h3 {
+  font-size: clamp(22px, 2.5vw, 34px);
+  font-weight: 850;
+  line-height: 1.1;
+  color: #111;
+}
+
+.tm-category-gallery-card-title span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.tm-category-gallery-card-photos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tm-category-gallery-card-photos img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 14px;
+  transition: transform .5s ease;
+}
+
+.tm-category-gallery-card-photos img:hover {
+  transform: scale(1.035);
+}
+
+.tm-category-gallery-card-photos figure {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  margin: 0;
+}
+
+.tm-category-gallery-card-photos figure figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px 12px 12px;
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: linear-gradient(transparent, rgba(0,0,0,.8));
+}
+
+/* Brand colors */
+.tm-category-gallery-card.tulja span {
+  color: #08716c;
+}
+
+.tm-category-gallery-card.sharvari span {
+  color: #e11d2e;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .tm-category-gallery-section {
+    padding: 65px 16px;
+  }
+
+  .tm-category-gallery-grid {
+    gap: 16px;
+  }
+
+  .tm-category-gallery-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 15px;
+    border-radius: 17px;
+  }
+
+  .tm-category-gallery-card-title {
+    gap: 6px;
+  }
+
+  .tm-category-gallery-card-title h3 {
+    font-size: 22px;
+  }
+
+  .tm-category-gallery-card-photos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .tm-category-gallery-card-photos img {
+    height: 135px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .tm-category-gallery-card-photos img {
+    height: 115px;
+  }
+}
+
+/* ==========================================
+   CATEGORY GALLERY — HORIZONTAL ROW OVERRIDE
+   Only affects the category gallery
+========================================== */
+
+/* Category list */
+.tm-category-gallery-section .tm-category-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+}
+
+/* Each category becomes one horizontal row */
+.tm-category-gallery-section .tm-category-card {
+  display: grid !important;
+  grid-template-columns: 260px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 28px !important;
+  width: 100% !important;
+  padding: 28px 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.13) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Category title on the left */
+.tm-category-gallery-section .tm-category-card-heading {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+/* Category serial number */
+.tm-category-gallery-section .tm-category-card-heading > span:first-child {
+  font-size: 12px !important;
+  letter-spacing: 2px !important;
+  font-weight: 800 !important;
+}
+
+/* Category heading */
+.tm-category-gallery-section .tm-category-card-heading h4 {
+  font-size: clamp(22px, 2.5vw, 34px) !important;
+  line-height: 1.1 !important;
+  font-weight: 850 !important;
+  margin: 0 !important;
+}
+
+/* Photo count */
+.tm-category-gallery-section .tm-category-photo-count {
+  font-size: 10px !important;
+  letter-spacing: 2px !important;
+  font-weight: 800 !important;
+}
+
+/* Vehicle photos on the right */
+.tm-category-gallery-section .tm-category-photo-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+/* Individual vehicle image */
+.tm-category-gallery-section .tm-category-photo {
+  position: relative !important;
+  width: 100% !important;
+  height: 190px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  border-radius: 12px !important;
+}
+
+/* Image */
+.tm-category-gallery-section .tm-category-photo img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform 0.6s ease !important;
+}
+
+.tm-category-gallery-section .tm-category-photo:hover img {
+  transform: scale(1.08) !important;
+}
+
+/* Keep existing image overlays and captions */
+.tm-category-gallery-section .tm-category-photo-shade,
+.tm-category-gallery-section .tm-category-photo-caption,
+.tm-category-gallery-section .tm-category-photo-number,
+.tm-category-gallery-section .tm-category-photo-arrow {
+  z-index: 2;
+}
+
+/* ==========================================
+   MOBILE — STILL HORIZONTAL ROWS
+========================================== */
+
+@media (max-width: 700px) {
+  .tm-category-gallery-section .tm-category-card {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    padding: 22px 0 !important;
+  }
+
+  .tm-category-gallery-section .tm-category-card-heading {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .tm-category-gallery-section .tm-category-card-heading h4 {
+    font-size: 19px !important;
+  }
+
+  .tm-category-gallery-section .tm-category-card-heading > span:first-child {
+    font-size: 11px !important;
+  }
+
+  .tm-category-gallery-section .tm-category-photo-count {
+    font-size: 9px !important;
+    letter-spacing: 1px !important;
+  }
+
+  .tm-category-gallery-section .tm-category-photo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+  }
+
+  .tm-category-gallery-section .tm-category-photo {
+    height: 145px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .tm-category-gallery-section .tm-category-photo {
+    height: 120px !important;
+  }
+}
+/* =========================================
+   GALLERY — REGULAR HEADING SIZES
+========================================= */
+
+.tm-category-gallery-section .tm-category-gallery-heading {
+  font-size: clamp(26px, 3vw, 38px) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.8px !important;
+  font-weight: 700 !important;
+}
+
+.tm-category-gallery-section .tm-category-brand-heading {
+  font-size: clamp(20px, 2vw, 27px) !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.4px !important;
+  font-weight: 650 !important;
+}
+
+.tm-category-gallery-section .tm-category-card-heading {
+  font-size: 17px !important;
+  line-height: 1.3 !important;
+  letter-spacing: 0 !important;
+  font-weight: 650 !important;
+}
+
+/* Mobile heading sizes */
+@media (max-width: 768px) {
+  .tm-category-gallery-section .tm-category-gallery-heading {
+    font-size: 27px !important;
+  }
+
+  .tm-category-gallery-section .tm-category-brand-heading {
+    font-size: 21px !important;
+  }
+
+  .tm-category-gallery-section .tm-category-card-heading {
+    font-size: 16px !important;
+  }
+}
+/* =========================================
+   GALLERY — CLEAN TYPOGRAPHY REFINEMENT
+========================================= */
+
+.tm-category-gallery-section .tm-category-gallery-heading {
+  font-size: clamp(28px, 3.2vw, 40px) !important;
+  line-height: 1.15 !important;
+  font-weight: 700 !important;
+  letter-spacing: -1px !important;
+}
+
+.tm-category-gallery-section .tm-category-gallery-heading small,
+.tm-category-gallery-section .tm-category-gallery-eyebrow {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+}
+
+.tm-category-gallery-section .tm-category-gallery-section > p,
+.tm-category-gallery-section .tm-category-gallery-description {
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+  font-weight: 400 !important;
+}
+
+.tm-category-gallery-section .tm-category-gallery-count {
+  font-size: 11px !important;
+  font-weight: 650 !important;
+  letter-spacing: 1.5px !important;
+}
+
+.tm-category-gallery-section .tm-category-brand-number {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+}
+
+.tm-category-gallery-section .tm-category-brand-heading {
+  font-size: clamp(22px, 2.2vw, 29px) !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px !important;
+}
+
+.tm-category-gallery-section .tm-category-brand-side {
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+  font-weight: 400 !important;
+}
+
+.tm-category-gallery-section .tm-category-card-heading {
+  font-size: 16px !important;
+  line-height: 1.3 !important;
+  font-weight: 650 !important;
+  letter-spacing: 0 !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .tm-category-gallery-section .tm-category-gallery-heading {
+    font-size: 28px !important;
+  }
+
+  .tm-category-gallery-section .tm-category-brand-heading {
+    font-size: 23px !important;
+  }
+
+  .tm-category-gallery-section .tm-category-card-heading {
+    font-size: 15px !important;
+  }
+}
