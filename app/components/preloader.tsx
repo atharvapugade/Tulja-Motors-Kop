@@ -6,53 +6,35 @@ import "./preloader.css";
 
 const TICKS = Array.from({ length: 11 }, (_, i) => -90 + i * 18);
 const ARC_LEN = Math.PI * 80;
-
 const STAGES = ["REPAIR", "RESTORE", "CUSTOMISE"];
 
-export default function Preloader() {
+export default function Preloader({
+  duration = 2600,
+}: {
+  duration?: number;
+}) {
   const [progress, setProgress] = useState(0);
   const [hide, setHide] = useState(false);
   const [gone, setGone] = useState(false);
 
   useEffect(() => {
-    let loaded = document.readyState === "complete";
+    const start = performance.now();
     let raf = 0;
     let finished = false;
-
-    const onLoad = () => {
-      loaded = true;
-    };
-
-    window.addEventListener("load", onLoad);
-
-    const MIN_TIME = 2600;
-    const MAX_TIME = 7000;
-    const start = performance.now();
+    let hideTimer: ReturnType<typeof setTimeout>;
+    let goneTimer: ReturnType<typeof setTimeout>;
 
     const tick = (now: number) => {
-      const elapsed = now - start;
-      const t = Math.min(elapsed / MIN_TIME, 1);
-
+      const t = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - t, 3);
 
-      let target = Math.min(eased * 100, 92);
+      setProgress(eased * 100);
 
-      if (loaded && elapsed >= MIN_TIME) {
-        target = 100;
-      }
-
-      // Safety fallback: never keep the visitor waiting forever.
-      if (elapsed >= MAX_TIME) {
-        target = 100;
-      }
-
-      setProgress(target);
-
-      if (target >= 100 && !finished) {
+      if (t >= 1 && !finished) {
         finished = true;
 
-        setTimeout(() => setHide(true), 450);
-        setTimeout(() => setGone(true), 1100);
+        hideTimer = setTimeout(() => setHide(true), 350);
+        goneTimer = setTimeout(() => setGone(true), 1000);
 
         return;
       }
@@ -64,9 +46,10 @@ export default function Preloader() {
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("load", onLoad);
+      clearTimeout(hideTimer);
+      clearTimeout(goneTimer);
     };
-  }, []);
+  }, [duration]);
 
   if (gone) return null;
 
@@ -74,26 +57,19 @@ export default function Preloader() {
 
   return (
     <div className={`pl-wrap ${hide ? "pl-hide" : ""}`}>
-
       <div className="pl-ambient pl-ambient-left" />
       <div className="pl-ambient pl-ambient-right" />
 
       <div className="pl-content">
-
         <div className="pl-top-label">
           <span className="pl-live-dot" />
           AUTOMOTIVE CARE & RESTORATION
         </div>
 
         <div className="pl-gauge-container">
-
           <div className="pl-gauge-glow" />
 
-          <svg
-            className="pl-gauge"
-            viewBox="0 0 200 125"
-            fill="none"
-          >
+          <svg className="pl-gauge" viewBox="0 0 200 125" fill="none">
             <defs>
               <linearGradient id="plArcGradient" x1="20" y1="100" x2="180" y2="100">
                 <stop offset="0%" stopColor="#086565" />
@@ -125,7 +101,6 @@ export default function Preloader() {
               strokeDasharray={ARC_LEN}
               strokeDashoffset={ARC_LEN * (1 - progress / 100)}
               filter="url(#plGlow)"
-              className="pl-progress-arc"
             />
 
             {TICKS.map((a, i) => (
@@ -146,7 +121,6 @@ export default function Preloader() {
               style={{
                 transform: `rotate(${-90 + progress * 1.8}deg)`,
                 transformOrigin: "100px 100px",
-                transition: "transform 0.15s linear",
               }}
             >
               <polygon
@@ -203,7 +177,6 @@ export default function Preloader() {
           <span className="pl-bottom-separator">/</span>
           <span>PERFECTION</span>
         </div>
-
       </div>
     </div>
   );
