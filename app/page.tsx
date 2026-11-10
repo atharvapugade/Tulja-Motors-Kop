@@ -1,14 +1,27 @@
-
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
-  ArrowUpRight, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight,
-  Phone, Mail, MapPin, Wrench, ShieldCheck, CarFront, Paintbrush,
-  Sparkles, CheckCircle2, MessageCircle, Languages, X,
+  ArrowUpRight,
+  ArrowLeft,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Phone,
+  Mail,
+  MapPin,
+  Wrench,
+  ShieldCheck,
+  CarFront,
+  CheckCircle2,
+  MessageCircle,
+  Languages,
+  X,
 } from "lucide-react";
+
 import "./home-page.css";
+import { beforeAfterProjects } from "./projects/project-data";
 
 /* GOOGLE TRANSLATE TYPES */
 
@@ -33,7 +46,9 @@ const WHATSAPP = "919130129205";
 const EMAIL = "tuljamotors@gmail.com";
 
 const MAP_URL =
-  "https://www.google.com/maps/search/?api=1&query=16.783019595807485%2C74.28685209367279";
+  "https://www.google.com/maps/search/?api=1&query=16.798993%2C74.284622";
+
+/* LANGUAGES */
 
 const languages = [
   { code: "en", name: "English", native: "English" },
@@ -48,71 +63,81 @@ const languages = [
   { code: "pa", name: "Punjabi", native: "ਪੰਜਾਬੀ" },
 ];
 
-/* BEFORE / AFTER PROJECT SLIDER */
-
-const beforeAfterProjects = [
-  {
-    number: "01", slug: "scorpio-restoration",
-    brand: "TULJA MOTORS", vehicle: "MAHINDRA SCORPIO",
-    title: "SCORPIO RESTORATION",
-    service: "ACCIDENT REPAIR & RESTORATION",
-    beforeImage: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=90",
-    afterImage: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1400&q=90",
-  },
-  {
-    number: "02", slug: "tata-nexon-repair",
-    brand: "TULJA MOTORS", vehicle: "TATA NEXON",
-    title: "NEXON BODY REPAIR",
-    service: "DENTING, PAINTING & BODY WORK",
-    beforeImage: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1400&q=90",
-    afterImage: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1400&q=90",
-  },
-  {
-    number: "03", slug: "mahindra-thar-customisation",
-    brand: "SHARVARI MOTORS", vehicle: "MAHINDRA THAR",
-    title: "THAR CUSTOMISATION",
-    service: "EXTERIOR STYLING & MODIFICATION",
-    beforeImage: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1400&q=90",
-    afterImage: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=90",
-  },
-  {
-    number: "04", slug: "hyundai-creta-detailing",
-    brand: "SHARVARI MOTORS", vehicle: "HYUNDAI CRETA",
-    title: "CRETA DETAILING",
-    service: "PAINT CORRECTION & COATING",
-    beforeImage: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=1400&q=90",
-    afterImage: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=90",
-  },
-  {
-    number: "05", slug: "kia-seltos-interior",
-    brand: "SHARVARI MOTORS", vehicle: "KIA SELTOS",
-    title: "SELTOS INTERIOR UPGRADE",
-    service: "INTERIOR MODIFICATION",
-    beforeImage: "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?auto=format&fit=crop&w=1400&q=90",
-    afterImage: "https://images.unsplash.com/photo-1614200187524-dc4b892acf16?auto=format&fit=crop&w=1400&q=90",
-  },
-  {
-    number: "06", slug: "maruti-swift-restoration",
-    brand: "TULJA MOTORS", vehicle: "MARUTI SUZUKI SWIFT",
-    title: "SWIFT RESTORATION",
-    service: "CAR RENOVATION & REPAINTING",
-    beforeImage: "https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=1400&q=90",
-    afterImage: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1400&q=90",
-  },
-];
-
 /* SERVICES */
 
 const services = [
-  { number: "01", brand: "TULJA MOTORS", title: "Accident Repair & Body Work", description: "Professional repair solutions for accident damage, panels, bumpers and vehicle bodywork.", href: "#accident-repair" },
-  { number: "02", brand: "TULJA MOTORS", title: "Denting & Painting", description: "Restore damaged panels with dent removal, scratch repair and colour-matched paintwork.", href: "#denting-painting" },
-  { number: "03", brand: "SHARVARI MOTORS", title: "Ceramic & Graphene Coating", description: "Enhance your car's gloss and surface protection with professional coating options.", href: "#ceramic-coating" },
-  { number: "04", brand: "SHARVARI MOTORS", title: "PPF & Vinyl Wrap", description: "Protect and personalise your vehicle with PPF, vinyl wraps and chrome delete.", href: "#ppf-wrap" },
-  { number: "05", brand: "SHARVARI MOTORS", title: "Interior Modification", description: "Upgrade your cabin with custom upholstery, ambient lighting and premium accessories.", href: "#interior-modification" },
-  { number: "06", brand: "SHARVARI MOTORS", title: "Exterior Modification", description: "Give your vehicle a distinctive look with styling upgrades and exterior accessories.", href: "#exterior-modification" },
-  { number: "07", brand: "SHARVARI MOTORS", title: "Interior & Exterior Detailing", description: "Bring back a fresh finish with deep cleaning, polishing and detailed vehicle care.", href: "#detailing" },
-  { number: "08", brand: "TULJA MOTORS", title: "Mechanical Work", description: "Vehicle maintenance and inspection for brakes, suspension, AC and electrical systems.", href: "#mechanical" },
-  { number: "09", brand: "TULJA MOTORS", title: "Car Renovation & Restoration", description: "Give older vehicles a refreshed appearance with planned body, paint and interior work.", href: "#restoration" },
+  {
+    number: "01",
+    brand: "TULJA MOTORS",
+    title: "Accident Repair & Body Work",
+    description:
+      "Professional repair solutions for accident damage, panels, bumpers and vehicle bodywork.",
+    href: "#accident-repair",
+  },
+  {
+    number: "02",
+    brand: "TULJA MOTORS",
+    title: "Denting & Painting",
+    description:
+      "Restore damaged panels with dent removal, scratch repair and colour-matched paintwork.",
+    href: "#denting-painting",
+  },
+  {
+    number: "03",
+    brand: "SHARVARI MOTORS",
+    title: "Ceramic & Graphene Coating",
+    description:
+      "Enhance your car's gloss and surface protection with professional coating options.",
+    href: "#ceramic-coating",
+  },
+  {
+    number: "04",
+    brand: "SHARVARI MOTORS",
+    title: "PPF & Vinyl Wrap",
+    description:
+      "Protect and personalise your vehicle with PPF, vinyl wraps and chrome delete.",
+    href: "#ppf-wrap",
+  },
+  {
+    number: "05",
+    brand: "SHARVARI MOTORS",
+    title: "Interior Modification",
+    description:
+      "Upgrade your cabin with custom upholstery, ambient lighting and premium accessories.",
+    href: "#interior-modification",
+  },
+  {
+    number: "06",
+    brand: "SHARVARI MOTORS",
+    title: "Exterior Modification",
+    description:
+      "Give your vehicle a distinctive look with styling upgrades and exterior accessories.",
+    href: "#exterior-modification",
+  },
+  {
+    number: "07",
+    brand: "SHARVARI MOTORS",
+    title: "Interior & Exterior Detailing",
+    description:
+      "Bring back a fresh finish with deep cleaning, polishing and detailed vehicle care.",
+    href: "#detailing",
+  },
+  {
+    number: "08",
+    brand: "TULJA MOTORS",
+    title: "Mechanical Work",
+    description:
+      "Vehicle maintenance and inspection for brakes, suspension, AC and electrical systems.",
+    href: "#mechanical",
+  },
+  {
+    number: "09",
+    brand: "TULJA MOTORS",
+    title: "Car Renovation & Restoration",
+    description:
+      "Give older vehicles a refreshed appearance with planned body, paint and interior work.",
+    href: "#restoration",
+  },
 ];
 
 type ServiceMedia = {
@@ -122,106 +147,319 @@ type ServiceMedia = {
 };
 
 const serviceMedia: Record<string, ServiceMedia> = {
-  "accident-repair": { image: "/images/services/accident-repair.jpg", image2: "/images/services/accident-repair-2.jpg", cars: "MAHINDRA SCORPIO · TATA NEXON" },
-  "denting-painting": { image: "/images/services/denting-painting.jpg", image2: "/images/services/denting-painting-2.jpg", cars: "TATA NEXON · MARUTI SWIFT" },
-  "ceramic-coating": { image: "/images/services/ceramic-coating.jpg", image2: "/images/services/ceramic-coating-2.jpg", cars: "HYUNDAI CRETA · TOYOTA FORTUNER" },
-  "ppf-wrap": { image: "/images/services/ppf-wrap.jpg", image2: "/images/services/ppf-wrap-2.jpg", cars: "MAHINDRA THAR · TATA HARRIER" },
-  "interior-modification": { image: "/images/services/interior-modification.jpg", image2: "/images/services/interior-modification-2.jpg", cars: "KIA SELTOS · HYUNDAI CRETA" },
-  "exterior-modification": { image: "/images/services/exterior-modification.jpg", image2: "/images/services/exterior-modification-2.jpg", cars: "MAHINDRA THAR · SCORPIO-N" },
-  detailing: { image: "/images/services/detailing.jpg", image2: "/images/services/detailing-2.jpg", cars: "MARUTI BREZZA · HONDA CITY" },
-  mechanical: { image: "/images/services/mechanical.jpg", image2: "/images/services/mechanical-2.jpg", cars: "TOYOTA INNOVA · MARUTI ERTIGA" },
-  restoration: { image: "/images/services/restoration.jpg", image2: "/images/services/restoration-2.jpg", cars: "AMBASSADOR · MARUTI 800" },
+  "accident-repair": {
+    image: "/images/services/accident-repair.jpg",
+    image2: "/images/services/accident-repair-2.jpg",
+    cars: "MAHINDRA SCORPIO · TATA NEXON",
+  },
+  "denting-painting": {
+    image: "/images/services/denting-painting.jpg",
+    image2: "/images/services/denting-painting-2.jpg",
+    cars: "TATA NEXON · MARUTI SWIFT",
+  },
+  "ceramic-coating": {
+    image: "/images/services/ceramic-coating.jpg",
+    image2: "/images/services/ceramic-coating-2.jpg",
+    cars: "HYUNDAI CRETA · TOYOTA FORTUNER",
+  },
+  "ppf-wrap": {
+    image: "/images/services/ppf-wrap.jpg",
+    image2: "/images/services/ppf-wrap-2.jpg",
+    cars: "MAHINDRA THAR · TATA HARRIER",
+  },
+  "interior-modification": {
+    image: "/images/services/interior-modification.jpg",
+    image2: "/images/services/interior-modification-2.jpg",
+    cars: "KIA SELTOS · HYUNDAI CRETA",
+  },
+  "exterior-modification": {
+    image: "/images/services/exterior-modification.jpg",
+    image2: "/images/services/exterior-modification-2.jpg",
+    cars: "MAHINDRA THAR · SCORPIO-N",
+  },
+  detailing: {
+    image: "/images/services/detailing.jpg",
+    image2: "/images/services/detailing-2.jpg",
+    cars: "MARUTI BREZZA · HONDA CITY",
+  },
+  mechanical: {
+    image: "/images/services/mechanical.jpg",
+    image2: "/images/services/mechanical-2.jpg",
+    cars: "TOYOTA INNOVA · MARUTI ERTIGA",
+  },
+  restoration: {
+    image: "/images/services/restoration.jpg",
+    image2: "/images/services/restoration-2.jpg",
+    cars: "AMBASSADOR · MARUTI 800",
+  },
 };
 
 /* SERVICE POPUP CONTENT */
 
 const detailedServices = [
   {
-    id: "accident-repair", number: "01 / TULJA MOTORS", title: "Accident Repair & Body Work",
+    id: "accident-repair",
+    number: "01 / TULJA MOTORS",
+    title: "Accident Repair & Body Work",
     what: "Accident repair restores damaged vehicle body parts after a collision. The work may involve damaged panels, bumpers, lamps, mounting points and body alignment.",
     why: "Accident damage can affect the appearance, fitment and safe operation of vehicle components. A proper inspection helps identify visible and hidden damage before repair work begins.",
-    description: "अपघातानंतर कारच्या बॉडी, पॅनेल आणि बाह्य भागांची तपासणी करून आवश्यक दुरुस्ती व फिटमेंट केली जाते.",
-    points: ["Vehicle damage inspection", "Panel repair or replacement", "Bumper repair and fitment", "Body alignment checks", "Headlamp and tail-lamp fitment", "Final repair quality check"],
+    description:
+      "अपघातानंतर कारच्या बॉडी, पॅनेल आणि बाह्य भागांची तपासणी करून आवश्यक दुरुस्ती व फिटमेंट केली जाते.",
+    points: [
+      "Vehicle damage inspection",
+      "Panel repair or replacement",
+      "Bumper repair and fitment",
+      "Body alignment checks",
+      "Headlamp and tail-lamp fitment",
+      "Final repair quality check",
+    ],
   },
   {
-    id: "denting-painting", number: "02 / TULJA MOTORS", title: "Denting, Painting & Repainting",
+    id: "denting-painting",
+    number: "02 / TULJA MOTORS",
+    title: "Denting, Painting & Repainting",
     what: "Denting and painting involves repairing dents, scratches and damaged paint surfaces, followed by suitable refinishing of the affected panels.",
     why: "It helps improve the vehicle's appearance, address surface damage and refresh faded or damaged paintwork.",
-    description: "डेंट, स्क्रॅच, पेंट फेडिंग किंवा पॅनेलवरील नुकसान दुरुस्त करून योग्य रंगाशी जुळणारा पेंट फिनिश देण्याची सेवा.",
-    points: ["Minor dent removal", "Panel denting", "Scratch and paint correction", "Colour matching", "Panel repainting", "Full body repainting estimate"],
+    description:
+      "डेंट, स्क्रॅच, पेंट फेडिंग किंवा पॅनेलवरील नुकसान दुरुस्त करून योग्य रंगाशी जुळणारा पेंट फिनिश देण्याची सेवा.",
+    points: [
+      "Minor dent removal",
+      "Panel denting",
+      "Scratch and paint correction",
+      "Colour matching",
+      "Panel repainting",
+      "Full body repainting estimate",
+    ],
   },
   {
-    id: "ceramic-coating", number: "03 / SHARVARI MOTORS", title: "Ceramic, Graphene & Paint Coating",
+    id: "ceramic-coating",
+    number: "03 / SHARVARI MOTORS",
+    title: "Ceramic, Graphene & Paint Coating",
     what: "Ceramic and graphene coating are paint-protection treatments applied to a properly prepared exterior surface to provide gloss and water-repellent properties.",
     why: "These coatings can make routine cleaning easier and help maintain the vehicle's finish. Results and durability depend on the product, preparation and maintenance.",
-    description: "पेंटची योग्य तयारी, आवश्यक असल्यास polishing आणि त्यानंतर coating लावून gloss व water-repellent finish वाढवण्याची प्रक्रिया.",
-    points: ["Exterior wash and decontamination", "Paint surface inspection", "Machine polishing options", "Ceramic coating application", "Graphene coating options", "Curing and care guidance"],
+    description:
+      "पेंटची योग्य तयारी, आवश्यक असल्यास polishing आणि त्यानंतर coating लावून gloss व water-repellent finish वाढवण्याची प्रक्रिया.",
+    points: [
+      "Exterior wash and decontamination",
+      "Paint surface inspection",
+      "Machine polishing options",
+      "Ceramic coating application",
+      "Graphene coating options",
+      "Curing and care guidance",
+    ],
   },
   {
-    id: "ppf-wrap", number: "04 / SHARVARI MOTORS", title: "PPF, Vinyl Wrap & Chrome Delete",
+    id: "ppf-wrap",
+    number: "04 / SHARVARI MOTORS",
+    title: "PPF, Vinyl Wrap & Chrome Delete",
     what: "PPF is a protective film applied to selected painted surfaces. Vinyl wrap and chrome delete use specialised films to change the vehicle's exterior appearance.",
     why: "PPF can help protect covered areas from everyday surface wear. Wraps offer styling choices such as gloss, matte and contrasting roof finishes.",
-    description: "Paint Protection Film हा transparent protective film पर्याय आहे. Vinyl wrap किंवा chrome delete द्वारे कारचा बाह्य लूक बदलता येतो.",
-    points: ["Full or partial PPF options", "Bonnet and bumper protection", "Door edge and handle protection", "Gloss or matte wrap options", "Roof wrap", "Chrome delete styling"],
+    description:
+      "Paint Protection Film हा transparent protective film पर्याय आहे. Vinyl wrap किंवा chrome delete द्वारे कारचा बाह्य लूक बदलता येतो.",
+    points: [
+      "Full or partial PPF options",
+      "Bonnet and bumper protection",
+      "Door edge and handle protection",
+      "Gloss or matte wrap options",
+      "Roof wrap",
+      "Chrome delete styling",
+    ],
   },
   {
-    id: "interior-modification", number: "05 / SHARVARI MOTORS", title: "Interior Modification & Accessories",
+    id: "interior-modification",
+    number: "05 / SHARVARI MOTORS",
+    title: "Interior Modification & Accessories",
     what: "Interior modification includes cabin styling, upholstery changes, lighting upgrades and accessories selected to suit the vehicle.",
     why: "It helps personalise the cabin, refresh worn interiors and add convenience or visual features according to the owner's preferences.",
-    description: "कारच्या cabin ला नवीन theme आणि personal look देण्यासाठी upholstery, lighting व interior accessories चे पर्याय.",
-    points: ["Custom seat covers", "Dashboard and door-pad styling", "7D floor mat options", "Ambient lighting", "Starlight roof options", "Steering and interior trims"],
+    description:
+      "कारच्या cabin ला नवीन theme आणि personal look देण्यासाठी upholstery, lighting व interior accessories चे पर्याय.",
+    points: [
+      "Custom seat covers",
+      "Dashboard and door-pad styling",
+      "7D floor mat options",
+      "Ambient lighting",
+      "Starlight roof options",
+      "Steering and interior trims",
+    ],
   },
   {
-    id: "exterior-modification", number: "06 / SHARVARI MOTORS", title: "Exterior Modification & Styling",
+    id: "exterior-modification",
+    number: "06 / SHARVARI MOTORS",
+    title: "Exterior Modification & Styling",
     what: "Exterior modification includes selected cosmetic upgrades such as body kits, spoilers, grille changes, lighting and compatible accessories.",
     why: "These upgrades allow owners to personalise their vehicle's appearance and choose a styling theme that suits their preferences.",
-    description: "कारच्या बाह्य रूपात बदल करण्यासाठी model-compatible styling accessories आणि cosmetic upgrades चे पर्याय.",
-    points: ["Body kit and spoiler options", "Grille and bumper styling", "Alloy wheel options", "Lighting upgrades", "Roof and body wrap", "Model-specific accessories"],
+    description:
+      "कारच्या बाह्य रूपात बदल करण्यासाठी model-compatible styling accessories आणि cosmetic upgrades चे पर्याय.",
+    points: [
+      "Body kit and spoiler options",
+      "Grille and bumper styling",
+      "Alloy wheel options",
+      "Lighting upgrades",
+      "Roof and body wrap",
+      "Model-specific accessories",
+    ],
   },
   {
-    id: "detailing", number: "07 / SHARVARI MOTORS", title: "Interior & Exterior Detailing",
+    id: "detailing",
+    number: "07 / SHARVARI MOTORS",
+    title: "Interior & Exterior Detailing",
     what: "Detailing is a more thorough cleaning and finishing process for the vehicle's exterior paint, glass, wheels, trims and interior cabin.",
     why: "It helps remove accumulated dirt, refresh interior surfaces and improve the overall presentation of the vehicle.",
-    description: "कारच्या बाहेरील पेंट आणि आतील cabin ची खोलवर स्वच्छता, finishing आणि योग्य care products वापरून detailing.",
-    points: ["Premium exterior wash", "Paint decontamination", "Machine polishing options", "Dashboard and trim cleaning", "Seat and carpet cleaning options", "Glass and wheel cleaning"],
+    description:
+      "कारच्या बाहेरील पेंट आणि आतील cabin ची खोलवर स्वच्छता, finishing आणि योग्य care products वापरून detailing.",
+    points: [
+      "Premium exterior wash",
+      "Paint decontamination",
+      "Machine polishing options",
+      "Dashboard and trim cleaning",
+      "Seat and carpet cleaning options",
+      "Glass and wheel cleaning",
+    ],
   },
   {
-    id: "mechanical", number: "08 / TULJA MOTORS", title: "Mechanical Work & General Service",
+    id: "mechanical",
+    number: "08 / TULJA MOTORS",
+    title: "Mechanical Work & General Service",
     what: "Mechanical work involves inspecting and addressing vehicle systems such as brakes, suspension, air conditioning and electrical components.",
     why: "Regular checks can help identify wear or developing faults and support reliable day-to-day vehicle operation.",
-    description: "नियमित देखभाल आणि वाहनातील समस्या तपासण्यासाठी आवश्यक mechanical inspection व repair services.",
-    points: ["General service checks", "Brake inspection", "Suspension checks", "AC inspection", "Battery and electrical checks", "Wheel alignment coordination"],
+    description:
+      "नियमित देखभाल आणि वाहनातील समस्या तपासण्यासाठी आवश्यक mechanical inspection व repair services.",
+    points: [
+      "General service checks",
+      "Brake inspection",
+      "Suspension checks",
+      "AC inspection",
+      "Battery and electrical checks",
+      "Wheel alignment coordination",
+    ],
   },
   {
-    id: "restoration", number: "09 / TULJA MOTORS", title: "Car Renovation & Restoration",
+    id: "restoration",
+    number: "09 / TULJA MOTORS",
+    title: "Car Renovation & Restoration",
     what: "Vehicle restoration is a planned combination of repair and refurbishment work to refresh an older or worn vehicle.",
     why: "It helps owners improve the appearance and condition of an existing vehicle while planning the work according to its age, condition and budget.",
-    description: "जुन्या किंवा थकलेल्या कारसाठी body, paint, interior आणि आवश्यक mechanical कामाचा टप्प्याटप्प्याने restoration plan.",
-    points: ["Vehicle condition assessment", "Body repair planning", "Paint refresh or repainting", "Interior refresh options", "Trim and accessory renewal", "Final inspection"],
+    description:
+      "जुन्या किंवा थकलेल्या कारसाठी body, paint, interior आणि आवश्यक mechanical कामाचा टप्प्याटप्प्याने restoration plan.",
+    points: [
+      "Vehicle condition assessment",
+      "Body repair planning",
+      "Paint refresh or repainting",
+      "Interior refresh options",
+      "Trim and accessory renewal",
+      "Final inspection",
+    ],
   },
 ];
 
 /* GALLERY */
 
 const galleryProjects = [
-  { id: 1, title: "Accident Repair & Restoration", vehicle: "MAHINDRA SCORPIO", brand: "TULJA MOTORS", category: "Accident Repair", image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=90", description: "Automotive bodywork and restoration inspiration." },
-  { id: 2, title: "Premium Paint Finish", vehicle: "TATA NEXON", brand: "TULJA MOTORS", category: "Denting & Painting", image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1600&q=90", description: "Paintwork and exterior finish inspiration." },
-  { id: 3, title: "Ceramic Coating", vehicle: "HYUNDAI CRETA", brand: "SHARVARI MOTORS", category: "Detailing", image: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=1600&q=90", description: "Gloss enhancement and paint protection inspiration." },
-  { id: 4, title: "Luxury Interior Styling", vehicle: "KIA SELTOS", brand: "SHARVARI MOTORS", category: "Interior Modification", image: "https://images.unsplash.com/photo-1614200187524-dc4b892acf16?auto=format&fit=crop&w=1600&q=90", description: "Premium cabin styling and interior design inspiration." },
-  { id: 5, title: "Exterior Styling", vehicle: "MAHINDRA THAR", brand: "SHARVARI MOTORS", category: "Exterior Modification", image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1600&q=90", description: "Exterior styling and modification inspiration." },
-  { id: 6, title: "Professional Detailing", vehicle: "TOYOTA FORTUNER", brand: "SHARVARI MOTORS", category: "Detailing", image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1600&q=90", description: "Exterior detailing and vehicle care inspiration." },
-  { id: 7, title: "Automotive Workshop", vehicle: "MULTI-BRAND", brand: "TULJA MOTORS", category: "Mechanical Work", image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1600&q=90", description: "Professional automotive workshop environment." },
-  { id: 8, title: "Premium Car Finish", vehicle: "LUXURY AUTOMOTIVE", brand: "SHARVARI MOTORS", category: "PPF & Wrap", image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1600&q=90", description: "Vehicle protection and styling inspiration." },
-  { id: 9, title: "Vehicle Restoration", vehicle: "MARUTI SUZUKI", brand: "TULJA MOTORS", category: "Restoration", image: "https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=1600&q=90", description: "Bodywork and vehicle restoration inspiration." },
+  {
+    id: 1,
+    title: "Accident Repair & Restoration",
+    vehicle: "MAHINDRA SCORPIO",
+    brand: "TULJA MOTORS",
+    category: "Accident Repair",
+    image:
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=90",
+    description: "Automotive bodywork and restoration inspiration.",
+  },
+  {
+    id: 2,
+    title: "Premium Paint Finish",
+    vehicle: "TATA NEXON",
+    brand: "TULJA MOTORS",
+    category: "Denting & Painting",
+    image:
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1600&q=90",
+    description: "Paintwork and exterior finish inspiration.",
+  },
+  {
+    id: 3,
+    title: "Ceramic Coating",
+    vehicle: "HYUNDAI CRETA",
+    brand: "SHARVARI MOTORS",
+    category: "Detailing",
+    image:
+      "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=1600&q=90",
+    description: "Gloss enhancement and paint protection inspiration.",
+  },
+  {
+    id: 4,
+    title: "Luxury Interior Styling",
+    vehicle: "KIA SELTOS",
+    brand: "SHARVARI MOTORS",
+    category: "Interior Modification",
+    image:
+      "https://images.unsplash.com/photo-1614200187524-dc4b892acf16?auto=format&fit=crop&w=1600&q=90",
+    description: "Premium cabin styling and interior design inspiration.",
+  },
+  {
+    id: 5,
+    title: "Exterior Styling",
+    vehicle: "MAHINDRA THAR",
+    brand: "SHARVARI MOTORS",
+    category: "Exterior Modification",
+    image:
+      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1600&q=90",
+    description: "Exterior styling and modification inspiration.",
+  },
+  {
+    id: 6,
+    title: "Professional Detailing",
+    vehicle: "TOYOTA FORTUNER",
+    brand: "SHARVARI MOTORS",
+    category: "Detailing",
+    image:
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1600&q=90",
+    description: "Exterior detailing and vehicle care inspiration.",
+  },
+  {
+    id: 7,
+    title: "Automotive Workshop",
+    vehicle: "MULTI-BRAND",
+    brand: "TULJA MOTORS",
+    category: "Mechanical Work",
+    image:
+      "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1600&q=90",
+    description: "Professional automotive workshop environment.",
+  },
+  {
+    id: 8,
+    title: "Premium Car Finish",
+    vehicle: "LUXURY AUTOMOTIVE",
+    brand: "SHARVARI MOTORS",
+    category: "PPF & Wrap",
+    image:
+      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1600&q=90",
+    description: "Vehicle protection and styling inspiration.",
+  },
+  {
+    id: 9,
+    title: "Vehicle Restoration",
+    vehicle: "MARUTI SUZUKI",
+    brand: "TULJA MOTORS",
+    category: "Restoration",
+    image:
+      "https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=1600&q=90",
+    description: "Bodywork and vehicle restoration inspiration.",
+  },
 ];
 
 const galleryCategories = [
-  "All Projects", "Accident Repair", "Denting & Painting", "Detailing",
-  "Interior Modification", "Exterior Modification", "PPF & Wrap",
-  "Mechanical Work", "Restoration",
+  "All Projects",
+  "Accident Repair",
+  "Denting & Painting",
+  "Detailing",
+  "Interior Modification",
+  "Exterior Modification",
+  "PPF & Wrap",
+  "Mechanical Work",
+  "Restoration",
 ];
 
-/* CAR BRAND LOGOS — ALL PNG */
+/* CAR BRAND LOGOS */
 
 const indianCarBrands = [
   { name: "Tata", logo: "/images/brands/tata-logo.png" },
@@ -247,25 +485,41 @@ export default function HomePage() {
   const [sliderPaused, setSliderPaused] = useState(false);
   const [activeService, setActiveService] = useState<string | null>(null);
   const [galleryCategory, setGalleryCategory] = useState("All Projects");
-  const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<number | null>(null);
+  const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<
+    number | null
+  >(null);
 
   const filteredGallery = galleryProjects
-    .map((project, index) => ({ ...project, originalIndex: index }))
-    .filter((project) =>
-      galleryCategory === "All Projects" || project.category === galleryCategory
+    .map((project, index) => ({
+      ...project,
+      originalIndex: index,
+    }))
+    .filter(
+      (project) =>
+        galleryCategory === "All Projects" ||
+        project.category === galleryCategory
     );
 
-  const selectedGallery = selectedGalleryIndex !== null
-    ? galleryProjects[selectedGalleryIndex]
-    : null;
+  const selectedGallery =
+    selectedGalleryIndex !== null
+      ? galleryProjects[selectedGalleryIndex]
+      : null;
 
   const currentProject = beforeAfterProjects[activeProject];
-  const activeDetails = detailedServices.find((item) => item.id === activeService) ?? null;
-  const activeCard = services.find((item) => item.href === `#${activeService}`) ?? null;
-  const activeMedia = activeService ? serviceMedia[activeService] : null;
+
+  const activeDetails =
+    detailedServices.find((item) => item.id === activeService) ?? null;
+
+  const activeMedia: ServiceMedia | null = activeService
+    ? serviceMedia[activeService] ?? null
+    : null;
 
   const [form, setForm] = useState({
-    name: "", phone: "", car: "", service: "", message: "",
+    name: "",
+    phone: "",
+    car: "",
+    service: "",
+    message: "",
   });
 
   /* GOOGLE TRANSLATE */
@@ -273,13 +527,16 @@ export default function HomePage() {
   useEffect(() => {
     const initializeGoogleTranslate = () => {
       if (!window.google?.translate?.TranslateElement) return;
+
       const element = document.getElementById("google_translate_element");
+
       if (!element || element.dataset.initialized === "true") return;
 
       new window.google.translate.TranslateElement(
         { pageLanguage: "en", autoDisplay: false },
         "google_translate_element"
       );
+
       element.dataset.initialized = "true";
     };
 
@@ -287,18 +544,24 @@ export default function HomePage() {
 
     if (window.google?.translate?.TranslateElement) {
       initializeGoogleTranslate();
+
       return () => {
         window.googleTranslateElementInit = undefined;
       };
     }
 
-    const existingScript = document.getElementById("google-translate-script") as HTMLScriptElement | null;
+    const existingScript = document.getElementById(
+      "google-translate-script"
+    ) as HTMLScriptElement | null;
 
     if (!existingScript) {
       const script = document.createElement("script");
+
       script.id = "google-translate-script";
-      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.src =
+        "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       script.async = true;
+
       document.body.appendChild(script);
     }
 
@@ -311,9 +574,13 @@ export default function HomePage() {
 
   useEffect(() => {
     if (sliderPaused) return;
+
     const interval = window.setInterval(() => {
-      setActiveProject((current) => (current + 1) % beforeAfterProjects.length);
+      setActiveProject(
+        (current) => (current + 1) % beforeAfterProjects.length
+      );
     }, 5000);
+
     return () => window.clearInterval(interval);
   }, [sliderPaused]);
 
@@ -321,12 +588,16 @@ export default function HomePage() {
 
   useEffect(() => {
     if (!activeService) return;
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setActiveService(null);
     };
+
     const previousOverflow = document.body.style.overflow;
+
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKeyDown);
+
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
@@ -339,27 +610,56 @@ export default function HomePage() {
     if (selectedGalleryIndex === null) return;
 
     const handleGalleryKeys = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelectedGalleryIndex(null);
-      if (event.key === "ArrowRight") {
-        setSelectedGalleryIndex((current) =>
-          current === null ? null : (current + 1) % galleryProjects.length
-        );
+      if (event.key === "Escape") {
+        setSelectedGalleryIndex(null);
       }
+
+      if (event.key === "ArrowRight") {
+        setSelectedGalleryIndex((current) => {
+          if (current === null || filteredGallery.length === 0) return null;
+
+          const currentPosition = filteredGallery.findIndex(
+            (project) => project.originalIndex === current
+          );
+
+          const nextPosition =
+            currentPosition < 0
+              ? 0
+              : (currentPosition + 1) % filteredGallery.length;
+
+          return filteredGallery[nextPosition].originalIndex;
+        });
+      }
+
       if (event.key === "ArrowLeft") {
-        setSelectedGalleryIndex((current) =>
-          current === null ? null : (current - 1 + galleryProjects.length) % galleryProjects.length
-        );
+        setSelectedGalleryIndex((current) => {
+          if (current === null || filteredGallery.length === 0) return null;
+
+          const currentPosition = filteredGallery.findIndex(
+            (project) => project.originalIndex === current
+          );
+
+          const previousPosition =
+            currentPosition < 0
+              ? 0
+              : (currentPosition - 1 + filteredGallery.length) %
+                filteredGallery.length;
+
+          return filteredGallery[previousPosition].originalIndex;
+        });
       }
     };
 
     const previousOverflow = document.body.style.overflow;
+
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleGalleryKeys);
+
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleGalleryKeys);
     };
-  }, [selectedGalleryIndex]);
+  }, [selectedGalleryIndex, filteredGallery]);
 
   const showPreviousProject = () => {
     setActiveProject((current) =>
@@ -368,11 +668,15 @@ export default function HomePage() {
   };
 
   const showNextProject = () => {
-    setActiveProject((current) => (current + 1) % beforeAfterProjects.length);
+    setActiveProject(
+      (current) => (current + 1) % beforeAfterProjects.length
+    );
   };
 
   const changeLanguage = (languageCode: string) => {
-    const select = document.querySelector(".goog-te-combo") as HTMLSelectElement | null;
+    const select = document.querySelector(
+      ".goog-te-combo"
+    ) as HTMLSelectElement | null;
 
     if (languageCode === "en") {
       if (select) {
@@ -382,6 +686,7 @@ export default function HomePage() {
         document.cookie = "googtrans=/en/en; path=/; max-age=31536000";
         window.location.reload();
       }
+
       setSelectedLanguage("en");
       setLanguageOpen(false);
       return;
@@ -394,6 +699,7 @@ export default function HomePage() {
 
     select.value = languageCode;
     select.dispatchEvent(new Event("change"));
+
     setSelectedLanguage(languageCode);
     setLanguageOpen(false);
   };
@@ -408,6 +714,7 @@ export default function HomePage() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const message = `Hello Tulja Motors,
 
 Name: ${form.name}
@@ -417,6 +724,7 @@ Service: ${form.service}
 Message: ${form.message}
 
 Please contact me regarding this enquiry.`;
+
     openWhatsApp(message);
   };
 
@@ -441,7 +749,6 @@ Please contact me regarding this enquiry.`;
 
   return (
     <main className="tm-home">
-
       {/* TOP AUTOMOTIVE ADVERTISEMENT SLIDER */}
 
       <section className="tm-before-after-section" id="home">
@@ -452,7 +759,9 @@ Please contact me regarding this enquiry.`;
             onMouseLeave={() => setSliderPaused(false)}
             onFocus={() => setSliderPaused(true)}
             onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget)) setSliderPaused(false);
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setSliderPaused(false);
+              }
             }}
           >
             <Link
@@ -462,35 +771,74 @@ Please contact me regarding this enquiry.`;
               key={currentProject.slug}
             >
               <div className="tm-ba-image tm-ba-before">
-                <img src={currentProject.beforeImage} alt={`${currentProject.vehicle} before work — illustrative image`} />
+                <img
+                  src={currentProject.beforeImage}
+                  alt={`${currentProject.vehicle} before work — illustrative image`}
+                />
                 <span className="tm-ba-label">BEFORE</span>
               </div>
+
               <div className="tm-ba-image tm-ba-after">
-                <img src={currentProject.afterImage} alt={`${currentProject.vehicle} after work — illustrative image`} />
+                <img
+                  src={currentProject.afterImage}
+                  alt={`${currentProject.vehicle} after work — illustrative image`}
+                />
                 <span className="tm-ba-label">AFTER</span>
               </div>
-              <div className="tm-ba-divider"><span>↔</span></div>
+
+              <div className="tm-ba-divider">
+                <span>↔</span>
+              </div>
+
               <div className="tm-ba-bottom">
                 <div>
-                  <small>{currentProject.brand} <span>·</span> {currentProject.vehicle}</small>
+                  <small>
+                    {currentProject.brand} <span>·</span>{" "}
+                    {currentProject.vehicle}
+                  </small>
+
                   <h3>{currentProject.title}</h3>
-                  <span className="tm-ba-service">{currentProject.service}</span>
+
+                  <span className="tm-ba-service">
+                    {currentProject.service}
+                  </span>
                 </div>
-                <span className="tm-ba-open">VIEW PROJECT <ArrowUpRight size={19} /></span>
+
+                <span className="tm-ba-open">
+                  VIEW PROJECT <ArrowUpRight size={19} />
+                </span>
               </div>
             </Link>
 
             <div className="tm-ba-controls">
               <div className="tm-ba-slide-info">
-                <span className="tm-ba-current-number">{currentProject.number}</span>
+                <span className="tm-ba-current-number">
+                  {currentProject.number}
+                </span>
+
                 <span className="tm-ba-slide-line" />
-                <span className="tm-ba-current-name">{currentProject.vehicle}</span>
+
+                <span className="tm-ba-current-name">
+                  {currentProject.vehicle}
+                </span>
               </div>
+
               <div className="tm-ba-arrows">
-                <button type="button" onClick={showPreviousProject} aria-label="Previous project" className="tm-ba-arrow">
+                <button
+                  type="button"
+                  onClick={showPreviousProject}
+                  aria-label="Previous project"
+                  className="tm-ba-arrow"
+                >
                   <ArrowLeft size={19} />
                 </button>
-                <button type="button" onClick={showNextProject} aria-label="Next project" className="tm-ba-arrow tm-ba-arrow-next">
+
+                <button
+                  type="button"
+                  onClick={showNextProject}
+                  aria-label="Next project"
+                  className="tm-ba-arrow tm-ba-arrow-next"
+                >
                   <ArrowRight size={19} />
                 </button>
               </div>
@@ -502,9 +850,15 @@ Please contact me regarding this enquiry.`;
                   type="button"
                   key={project.slug}
                   onClick={() => setActiveProject(index)}
-                  className={activeProject === index ? "tm-ba-dot active" : "tm-ba-dot"}
+                  className={
+                    activeProject === index
+                      ? "tm-ba-dot active"
+                      : "tm-ba-dot"
+                  }
                   aria-label={`Show project ${index + 1}: ${project.vehicle}`}
-                  aria-current={activeProject === index ? "true" : undefined}
+                  aria-current={
+                    activeProject === index ? "true" : undefined
+                  }
                 />
               ))}
             </div>
@@ -518,50 +872,24 @@ Please contact me regarding this enquiry.`;
         <div className="tm-ribbon-track">
           {[0, 1].map((item) => (
             <div className="tm-ribbon-group" key={item}>
-              <span>ACCIDENT REPAIR</span><i>✳</i>
-              <span>DENTING & PAINTING</span><i>✳</i>
-              <span>CAR RESTORATION</span><i>✳</i>
-              <span>CERAMIC COATING</span><i>✳</i>
-              <span>PPF & WRAPPING</span><i>✳</i>
-              <span>CAR CUSTOMISATION</span><i>✳</i>
+              <span>ACCIDENT REPAIR</span>
+              <i>✳</i>
+              <span>DENTING & PAINTING</span>
+              <i>✳</i>
+              <span>CAR RESTORATION</span>
+              <i>✳</i>
+              <span>CERAMIC COATING</span>
+              <i>✳</i>
+              <span>PPF & WRAPPING</span>
+              <i>✳</i>
+              <span>CAR CUSTOMISATION</span>
+              <i>✳</i>
             </div>
           ))}
         </div>
       </div>
 
-      {/* TWO BRANDS */}
-
-      <section className="tm-section tm-brands-section" id="about">
-        <div className="tm-wrap">
-          <div className="tm-brand-showcase">
-            <article className="tm-brand-showcase-card">
-              <div className="tm-showcase-logo tm-tulja-logo">
-                <img src="/tulja-motors-logo.png" alt="Tulja Motors" />
-              </div>
-              <div className="tm-showcase-info">
-                <span className="tm-showcase-label">REPAIR · RESTORE · REBUILD</span>
-                <p>Complete automotive care specialising in accident repairs, denting, painting, mechanical work and vehicle restoration.</p>
-              </div>
-            </article>
-
-            <article className="tm-brand-showcase-card">
-              <div className="tm-showcase-logo tm-sharvari-logo">
-                <svg viewBox="0 0 420 150" role="img" aria-labelledby="sharvariLogoTitle">
-                  <title id="sharvariLogoTitle">Sharvari Motors</title>
-                  <text x="15" y="83" fill="#086565" fontSize="72" fontWeight="900" fontFamily="Arial, Helvetica, sans-serif" letterSpacing="-4">SHARVARI</text>
-                  <path d="M270 12 L295 12 L263 92 L238 92 Z" fill="#FFC21B" />
-                  <path d="M245 101 H390" stroke="#086565" strokeWidth="13" strokeLinecap="square" />
-                  <text x="18" y="126" fill="#086565" fontSize="21" fontWeight="800" fontFamily="Arial, Helvetica, sans-serif" letterSpacing="12">MOTORS</text>
-                </svg>
-              </div>
-              <div className="tm-showcase-info">
-                <span className="tm-showcase-label">STYLE · CUSTOMISE · PROTECT</span>
-                <p>Personalise your vehicle with premium detailing, ceramic coating, PPF, interior upgrades and exterior customisation.</p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
+    
 
       {/* SERVICES */}
 
@@ -569,10 +897,13 @@ Please contact me regarding this enquiry.`;
         <div className="tm-wrap">
           <div className="tm-services-heading">
             <span>WHAT WE DO / OUR SERVICES</span>
-            <h2>COMPLETE CARE. <em>DISTINCT CRAFT.</em></h2>
+            <h2>
+              COMPLETE CARE. <em>DISTINCT CRAFT.</em>
+            </h2>
             <p>
-              Explore repair, restoration, detailing and customisation options for your vehicle.
-              Select any service to understand the work involved.
+              Explore repair, restoration, detailing and customisation options
+              for your vehicle. Select any service to understand the work
+              involved.
             </p>
           </div>
 
@@ -591,15 +922,35 @@ Please contact me regarding this enquiry.`;
                   aria-label={`View details: ${service.title}`}
                 >
                   <span className="tm-svc-card-media">
-                    <img src={media.image} alt={`${service.title} — ${media.cars}`} loading="lazy" />
-                    <span className="tm-svc-card-number">{service.number}</span>
+                    <img
+                      src={media.image}
+                      alt={`${service.title} — ${media.cars}`}
+                      loading="lazy"
+                    />
+
+                    <span className="tm-svc-card-number">
+                      {service.number}
+                    </span>
+
                     <span className="tm-svc-card-car">{media.cars}</span>
-                    <span className="tm-svc-card-brand">{service.brand}</span>
+
+                    <span className="tm-svc-card-brand">
+                      {service.brand}
+                    </span>
                   </span>
+
                   <span className="tm-svc-card-body">
-                    <span className="tm-svc-card-title">{service.title}</span>
-                    <span className="tm-svc-card-text">{service.description}</span>
-                    <span className="tm-svc-card-action">VIEW DETAILS <ArrowUpRight size={16} /></span>
+                    <span className="tm-svc-card-title">
+                      {service.title}
+                    </span>
+
+                    <span className="tm-svc-card-text">
+                      {service.description}
+                    </span>
+
+                    <span className="tm-svc-card-action">
+                      VIEW DETAILS <ArrowUpRight size={16} />
+                    </span>
                   </span>
                 </button>
               );
@@ -608,94 +959,15 @@ Please contact me regarding this enquiry.`;
 
           <div className="tm-service-note">
             <span>PLEASE NOTE</span>
-            Service availability, materials, products, pricing and estimated completion time are confirmed after vehicle inspection and discussion.
-            Images are illustrative stock photos, not verified photographs of completed workshop jobs.
+            Service availability, materials, products, pricing and estimated
+            completion time are confirmed after vehicle inspection and
+            discussion. Images are illustrative stock photos, not verified
+            photographs of completed workshop jobs.
           </div>
         </div>
       </section>
 
-      {/* PREMIUM AUTOMOTIVE PROJECT GALLERY */}
-
-      <section className="tm-section tm-premium-gallery-section" id="work">
-        <div className="tm-wrap">
-          <div className="tm-premium-gallery-heading">
-            <div>
-              <div className="tm-section-tag">AUTOMOTIVE SHOWCASE</div>
-              <h2>
-                CRAFTED FOR
-                <br />
-                THE <span>DRIVE.</span>
-              </h2>
-            </div>
-
-            <div className="tm-premium-gallery-intro">
-              <p>
-                Explore automotive repair, restoration, detailing and
-                customisation inspiration across our two specialist divisions.
-              </p>
-              <div className="tm-gallery-count">
-                <strong>{String(filteredGallery.length).padStart(2, "0")}</strong>
-                <span>VISUAL SHOWCASE</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="tm-premium-gallery-filters">
-            {galleryCategories.map((category) => (
-              <button
-                type="button"
-                key={category}
-                className={galleryCategory === category ? "tm-gallery-filter active" : "tm-gallery-filter"}
-                onClick={() => setGalleryCategory(category)}
-              >
-                {category}
-                {galleryCategory === category && <span className="tm-gallery-filter-dot" />}
-              </button>
-            ))}
-          </div>
-
-          <div className="tm-premium-gallery-grid">
-            {filteredGallery.map((project, index) => (
-              <button
-                type="button"
-                key={project.id}
-                className={`tm-premium-gallery-item tm-premium-gallery-item-${index % 6}`}
-                onClick={() => setSelectedGalleryIndex(project.originalIndex)}
-                aria-label={`Open ${project.title}`}
-              >
-                <img
-                  src={project.image}
-                  alt={`${project.title} — illustrative automotive image`}
-                  loading="lazy"
-                />
-                <span className="tm-gallery-shade" />
-                <span className="tm-gallery-topline">
-                  <span>{project.brand}</span>
-                  <span>{String(project.id).padStart(2, "0")}</span>
-                </span>
-                <span className="tm-gallery-card-info">
-                  <span className="tm-gallery-category">{project.category}</span>
-                  <strong>{project.title}</strong>
-                  <span className="tm-gallery-vehicle">{project.vehicle}</span>
-                </span>
-                <span className="tm-gallery-open"><ArrowUpRight size={21} /></span>
-              </button>
-            ))}
-          </div>
-
-          <div className="tm-premium-gallery-footer">
-            <span>REPAIR. RESTORE. REDEFINE.</span>
-            <p>
-              Gallery images are illustrative stock photography, not verified
-              photographs of completed Tulja Motors or Sharvari Motors projects.
-              Actual work examples can be added as workshop photographs become
-              available.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* INDIAN CAR BRAND LOGO MARQUEE */}
+        {/* INDIAN CAR BRANDS MARQUEE */}
 
       <section className="tm-brand-marquee-section" id="brands">
         <div className="tm-brand-marquee-heading">
@@ -713,14 +985,15 @@ Please contact me regarding this enquiry.`;
                 aria-hidden={repeatIndex === 1}
               >
                 {indianCarBrands.map((brand) => (
-                  <div className="tm-brand-marquee-item" key={brand.name} title={brand.name}>
+                  <div
+                    className="tm-brand-marquee-item"
+                    key={`${repeatIndex}-${brand.name}`}
+                    title={brand.name}
+                  >
                     <img
                       src={brand.logo}
                       alt={repeatIndex === 0 ? `${brand.name} logo` : ""}
                       loading="lazy"
-                      onError={(event) => {
-                        event.currentTarget.style.display = "none";
-                      }}
                     />
                   </div>
                 ))}
@@ -729,497 +1002,634 @@ Please contact me regarding this enquiry.`;
           </div>
         </div>
       </section>
+{/* PREMIUM AUTOMOTIVE GALLERY - THREE ROWS */}
 
-      {/* SHARVARI MOTORS EXPERIENCE STATS */}
+<section className="tm-section tm-premium-gallery-section" id="work">
+  <div className="tm-wrap">
+
+    <div className="tm-premium-gallery-heading">
+      <div>
+        <span className="tm-section-tag">AUTOMOTIVE SHOWCASE</span>
+        <h2>OUR WORK & PROJECTS</h2>
+        <p className="tm-premium-gallery-intro">
+          Explore our automotive repair, restoration and customization projects.
+        </p>
+      </div>
+
+      <div className="tm-gallery-count">
+        <strong>{galleryProjects.length.toString().padStart(2, "0")}</strong>
+        <span>PROJECTS</span>
+      </div>
+    </div>
+
+    {/*
+      Reusable gallery row.
+      Each project is displayed twice for seamless auto-scrolling.
+    */}
+    {[
+      {
+        title: "ALL PROJECTS",
+        subtitle: "A complete showcase of our automotive work",
+        projects: galleryProjects,
+        className: "tm-gallery-row-all",
+      },
+      {
+        title: "TULJA MOTORS",
+        subtitle: "Accident repair, restoration and mechanical work",
+        projects: galleryProjects.filter(
+          (project) => project.brand.toUpperCase() === "TULJA MOTORS"
+        ),
+        className: "tm-gallery-row-tulja",
+      },
+      {
+        title: "SHARVARI MOTORS",
+        subtitle: "Premium detailing, modification and customization",
+        projects: galleryProjects.filter(
+          (project) => project.brand.toUpperCase() === "SHARVARI MOTORS"
+        ),
+        className: "tm-gallery-row-sharvari",
+      },
+    ].map((row, rowIndex) => (
+      <div className={`tm-gallery-row ${row.className}`} key={row.title}>
+
+        <div className="tm-gallery-row-heading">
+          <div>
+            <span className="tm-gallery-row-number">
+              0{rowIndex + 1}
+            </span>
+            <div>
+              <h3>{row.title}</h3>
+              <p>{row.subtitle}</p>
+            </div>
+          </div>
+
+          <span className="tm-gallery-row-total">
+            {row.projects.length.toString().padStart(2, "0")} PROJECTS
+          </span>
+        </div>
+
+        {row.projects.length > 0 ? (
+          <div className="tm-gallery-viewport">
+            <div className="tm-gallery-track">
+
+              {[0, 1].map((copy) => (
+                <div
+                  className="tm-gallery-group"
+                  key={`${row.title}-${copy}`}
+                  aria-hidden={copy === 1 ? "true" : undefined}
+                >
+                  {row.projects.map((project) => {
+                    const originalIndex = galleryProjects.findIndex(
+                      (item) => item.id === project.id
+                    );
+
+                    return (
+                      <button
+                        type="button"
+                        className="tm-premium-gallery-item"
+                        key={`${copy}-${project.id}`}
+                        onClick={() =>
+                          setSelectedGalleryIndex(originalIndex)
+                        }
+                        tabIndex={copy === 1 ? -1 : 0}
+                      >
+                        <img
+                          src={project.image}
+                          alt={`${project.title} - ${project.vehicle}`}
+                          className="tm-gallery-card-image"
+                        />
+
+                        <div className="tm-gallery-shade" />
+
+                        <div className="tm-gallery-card-top">
+                          <span className="tm-gallery-category">
+                            {project.category}
+                          </span>
+                          <span className="tm-gallery-brand">
+                            {project.brand}
+                          </span>
+                        </div>
+
+                        <div className="tm-gallery-card-info">
+                          <span className="tm-gallery-vehicle">
+                            {project.vehicle}
+                          </span>
+
+                          <h4>{project.title}</h4>
+
+                          <span className="tm-gallery-open">
+                            VIEW PROJECT <ArrowUpRight size={17} />
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+
+            </div>
+          </div>
+        ) : (
+          <p className="tm-gallery-empty">
+            Projects will be added soon.
+          </p>
+        )}
+
+      </div>
+    ))}
+
+    <div className="tm-premium-gallery-footer">
+      <span>CRAFTED WITH PRECISION</span>
+      <span>TULJA MOTORS × SHARVARI MOTORS</span>
+    </div>
+
+  </div>
+</section>
+
+    
+
+      {/* SHARVARI MOTORS SHOWCASE */}
 
       <section className="tm-sharvari-stats-section">
         <div className="tm-sharvari-stats-inner">
-          <div className="tm-sharvari-stats-heading">
-            <span>SHARVARI MOTORS</span>
-            <h2>EXPERIENCE THAT <em>DRIVES CONFIDENCE.</em></h2>
+          <div className="tm-sharvari-stats-content">
+            <span className="tm-section-tag"></span>
+
+            <h2>
+              EXPERIENCE THAT
+              <br />
+              MOVES WITH YOU.
+            </h2>
+
+            <p>
+              At Sharvari Motors, we bring together automobile experience,
+              attention to detail and a passion for making every vehicle
+              better. From everyday repairs to personalised upgrades, our
+              focus remains on quality workmanship.
+            </p>
+
+            <Link href="/about" className="tm-outline-link">
+              DISCOVER OUR STORY <ArrowUpRight size={17} />
+            </Link>
           </div>
 
           <div className="tm-sharvari-stats-grid">
-            <div className="tm-sharvari-stat">
-              <h3>7<span>+</span></h3>
-              <p>Years in the automobile trade</p>
+            <div className="tm-stat-card">
+              <span className="tm-stat-number">7+</span>
+              <span className="tm-stat-label">YEARS IN AUTOMOBILE TRADE</span>
             </div>
-            <div className="tm-sharvari-stat">
-              <h3>1,500<span>+</span></h3>
-              <p>Happy customers across Maharashtra</p>
+
+            <div className="tm-stat-card">
+              <span className="tm-stat-number">1,500+</span>
+              <span className="tm-stat-label">HAPPY CUSTOMERS</span>
             </div>
-            <div className="tm-sharvari-stat">
-              <h3>1,000<span>+</span></h3>
-              <p>Vehicles modified</p>
+
+            <div className="tm-stat-card">
+              <span className="tm-stat-number">1,000+</span>
+              <span className="tm-stat-label">VEHICLES MODIFIED</span>
             </div>
-            <div className="tm-sharvari-stat">
-              <h3>2.4L<span>+</span></h3>
-              <p>Instagram followers</p>
+
+            <div className="tm-stat-card">
+              <span className="tm-stat-number">2.4L+</span>
+              <span className="tm-stat-label">INSTAGRAM FOLLOWERS</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* PROCESS */}
+      {/* OUR PROCESS */}
 
-      <section className="tm-section tm-process-section">
-        <div className="tm-wrap">
+      <section className="tm-process-section">
+        <div className="tm-process-container">
           <div className="tm-section-heading">
             <div>
-              <div className="tm-section-tag">HOW IT WORKS</div>
-              <h2>
-                FOUR STEPS.
-                <br />
-                ZERO GUESSWORK.
-              </h2>
+              <div className="tm-section-tag">HOW WE WORK</div>
+              
+                FROM FIRST LOOK TO FINAL FINISH
             </div>
-            <p>Enquiry पासून delivery पर्यंत सोपी आणि स्पष्ट प्रक्रिया.</p>
+
+          
           </div>
 
           <div className="tm-process-grid">
             {[
-              ["01", "Tell Us", "Car model, photos आणि service requirement पाठवा."],
-              ["02", "Inspect", "Vehicle तपासणी आणि estimate समजून घ्या."],
-              ["03", "Book", "काम व वेळ निश्चित करून appointment घ्या."],
-              ["04", "Drive Away", "काम पूर्ण झाल्यावर car तपासून delivery घ्या."],
-            ].map(([number, title, description]) => (
-              <article key={number}>
-                <strong>{number}</strong>
-                <h3>{title}</h3>
-                <p>{description}</p>
-              </article>
+              {
+                number: "01",
+                title: "INSPECT",
+                description:
+                  "We understand your vehicle's condition and identify the work required.",
+                icon: <CarFront size={27} />,
+              },
+              {
+                number: "02",
+                title: "PLAN",
+                description:
+                  "We discuss the requirements, suitable solutions and project scope.",
+                icon: <CheckCircle2 size={27} />,
+              },
+              {
+                number: "03",
+                title: "WORK",
+                description:
+                  "Our team carries out the agreed repair, restoration or customisation.",
+                icon: <Wrench size={27} />,
+              },
+              {
+                number: "04",
+                title: "DELIVER",
+                description:
+                  "We complete the finishing checks and prepare your vehicle for delivery.",
+                icon: <ShieldCheck size={27} />,
+              },
+            ].map((step) => (
+              <div className="tm-process-card" key={step.number}>
+                <div className="tm-process-top">
+                  <span>{step.number}</span>
+                  <div className="tm-process-icon">{step.icon}</div>
+                </div>
+
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+                <div className="tm-process-bottom-line" />
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* WHY US */}
-
-      <section className="tm-section tm-why-section">
-        <div className="tm-wrap">
-          <div className="tm-section-heading">
-            <div>
-              <div className="tm-section-tag">THE DIFFERENCE</div>
-              <h2 className="tm-difference-title">
-                BUILT AROUND <span>YOUR VEHICLE.</span>
-              </h2>
-            </div>
-            <p>A considered approach to repair, restoration and customisation.</p>
-          </div>
-
-          <div className="tm-why-grid">
-            <article>
-              <CarFront />
-              <h3>10,000 SQ FT</h3>
-              <p>Planned workshop space for automotive operations.</p>
-            </article>
-            <article>
-              <Wrench />
-              <h3>MODERN WORKSHOP</h3>
-              <p>Workshop setup planned around multiple automotive needs.</p>
-            </article>
-            <article>
-              <ShieldCheck />
-              <h3>MULTI-BRAND APPROACH</h3>
-              <p>Service enquiries for a wide range of vehicle brands.</p>
-            </article>
-            <article>
-              <Paintbrush />
-              <h3>TWO SPECIALIST DIVISIONS</h3>
-              <p>Repair and restoration alongside styling and detailing.</p>
-            </article>
-            <article>
-              <Sparkles />
-              <h3>PERSONALISED OPTIONS</h3>
-              <p>Discuss the finish and upgrades you want for your car.</p>
-            </article>
-          </div>
-        </div>
-      </section>
+     
 
       {/* FAQ */}
 
-      <section className="tm-section tm-faq-section">
-        <div className="tm-wrap tm-faq-layout">
-          <div>
-            <div className="tm-section-tag">NEED TO KNOW</div>
-            <h2>
-              YOUR QUESTIONS.
-              <br />
-              ANSWERED.
-            </h2>
-            <p>Have another question about your car? Contact our team directly.</p>
+      <section className="tm-faq-section" id="faq">
+        <div className="tm-faq-container">
+          <div className="tm-section-heading">
+            <div>
+              <div className="tm-section-tag">GOT QUESTIONS?</div>
+              <h2>
+                GOOD TO KNOW
+                
+                BEFORE YOU VISIT.
+              </h2>
+            </div>
 
-            <a
-              href={`https://wa.me/${WHATSAPP}`}
-              target="_blank"
-              rel="noreferrer"
-              className="tm-btn tm-btn-teal"
-            >
-              ASK ON WHATSAPP <ArrowUpRight size={15} />
-            </a>
+            <p>
+              A few helpful answers about our automobile repair and
+              customisation services.
+            </p>
           </div>
 
           <div className="tm-faq-list">
             {faqs.map((faq, index) => (
-              <article className="tm-faq-item" key={faq.q}>
+              <div
+                className={`tm-faq-item ${
+                  faqOpen === index ? "active" : ""
+                }`}
+                key={index}
+              >
                 <button
                   type="button"
-                  onClick={() => setFaqOpen(faqOpen === index ? null : index)}
+                  className="tm-faq-question"
+                  onClick={() =>
+                    setFaqOpen(faqOpen === index ? -1 : index)
+                  }
                   aria-expanded={faqOpen === index}
                 >
+                  <span className="tm-faq-number">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
                   <span>{faq.q}</span>
-                  <span>{faqOpen === index ? "−" : "+"}</span>
+
+                  <span className="tm-faq-toggle">
+                    {faqOpen === index ? (
+                      <X size={19} />
+                    ) : (
+                      <ArrowUpRight size={19} />
+                    )}
+                  </span>
                 </button>
-                {faqOpen === index && <p>{faq.a}</p>}
-              </article>
+
+                {faqOpen === index && (
+                  <div className="tm-faq-answer">
+                    <p>{faq.a}</p>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CONTACT */}
+      {/* CONTACT SECTION */}
 
-      <section className="tm-section tm-contact-section" id="contact">
-        <div className="tm-wrap">
-          <div className="tm-contact-panel">
-            <div className="tm-contact-grid">
-              <div className="tm-contact-info">
-                <div className="tm-eyebrow">COME SAY HELLO</div>
-                <h2>
-                  LET&apos;S MAKE
-                  <br />
-                  YOUR CAR BETTER.
-                </h2>
+      <section className="tm-contact-section" id="contact">
+        <div className="tm-contact-container">
+          <div className="tm-contact-left">
+            <span className="tm-section-tag">LET'S TALK CARS</span>
 
-                <div className="tm-contact-detail">
-                  <MapPin />
-                  <div>
-                    <b>VISIT OUR LOCATION</b>
-                    <p>
-                      Tulja Motors &amp; Sharvari Motors,
-                      <br />
-                      Pune Bengaluru National Highway NH 48,
-                      <br />
-                      Near Shetimal Petrol Pump, Top Sambhapur,
-                      <br />
-                      Kolhapur, Maharashtra – 416122
-                    </p>
-                  </div>
-                </div>
+            <h2>
+              YOUR CAR.
+              <br />
+              OUR <span>CRAFT.</span>
+            </h2>
 
-                <div className="tm-contact-detail">
-                  <Phone />
-                  <div>
-                    <b>CALL OUR TEAM</b>
-                    <p><a href={`tel:+91${PHONE}`}>+91 91301 29205</a></p>
-                  </div>
-                </div>
+            <p>
+              Tell us what your vehicle needs. Whether it is accident repair,
+              restoration, detailing or a custom upgrade, get in touch with
+              our team.
+            </p>
 
-                <div className="tm-contact-detail">
-                  <Mail />
-                  <div>
-                    <b>EMAIL US</b>
-                    <p><a href={`mailto:${EMAIL}`}>{EMAIL}</a></p>
-                  </div>
-                </div>
+            <div className="tm-contact-details">
+              <a href={`tel:${PHONE}`} className="tm-contact-detail">
+                <span className="tm-contact-detail-icon">
+                  <Phone size={20} />
+                </span>
+                <span>
+                  <small>CALL US</small>
+                  <strong>{PHONE}</strong>
+                </span>
+                <ArrowUpRight size={17} />
+              </a>
 
-                <div className="tm-actions">
-                  <a href={`tel:+91${PHONE}`} className="tm-btn tm-btn-yellow">
-                    CALL NOW <Phone size={15} />
-                  </a>
-                  <button
-                    type="button"
-                    className="tm-btn tm-btn-outline"
-                    onClick={() => openWhatsApp("Hello Tulja Motors, I want to enquire.")}
-                  >
-                    WHATSAPP <MessageCircle size={15} />
-                  </button>
-                </div>
-              </div>
+              <a href={`mailto:${EMAIL}`} className="tm-contact-detail">
+                <span className="tm-contact-detail-icon">
+                  <Mail size={20} />
+                </span>
+                <span>
+                  <small>EMAIL US</small>
+                  <strong>{EMAIL}</strong>
+                </span>
+                <ArrowUpRight size={17} />
+              </a>
 
-              <div className="tm-contact-form-area">
-                <div className="tm-form-heading">
-                  <span>START A CONVERSATION</span>
-                  <h3>Tell us about your car.</h3>
-                  <p>Fill in the details and continue on WhatsApp.</p>
-                </div>
-
-                <form className="tm-contact-form" onSubmit={handleSubmit}>
-                  <label>
-                    YOUR NAME
-                    <input
-                      required
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder="Enter your name"
-                    />
-                  </label>
-
-                  <label>
-                    PHONE NUMBER
-                    <input
-                      required
-                      type="tel"
-                      pattern="[0-9+\s-]{10,15}"
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      placeholder="Enter phone number"
-                    />
-                  </label>
-
-                  <label>
-                    CAR MODEL
-                    <input
-                      value={form.car}
-                      onChange={(e) => setForm({ ...form, car: e.target.value })}
-                      placeholder="e.g. Tata Nexon"
-                    />
-                  </label>
-
-                  <label>
-                    SERVICE REQUIRED
-                    <select
-                      required
-                      value={form.service}
-                      onChange={(e) => setForm({ ...form, service: e.target.value })}
-                    >
-                      <option value="">Select a service</option>
-                      {services.map((service) => (
-                        <option key={service.number} value={service.title}>
-                          {service.title}
-                        </option>
-                      ))}
-                      <option value="Other enquiry">Other enquiry</option>
-                    </select>
-                  </label>
-
-                  <label className="tm-form-full">
-                    MESSAGE
-                    <textarea
-                      rows={3}
-                      value={form.message}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      placeholder="Tell us what you need..."
-                    />
-                  </label>
-
-                  <button type="submit" className="tm-btn tm-btn-yellow tm-form-submit">
-                    SEND ENQUIRY ON WHATSAPP <ArrowUpRight size={16} />
-                  </button>
-                </form>
-              </div>
+              <a
+                href={MAP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tm-contact-detail"
+              >
+                <span className="tm-contact-detail-icon">
+                  <MapPin size={20} />
+                </span>
+                <span>
+                  <small>FIND OUR LOCATION</small>
+                  <strong>GET DIRECTIONS</strong>
+                </span>
+                <ArrowUpRight size={17} />
+              </a>
             </div>
           </div>
 
-          <a className="tm-map-card" href={MAP_URL} target="_blank" rel="noreferrer">
-            <div className="tm-map-icon"><MapPin size={32} /></div>
-            <div>
-              <span>FIND OUR WORKSHOP</span>
-              <h3>NH 48 · Top Sambhapur · Kolhapur</h3>
-              <p>Open directions in Google Maps</p>
+          <div className="tm-contact-form-card">
+            <div className="tm-contact-form-heading">
+              <span>01 / ENQUIRY</span>
+              <h3>LET'S GET STARTED.</h3>
+              <p>Share a few details and we will get back to you.</p>
             </div>
-            <ArrowUpRight className="tm-map-arrow" />
-          </a>
+
+            <form onSubmit={handleSubmit} className="tm-contact-form">
+              <div className="tm-form-row">
+                <label>
+                  YOUR NAME *
+                  <input
+                    type="text"
+                    placeholder="Enter your name"
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm({ ...form, name: e.target.value })
+                    }
+                    required
+                  />
+                </label>
+
+                <label>
+                  PHONE NUMBER *
+                  <input
+                    type="tel"
+                    placeholder="Enter phone number"
+                    value={form.phone}
+                    onChange={(e) =>
+                      setForm({ ...form, phone: e.target.value })
+                    }
+                    required
+                  />
+                </label>
+              </div>
+
+              <label>
+                VEHICLE MODEL *
+                <input
+                  type="text"
+                  placeholder="e.g. Mahindra Scorpio"
+                  value={form.car}
+                  onChange={(e) =>
+                    setForm({ ...form, car: e.target.value })
+                  }
+                  required
+                />
+              </label>
+
+              <label>
+                SERVICE REQUIRED *
+                <select
+                  value={form.service}
+                  onChange={(e) =>
+                    setForm({ ...form, service: e.target.value })
+                  }
+                  required
+                >
+                  <option value="">Select a service</option>
+
+                  {services.map((service) => (
+                    <option key={service.number} value={service.title}>
+                      {service.title}
+                    </option>
+                  ))}
+
+                  <option value="Other enquiry">Other enquiry</option>
+                </select>
+              </label>
+
+              <label>
+                MESSAGE
+                <textarea
+                  rows={4}
+                  placeholder="Tell us a little about the work required..."
+                  value={form.message}
+                  onChange={(e) =>
+                    setForm({ ...form, message: e.target.value })
+                  }
+                />
+              </label>
+
+              <button type="submit" className="tm-contact-submit">
+                SEND ENQUIRY <ArrowUpRight size={19} />
+              </button>
+
+              <p className="tm-form-note">
+                By submitting this form, you agree to be contacted regarding
+                your enquiry.
+              </p>
+            </form>
+          </div>
         </div>
       </section>
 
-      {/* PREMIUM GALLERY IMAGE LIGHTBOX */}
+      {/* MAP / DIRECTIONS */}
 
-      {selectedGallery && selectedGalleryIndex !== null && (
+<section className="tm-map-section">
+  <div className="tm-map-heading">
+    <div>
+      <span className="tm-section-tag">COME VISIT US</span>
+      <h2>FIND YOUR WAY TO US.</h2>
+      <p>
+        Visit Tulja Motors for professional automotive repair,
+        restoration and customisation.
+      </p>
+    </div>
+
+    <a
+      href={MAP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="tm-map-directions"
+    >
+      OPEN DIRECTIONS <ArrowUpRight size={17} />
+    </a>
+  </div>
+
+  <div className="tm-map-frame">
+    <iframe
+      title="Tulja Motors workshop location"
+      src="https://www.openstreetmap.org/export/embed.html?bbox=74.279622%2C16.793993%2C74.289622%2C16.803993&layer=mapnik&marker=16.798993%2C74.284622"
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+    />
+  </div>
+</section>
+      {/* SERVICE DETAILS MODAL */}
+
+      {activeService && activeDetails && activeMedia && (
         <div
-          className="tm-gallery-lightbox"
-          onClick={() => setSelectedGalleryIndex(null)}
+          className="tm-service-modal-overlay"
+          onClick={() => setActiveService(null)}
           role="presentation"
         >
-          <button
-            type="button"
-            className="tm-gallery-lightbox-close"
-            onClick={() => setSelectedGalleryIndex(null)}
-            aria-label="Close image viewer"
-          >
-            <X size={24} />
-          </button>
-
           <div
-            className="tm-gallery-lightbox-content"
-            role="dialog"
-            aria-modal="true"
-            aria-label={selectedGallery.title}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="tm-gallery-lightbox-image">
-              <img
-                src={selectedGallery.image}
-                alt={`${selectedGallery.title} — illustrative automotive image`}
-              />
-
-              <button
-                type="button"
-                className="tm-gallery-lightbox-prev"
-                onClick={() => setSelectedGalleryIndex((current) =>
-                  current === null ? null : (current - 1 + galleryProjects.length) % galleryProjects.length
-                )}
-                aria-label="Previous gallery image"
-              >
-                <ChevronLeft size={27} />
-              </button>
-
-              <button
-                type="button"
-                className="tm-gallery-lightbox-next"
-                onClick={() => setSelectedGalleryIndex((current) =>
-                  current === null ? null : (current + 1) % galleryProjects.length
-                )}
-                aria-label="Next gallery image"
-              >
-                <ChevronRight size={27} />
-              </button>
-
-              <span className="tm-gallery-lightbox-counter">
-                {String(selectedGalleryIndex + 1).padStart(2, "0")}
-                <i />
-                {String(galleryProjects.length).padStart(2, "0")}
-              </span>
-            </div>
-
-            <div className="tm-gallery-lightbox-info">
-              <span>{selectedGallery.brand}</span>
-              <h3>{selectedGallery.title}</h3>
-              <p>{selectedGallery.vehicle}</p>
-              <div>{selectedGallery.category}</div>
-              <small>Illustrative stock image — not a verified workshop project.</small>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* SERVICE DETAILS POPUP */}
-
-      {activeDetails && activeCard && (
-        <div className="tm-modal-backdrop" onClick={() => setActiveService(null)}>
-          <div
-            className="tm-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="tm-modal-title"
-            onClick={(event) => event.stopPropagation()}
+            className="tm-service-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="presentation"
           >
             <button
               type="button"
-              className="tm-modal-close"
+              className="tm-service-modal-close"
               onClick={() => setActiveService(null)}
               aria-label="Close service details"
             >
-              <X size={20} />
+              <X size={23} />
             </button>
 
-            <div className="tm-modal-photos">
-              {activeMedia && (
-                <>
-                  <img src={activeMedia.image} alt={`${activeCard.title} — ${activeMedia.cars}`} />
-                  <img src={activeMedia.image2} alt={`${activeCard.title} work example`} />
-                </>
-              )}
+            <div className="tm-service-modal-image">
+              <img
+                src={activeMedia.image}
+                alt={activeDetails.title}
+              />
+              <span>{activeDetails.number}</span>
             </div>
 
-            <div className="tm-modal-content">
-              <span className="tm-modal-tag">{activeDetails.number}</span>
-              <h3 id="tm-modal-title">{activeDetails.title}</h3>
-              <p className="tm-modal-local">{activeDetails.description}</p>
+            <div className="tm-service-modal-content">
+              <span className="tm-section-tag">
+                {activeDetails.number}
+              </span>
 
-              <div className="tm-modal-blocks">
-                <div>
-                  <span>01 / WHAT IS THIS SERVICE?</span>
-                  <p>{activeDetails.what}</p>
-                </div>
-                <div>
-                  <span>02 / WHY IS IT DONE? (BENEFITS)</span>
-                  <p>{activeDetails.why}</p>
-                </div>
-              </div>
+              <h2>{activeDetails.title}</h2>
 
-              <span className="tm-modal-label">03 / HOW WE DO IT</span>
-              <ul className="tm-modal-steps">
+              <p>{activeDetails.description}</p>
+
+              <h4>WHAT IS THIS SERVICE?</h4>
+              <p>{activeDetails.what}</p>
+
+              <h4>WHY IS IT IMPORTANT?</h4>
+              <p>{activeDetails.why}</p>
+
+              <h4>WHAT WE OFFER</h4>
+
+              <ul>
                 {activeDetails.points.map((point, index) => (
-                  <li key={point}>
-                    <b>{String(index + 1).padStart(2, "0")}</b>
-                    <span>{point}</span>
-                    <CheckCircle2 size={16} />
+                  <li key={index}>
+                    <CheckCircle2 size={17} />
+                    {point}
                   </li>
                 ))}
               </ul>
 
-              <div className="tm-modal-footer">
-                <p>Final work, products and price are confirmed after vehicle inspection.</p>
-                <button
-                  type="button"
-                  className="tm-btn tm-btn-teal"
-                  onClick={() => openWhatsApp(
-                    `Hello Tulja Motors / Sharvari Motors,\n\nI want to enquire about: ${activeCard.title}\nCar model: \nPlease share the process, available options and an estimate.`
-                  )}
-                >
-                  ENQUIRE ON WHATSAPP <ArrowUpRight size={16} />
-                </button>
-              </div>
+              <button
+                type="button"
+                className="tm-contact-submit"
+                onClick={() => {
+                  const selectedTitle = activeDetails.title;
+
+                  setActiveService(null);
+
+                  setForm((previous) => ({
+                    ...previous,
+                    service: selectedTitle,
+                  }));
+
+                  document
+                    .getElementById("contact")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                ENQUIRE ABOUT THIS SERVICE
+                <ArrowUpRight size={18} />
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* HIDDEN GOOGLE TRANSLATE ENGINE */}
+      {/* GOOGLE TRANSLATE */}
 
-      <div
-        id="google_translate_element"
-        className="tm-google-translate"
-        aria-hidden="true"
-      />
+      <div id="google_translate_element" className="tm-google-translate" />
 
       {/* FLOATING LANGUAGE SELECTOR */}
 
       <div className="tm-language-widget">
         {languageOpen && (
           <div className="tm-language-menu">
-            <div className="tm-language-heading">
-              <div>
-                <span>WEBSITE LANGUAGE</span>
-                <h3>Choose Language</h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setLanguageOpen(false)}
-                aria-label="Close language menu"
-              >
-                <X size={18} />
-              </button>
+            <div className="tm-language-menu-heading">
+              <Languages size={17} />
+              <span>SELECT LANGUAGE</span>
             </div>
 
-            <div className="tm-language-options">
-              {languages.map((language) => (
-                <button
-                  type="button"
-                  key={language.code}
-                  className={selectedLanguage === language.code ? "tm-language-option active" : "tm-language-option"}
-                  onClick={() => changeLanguage(language.code)}
-                >
-                  <span>{language.native}</span>
-                  <small>{language.name}</small>
-                  {selectedLanguage === language.code && <CheckCircle2 size={16} />}
-                </button>
-              ))}
-            </div>
-            <p className="tm-language-note">Translation powered by Google.</p>
+            {languages.map((language) => (
+              <button
+                type="button"
+                key={language.code}
+                className={
+                  selectedLanguage === language.code ? "active" : ""
+                }
+                onClick={() => changeLanguage(language.code)}
+              >
+                <span>{language.native}</span>
+
+                {selectedLanguage === language.code && (
+                  <CheckCircle2 size={16} />
+                )}
+              </button>
+            ))}
           </div>
         )}
 
         <button
           type="button"
-          className="tm-language-trigger"
-          onClick={() => setLanguageOpen((open) => !open)}
-          aria-label="Choose website language"
-          aria-expanded={languageOpen}
+          className="tm-language-toggle"
+          onClick={() => setLanguageOpen(!languageOpen)}
+          aria-label="Change website language"
         >
-          <Languages size={23} />
+          {languageOpen ? <X size={22} /> : <Languages size={22} />}
         </button>
       </div>
     </main>

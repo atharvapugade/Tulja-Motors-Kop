@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -6,7 +7,10 @@ import {
   Target,
   Eye,
   ShieldCheck,
+  CarFront,
+  ChevronRight,
 } from "lucide-react";
+
 import "../inner-pages.css";
 
 const businesses = [
@@ -14,7 +18,7 @@ const businesses = [
     title: "Tulja Motors",
     subtitle: "Automotive Repair & Restoration",
     description:
-      "From accident repairs and denting to painting, mechanical work and vehicle restoration, Tulja Motors focuses on bringing vehicles back to their best condition.",
+      "From accident repairs and denting to painting, mechanical work and vehicle restoration, we focus on bringing vehicles back to their best condition.",
     image: "/images/services/Accident%20Repair.jpg",
     href: "/tulja-motors",
     icon: Wrench,
@@ -36,19 +40,80 @@ export default function AboutPage() {
   return (
     <main className="inner-page about-page">
 
+      {/* HERO */}
+      <section className="about-hero">
+        <div className="about-hero-image" />
+
+        <div className="about-hero-shade" />
+
+        <div className="about-hero-container">
+          <div className="about-breadcrumb">
+            <Link href="/">Home</Link>
+            <ChevronRight size={14} />
+            <span>About Us</span>
+          </div>
+
+          <div className="about-hero-text">
+            <span className="about-hero-tag">
+              <span className="about-tag-line" />
+              YOUR AUTOMOTIVE DESTINATION
+            </span>
+
+            <h1>
+              WE DON'T JUST
+              <span>CARE FOR CARS.</span>
+              WE BRING THEM
+              <span>BACK TO LIFE.</span>
+            </h1>
+
+            <p>
+              Two specialised automotive divisions. One commitment to
+              quality, craftsmanship and complete vehicle care.
+            </p>
+
+            <div className="about-hero-buttons">
+              <Link href="/contact" className="about-btn-primary">
+                TALK TO OUR TEAM <ArrowUpRight size={18} />
+              </Link>
+
+              <Link href="/#work" className="about-btn-outline">
+                VIEW OUR WORK <ArrowUpRight size={18} />
+              </Link>
+            </div>
+          </div>
+
+          <div className="about-hero-bottom">
+            <div>
+              <CarFront size={20} />
+              <span>VEHICLE REPAIR</span>
+            </div>
+            <div>
+              <Wrench size={20} />
+              <span>RESTORATION</span>
+            </div>
+            <div>
+              <Sparkles size={20} />
+              <span>CUSTOMISATION</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* WHO WE ARE */}
-      <section className="ip-section about-intro-section">
-        <div className="ip-container ip-about-grid">
-          <div>
-            <span className="ip-eyebrow">ABOUT TULJA & SHARVARI MOTORS</span>
+      <section className="about-intro">
+        <div className="about-container about-intro-grid">
+          <div className="about-intro-heading">
+            <span className="about-section-label">WHO WE ARE</span>
 
             <h2>
               MORE THAN JUST
               <span> AUTOMOTIVE SERVICES.</span>
             </h2>
+
+            <div className="about-heading-line" />
           </div>
 
-          <div className="ip-about-copy">
+          <div className="about-intro-content">
             <p>
               Welcome to Tulja Motors and Sharvari Motors, your automotive
               destination in Kolhapur, Maharashtra.
@@ -66,7 +131,7 @@ export default function AboutPage() {
               customers choose the right service for their cars.
             </p>
 
-            <Link href="/contact" className="about-inline-link">
+            <Link href="/contact" className="about-text-link">
               Get in Touch <ArrowUpRight size={18} />
             </Link>
           </div>
@@ -74,50 +139,51 @@ export default function AboutPage() {
       </section>
 
       {/* BUSINESS DIVISIONS */}
-      <section className="ip-section ip-dark-section">
-        <div className="ip-container">
-          <div className="ip-heading">
-            <span className="ip-eyebrow">OUR BUSINESS DIVISIONS</span>
+      <section className="about-business">
+        <div className="about-container">
+          <div className="about-section-heading">
+            <span className="about-section-label">OUR BUSINESS DIVISIONS</span>
 
             <h2>
-              TWO IDENTITIES.
-              <span> ONE AUTOMOTIVE DESTINATION.</span>
+              TWO SPECIALITIES.
+              <span> ONE DESTINATION.</span>
             </h2>
 
             <p>
-              Specialised automotive solutions under two dedicated
+              Complete automotive solutions through two dedicated
               business divisions.
             </p>
           </div>
 
-          <div className="ip-business-grid">
+          <div className="about-business-grid">
             {businesses.map((business) => {
               const Icon = business.icon;
 
               return (
-                <article className="ip-business-card" key={business.title}>
-                  <div className="ip-card-image">
-                    <img
-                      src={business.image}
-                      alt={business.title}
-                    />
+                <article className="about-business-card" key={business.title}>
+                  <div className="about-business-image">
+                    <img src={business.image} alt={business.title} />
 
-                    <span className="about-card-label">
+                    <span className="about-business-label">
                       {business.label}
                     </span>
                   </div>
 
-                  <div className="ip-card-content">
-                    <Icon size={28} />
+                  <div className="about-business-content">
+                    <div className="about-business-icon">
+                      <Icon size={23} />
+                    </div>
 
-                    <span>{business.subtitle}</span>
+                    <span className="about-business-subtitle">
+                      {business.subtitle}
+                    </span>
 
                     <h3>{business.title}</h3>
 
                     <p>{business.description}</p>
 
                     <Link href={business.href}>
-                      Explore Services <ArrowUpRight size={18} />
+                      EXPLORE SERVICES <ArrowUpRight size={17} />
                     </Link>
                   </div>
                 </article>
@@ -127,21 +193,30 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* MISSION, VISION & APPROACH */}
-      <section className="ip-section about-values-section">
-        <div className="ip-container">
-          <div className="ip-heading about-values-heading">
-            <span className="ip-eyebrow">WHAT DRIVES US</span>
+      {/* MISSION VISION APPROACH */}
+      <section className="about-values">
+        <div className="about-container">
+          <div className="about-section-heading">
+            <span className="about-section-label">WHAT DRIVES US</span>
+
             <h2>
               OUR VALUES.
               <span> OUR COMMITMENT.</span>
             </h2>
+
+            <p>
+              The principles that guide the way we work and serve our
+              customers.
+            </p>
           </div>
 
-          <div className="ip-values-grid">
-            <article>
-              <Target size={32} />
+          <div className="about-values-grid">
+            <article className="about-value-card">
+              <div className="about-value-icon">
+                <Target size={26} />
+              </div>
 
+              <span>01</span>
               <h3>OUR MISSION</h3>
 
               <p>
@@ -151,9 +226,12 @@ export default function AboutPage() {
               </p>
             </article>
 
-            <article>
-              <Eye size={32} />
+            <article className="about-value-card">
+              <div className="about-value-icon">
+                <Eye size={26} />
+              </div>
 
+              <span>02</span>
               <h3>OUR VISION</h3>
 
               <p>
@@ -163,9 +241,12 @@ export default function AboutPage() {
               </p>
             </article>
 
-            <article>
-              <ShieldCheck size={32} />
+            <article className="about-value-card">
+              <div className="about-value-icon">
+                <ShieldCheck size={26} />
+              </div>
 
+              <span>03</span>
               <h3>OUR APPROACH</h3>
 
               <p>
@@ -178,14 +259,16 @@ export default function AboutPage() {
       </section>
 
       {/* CONTACT CTA */}
-      <section className="ip-cta">
-        <div className="ip-container">
-          <span>YOUR VEHICLE DESERVES THE RIGHT CARE</span>
-
-          <h2>LET&apos;S TALK ABOUT YOUR CAR.</h2>
+      <section className="about-final-cta">
+        <div className="about-cta-inner">
+          <div>
+            <span>LET'S GET YOUR JOURNEY STARTED</span>
+            <h2>YOUR CAR DESERVES THE RIGHT CARE.</h2>
+            <p>Connect with our team to discuss your vehicle requirements.</p>
+          </div>
 
           <Link href="/contact">
-            Contact Our Team <ArrowUpRight size={18} />
+            CONTACT OUR TEAM <ArrowUpRight size={19} />
           </Link>
         </div>
       </section>

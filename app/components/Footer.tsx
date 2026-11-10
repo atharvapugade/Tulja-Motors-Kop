@@ -25,24 +25,7 @@ const MAP_URL =
 export default function Footer() {
   return (
     <footer className="tm-footer">
-      {/* FOOTER TOP CTA */}
-      <div className="tm-footer-cta">
-        <div>
-          <span className="tm-footer-eyebrow">
-            YOUR AUTOMOTIVE JOURNEY STARTS HERE
-          </span>
-          <h2>
-            YOUR CAR DESERVES
-            <br />
-            <em>THE RIGHT CARE.</em>
-          </h2>
-        </div>
-
-        <Link href="/contact" className="tm-footer-cta-button">
-          LET&apos;S TALK ABOUT YOUR CAR
-          <ArrowUpRight size={19} />
-        </Link>
-      </div>
+     
 
       {/* MAIN FOOTER */}
       <div className="tm-footer-main">

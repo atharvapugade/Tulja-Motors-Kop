@@ -48,9 +48,40 @@
   display: inline-block;
 }
 
+/* TABLET */
 @media (max-width: 900px) {
   .language-switcher {
     width: fit-content;
     margin: 12px 0;
+  }
+}
+
+/* MOBILE FLOATING TRANSLATOR */
+@media (max-width: 768px) {
+  .language-switcher {
+    position: fixed !important;
+    right: 14px !important;
+    left: auto !important;
+    bottom: 170px !important;
+    top: auto !important;
+
+    width: 46px !important;
+    min-width: 46px !important;
+    height: 46px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 50% !important;
+    z-index: 10050 !important;
+  }
+}
+@media (max-width: 768px) {
+  .language-switcher {
+    bottom: 185px !important;
   }
 }

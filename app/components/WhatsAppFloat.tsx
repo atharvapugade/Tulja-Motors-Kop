@@ -29,6 +29,7 @@ export default function WhatsAppFloat() {
 
   return (
     <>
+      {/* DESKTOP WHATSAPP */}
       <div className="desktop-whatsapp">
         <a
           href={`https://wa.me/${PHONE}?text=${message}`}
@@ -41,10 +42,16 @@ export default function WhatsAppFloat() {
         </a>
       </div>
 
+      {/* MOBILE FLOATING CONTACT BUTTONS */}
       <div className="mobile-contact-bar">
-        <a href={`tel:+${PHONE}`} className="mobile-contact-call">
-          <Phone size={19} />
-          Call Now
+
+        <a
+          href={`tel:+${PHONE}`}
+          className="mobile-contact-call"
+          aria-label="Call Tulja Motors"
+        >
+          <Phone size={23} />
+          <span className="mobile-contact-label">Call Now</span>
         </a>
 
         <a
@@ -52,10 +59,12 @@ export default function WhatsAppFloat() {
           target="_blank"
           rel="noopener noreferrer"
           className="mobile-contact-whatsapp"
+          aria-label="Chat with Tulja Motors on WhatsApp"
         >
-          <MessageCircle size={19} />
-          WhatsApp
+          <MessageCircle size={25} />
+          <span className="mobile-contact-label">WhatsApp</span>
         </a>
+
       </div>
     </>
   );
