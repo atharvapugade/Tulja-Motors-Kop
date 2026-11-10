@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import ScrollReveal from "./components/ScrollReveal";
+import Preloader from "./components/preloader";
 
 export const metadata: Metadata = {
   title: {
@@ -60,6 +61,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* GLOBAL WEBSITE PRELOADER */}
+        <Preloader />
+
         {/* GLOBAL SCROLL ANIMATION */}
         <ScrollReveal />
 
