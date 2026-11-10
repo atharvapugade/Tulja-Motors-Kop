@@ -19135,908 +19135,694 @@ body {
   }
 }
 
-/* =====================================================
-   HOME PAGE THEME: matches the Kolhapur hero
-   (colours / fonts / shadows only. No layout changes)
-   ===================================================== */
-
-.tm-home {
-  --tm-ink: #0a0a12;
-  --tm-yellow: #ffb400;
-  --tm-yellow-2: #ffc61a;
-  --tm-red: #e10600;
-  --tm-red-2: #ff3b30;
-  --tm-green: #0f4d3a;
-  --tm-teal: #0d6b64;
-  --tm-cream: #fffaf0;
-  --tm-cream-2: #fff1cf;
-  --tm-muted: #3a3a36;
-  --tm-display: var(--font-display, "Archivo Black", "Arial Black", Impact, sans-serif);
-  --tm-stripe: linear-gradient(
-    90deg,
-    var(--tm-red) 0 25%,
-    var(--tm-yellow) 25% 50%,
-    var(--tm-green) 50% 75%,
-    var(--tm-teal) 75% 100%
-  );
-
-  background: var(--tm-cream);
-  color: var(--tm-ink);
-}
-
-/* ---------- shared headings ---------- */
-.tm-home h2,
-.tm-home h3 {
-  font-family: var(--tm-display);
-  font-weight: 900;
-  font-style: italic;
-}
-
-.tm-home h2 em {
-  font-style: italic;
-  background: linear-gradient(180deg, var(--tm-yellow-2), #f59e00);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
-.tm-home .tm-section-tag {
-  color: var(--tm-red);
-  font-weight: 800;
-}
 
 /* =====================================================
-   BEFORE / AFTER BANNER (dark)
-   ===================================================== */
-.tm-home .tm-before-after-section {
-  background:
-    radial-gradient(700px 300px at 85% 0%, rgba(255, 180, 0, 0.12), transparent 65%),
-    linear-gradient(180deg, #0a0a12, #12161a);
-}
+   KOLHAPUR WORKSHOP HERO
+   Full-width | Taller | Premium | Theme matched
+   Isolated styles - does not affect other cards
+===================================================== */
 
-.tm-home .tm-ba-banner,
-.tm-home .tm-ba-bottom {
-  color: #fff;
-}
-
-.tm-home .tm-ba-before .tm-ba-label {
-  background: var(--tm-ink);
-  color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
-}
-
-.tm-home .tm-ba-after .tm-ba-label {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-ba-divider span {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-  box-shadow: 0 0 0 5px rgba(255, 180, 0, 0.3);
-}
-
-.tm-home .tm-ba-bottom small {
-  color: var(--tm-yellow);
-  font-weight: 800;
-}
-
-.tm-home .tm-ba-bottom h3 {
-  color: #fff;
-}
-
-.tm-home .tm-ba-service {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.tm-home .tm-ba-open {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-  font-weight: 900;
-  transition: background 0.25s ease, color 0.25s ease;
-}
-
-.tm-home .tm-ba-banner:hover .tm-ba-open {
-  background: var(--tm-red);
-  color: #fff;
-}
-
-.tm-home .tm-ba-current-number {
-  color: var(--tm-yellow);
-  font-family: var(--tm-display);
-}
-
-.tm-home .tm-ba-slide-line {
-  background: var(--tm-yellow);
-}
-
-.tm-home .tm-ba-current-name {
-  color: #fff;
-}
-
-.tm-home .tm-ba-arrow {
-  background: transparent;
-  color: #fff;
-  box-shadow: inset 0 0 0 1.5px rgba(255, 180, 0, 0.7);
-  transition: background 0.25s ease, color 0.25s ease;
-}
-
-.tm-home .tm-ba-arrow:hover {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-ba-dot {
-  background: rgba(255, 255, 255, 0.35);
-}
-
-.tm-home .tm-ba-dot.active {
-  background: var(--tm-yellow);
-}
-
-/* =====================================================
-   RIBBON (yellow, black text)
-   ===================================================== */
-.tm-home .tm-ribbon {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-  box-shadow: inset 0 3px 0 var(--tm-ink), inset 0 -3px 0 var(--tm-ink);
-}
-
-.tm-home .tm-ribbon-group span {
-  color: var(--tm-ink);
-  font-family: var(--tm-display);
-  font-style: italic;
-  font-weight: 900;
-}
-
-.tm-home .tm-ribbon-group i {
-  color: var(--tm-red);
-  font-style: normal;
-}
-
-/* =====================================================
-   SERVICES (cream)
-   ===================================================== */
-.tm-home .tm-services-section {
-  background:
-    radial-gradient(600px 300px at 15% 0%, #fff, transparent 65%),
-    linear-gradient(135deg, var(--tm-cream) 0%, var(--tm-cream-2) 100%);
-}
-
-.tm-home .tm-services-heading > span {
-  color: var(--tm-red);
-  font-weight: 800;
-}
-
-.tm-home .tm-services-heading h2 {
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-services-heading p {
-  color: var(--tm-muted);
-}
-
-.tm-home .tm-svc-card {
-  background: #fff;
-  border-radius: 18px;
+.tm-home .kolhapur-hero {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
   overflow: hidden;
-  color: var(--tm-ink);
-  box-shadow:
-    0 14px 34px -20px rgba(10, 10, 18, 0.35),
-    inset 0 0 0 1px rgba(10, 10, 18, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.tm-home .tm-svc-card:hover {
-  transform: translateY(-6px);
-  box-shadow:
-    0 24px 44px -20px rgba(10, 10, 18, 0.45),
-    inset 0 0 0 2px var(--tm-yellow);
-}
-
-.tm-home .tm-svc-card-number {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-  font-weight: 900;
-}
-
-.tm-home .tm-svc-card-car {
-  color: #fff;
-}
-
-.tm-home .tm-svc-card-brand {
-  background: var(--tm-ink);
-  color: var(--tm-yellow);
-  font-weight: 800;
-}
-
-.tm-home .tm-service-image-counter {
-  background: var(--tm-ink);
-  color: var(--tm-yellow);
-}
-
-.tm-home .tm-svc-card-body {
-  background: #fff;
-}
-
-.tm-home .tm-svc-card-title {
-  color: var(--tm-ink);
-  font-family: var(--tm-display);
-  font-weight: 900;
-}
-
-.tm-home .tm-svc-card-text {
-  color: var(--tm-muted);
-}
-
-.tm-home .tm-svc-card-action {
-  color: var(--tm-red);
-  font-weight: 900;
-}
-
-.tm-home .tm-svc-card:hover .tm-svc-card-action {
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-service-note {
-  background: #fff8e1;
-  color: var(--tm-muted);
-  border-radius: 12px;
-  box-shadow: inset 4px 0 0 var(--tm-yellow);
-}
-
-.tm-home .tm-service-note span {
-  color: var(--tm-red);
-  font-weight: 900;
-}
-
-/* =====================================================
-   CAR BRAND MARQUEE (white)
-   ===================================================== */
-.tm-home .tm-brand-marquee-section {
-  background: #fff;
-  box-shadow: inset 0 1px 0 rgba(10, 10, 18, 0.08), inset 0 -5px 0 var(--tm-yellow);
-}
-
-.tm-home .tm-brand-marquee-heading p {
-  color: var(--tm-ink);
-  font-weight: 800;
-}
-
-.tm-home .tm-brand-marquee-line {
-  background: var(--tm-stripe);
-}
-
-.tm-home .tm-brand-marquee {
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-
-.tm-home .tm-brand-marquee-item img {
-  filter: grayscale(1);
-  opacity: 0.75;
-  transition: filter 0.3s ease, opacity 0.3s ease;
-}
-
-.tm-home .tm-brand-marquee-item:hover img {
-  filter: none;
-  opacity: 1;
-}
-
-/* =====================================================
-   GALLERY (dark, Tulja = yellow accent, Sharvari = red accent)
-   ===================================================== */
-.tm-home .tm-category-gallery-section {
+  padding: 62px 5%;
   background:
-    radial-gradient(800px 360px at 90% 0%, rgba(255, 180, 0, 0.12), transparent 65%),
-    radial-gradient(700px 360px at 0% 100%, rgba(225, 6, 0, 0.12), transparent 65%),
-    var(--tm-ink);
-  color: #fff;
-}
-
-.tm-home .tm-category-gallery-section .tm-section-tag {
-  color: var(--tm-yellow);
-}
-
-.tm-home .tm-category-gallery-heading h2 {
-  color: #fff;
-}
-
-.tm-home .tm-category-gallery-heading p {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.tm-home .tm-category-gallery-count strong {
-  color: var(--tm-yellow);
-  font-family: var(--tm-display);
-}
-
-.tm-home .tm-category-gallery-count span {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.tm-home .tm-category-tulja { --acc: var(--tm-yellow); }
-.tm-home .tm-category-sharvari { --acc: var(--tm-red-2); }
-
-.tm-home .tm-category-brand-number {
-  color: var(--acc, var(--tm-yellow));
-  font-weight: 800;
-}
-
-.tm-home .tm-category-brand-heading h3 {
-  color: #fff;
-}
-
-.tm-home .tm-category-brand-heading h3 span {
-  color: var(--acc, var(--tm-yellow));
-}
-
-.tm-home .tm-category-brand-heading p {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.tm-home .tm-category-brand-side {
-  color: var(--acc, var(--tm-yellow));
-  box-shadow: inset 0 0 0 1px var(--acc, var(--tm-yellow));
-  border-radius: 999px;
-  font-weight: 800;
-}
-
-.tm-home .tm-category-card {
-  background: #12161a;
-  border-radius: 20px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-.tm-home .tm-category-card-heading > span:first-child {
-  color: var(--acc, var(--tm-yellow));
-  font-family: var(--tm-display);
-}
-
-.tm-home .tm-category-card-heading h4 {
-  color: #fff;
-  font-family: var(--tm-display);
-  font-weight: 900;
-}
-
-.tm-home .tm-category-photo-count {
-  color: var(--acc, var(--tm-yellow));
-  font-weight: 800;
-}
-
-.tm-home .tm-category-photo {
-  border-radius: 14px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.tm-home .tm-category-photo:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 0 2px var(--acc, var(--tm-yellow)), 0 18px 30px -16px rgba(0, 0, 0, 0.8);
-}
-
-.tm-home .tm-category-photo-shade {
-  background: linear-gradient(180deg, transparent 35%, rgba(10, 10, 18, 0.92));
-}
-
-.tm-home .tm-category-photo-number {
-  background: var(--acc, var(--tm-yellow));
-  color: var(--tm-ink);
-  font-weight: 900;
-}
-
-.tm-home .tm-category-photo-caption span {
-  color: var(--acc, var(--tm-yellow));
-  font-weight: 800;
-}
-
-.tm-home .tm-category-photo-caption h5 {
-  color: #fff;
-  font-family: var(--tm-display);
-}
-
-.tm-home .tm-category-photo-caption p {
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.tm-home .tm-category-photo-arrow {
-  background: var(--acc, var(--tm-yellow));
+    radial-gradient(
+      ellipse at 85% 15%,
+      rgba(255, 180, 0, 0.16),
+      transparent 38%
+    ),
+    linear-gradient(115deg, #fffaf0 0%, #fff4d9 55%, #fffaf0 100%);
+  border-top: 3px solid var(--tm-yellow);
+  border-bottom: 3px solid var(--tm-ink);
   color: var(--tm-ink);
 }
 
-.tm-home .tm-category-gallery-footer {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
-}
+/* Decorative colour accents */
 
-.tm-home .tm-category-gallery-footer span {
-  color: rgba(255, 255, 255, 0.65);
-  font-weight: 800;
-}
-
-.tm-home .tm-category-gallery-footer i {
-  color: var(--tm-red-2);
-  font-style: normal;
-}
-
-/* =====================================================
-   STATS (yellow band)
-   ===================================================== */
-.tm-home .tm-sharvari-stats-section {
-  background:
-    radial-gradient(600px 260px at 10% 0%, rgba(255, 255, 255, 0.45), transparent 65%),
-    linear-gradient(135deg, var(--tm-yellow-2), var(--tm-yellow));
-  color: var(--tm-ink);
-  box-shadow: inset 0 5px 0 var(--tm-ink), inset 0 -5px 0 var(--tm-ink);
-}
-
-.tm-home .tm-sharvari-stats-content h2 {
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-sharvari-stats-content p {
-  color: #2b2b26;
-}
-
-.tm-home .tm-outline-link {
-  color: var(--tm-ink);
-  box-shadow: inset 0 0 0 2px var(--tm-ink);
-  border-radius: 999px;
-  font-weight: 900;
-  transition: background 0.25s ease, color 0.25s ease;
-}
-
-.tm-home .tm-outline-link:hover {
-  background: var(--tm-ink);
-  color: var(--tm-yellow);
-}
-
-.tm-home .tm-stat-card {
-  background: var(--tm-ink);
-  border-radius: 18px;
-  box-shadow: 0 18px 30px -18px rgba(10, 10, 18, 0.7);
-}
-
-.tm-home .tm-stat-number {
-  color: var(--tm-yellow);
-  font-family: var(--tm-display);
-  font-style: italic;
-}
-
-.tm-home .tm-stat-label {
-  color: rgba(255, 255, 255, 0.82);
-  font-weight: 800;
-}
-
-/* =====================================================
-   PROCESS (cream)
-   ===================================================== */
-.tm-home .tm-process-section {
-  background:
-    radial-gradient(600px 300px at 85% 0%, rgba(255, 180, 0, 0.18), transparent 65%),
-    linear-gradient(135deg, var(--tm-cream) 0%, var(--tm-cream-2) 100%);
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-process-section .tm-section-heading {
-  color: var(--tm-ink);
-  font-family: var(--tm-display);
-  font-weight: 900;
-  font-style: italic;
-}
-
-.tm-home .tm-process-card {
-  background: #fff;
-  border-radius: 20px;
-  box-shadow:
-    0 16px 34px -22px rgba(10, 10, 18, 0.4),
-    inset 0 0 0 1px rgba(10, 10, 18, 0.07);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.tm-home .tm-process-card:hover {
-  transform: translateY(-6px);
-  box-shadow:
-    0 26px 44px -22px rgba(10, 10, 18, 0.5),
-    inset 0 0 0 2px var(--tm-yellow);
-}
-
-.tm-home .tm-process-top > span {
-  color: var(--tm-red);
-  font-family: var(--tm-display);
-  font-style: italic;
-}
-
-.tm-home .tm-process-icon {
-  background: var(--tm-ink);
-  color: var(--tm-yellow);
-  border-radius: 14px;
-  transition: background 0.25s ease, color 0.25s ease;
-}
-
-.tm-home .tm-process-card:hover .tm-process-icon {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-process-card h3 {
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-process-card p {
-  color: var(--tm-muted);
-}
-
-.tm-home .tm-process-bottom-line {
-  background: var(--tm-stripe);
-  border-radius: 4px;
-}
-
-/* =====================================================
-   FAQ (white)
-   ===================================================== */
-.tm-home .tm-faq-section {
-  background: #fff;
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-faq-section h2 {
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-faq-section .tm-section-heading p {
-  color: var(--tm-muted);
-}
-
-.tm-home .tm-faq-item {
-  background: var(--tm-cream);
-  border-radius: 16px;
-  box-shadow: inset 0 0 0 1px rgba(10, 10, 18, 0.1);
-  transition: box-shadow 0.25s ease, background 0.25s ease;
-}
-
-.tm-home .tm-faq-item.active {
-  background: #fff8e1;
-  box-shadow: inset 5px 0 0 var(--tm-yellow), inset 0 0 0 1px rgba(10, 10, 18, 0.1);
-}
-
-.tm-home .tm-faq-question {
-  color: var(--tm-ink);
-  font-weight: 800;
-}
-
-.tm-home .tm-faq-number {
-  color: var(--tm-red);
-  font-family: var(--tm-display);
-}
-
-.tm-home .tm-faq-toggle {
-  background: var(--tm-ink);
-  color: var(--tm-yellow);
+.tm-home .kolhapur-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -150px;
+  right: -100px;
+  width: 520px;
+  height: 520px;
+  border: 65px solid rgba(255, 180, 0, 0.10);
   border-radius: 50%;
-  transition: background 0.25s ease, color 0.25s ease;
+  pointer-events: none;
 }
 
-.tm-home .tm-faq-item.active .tm-faq-toggle {
-  background: var(--tm-red);
-  color: #fff;
+.tm-home .kolhapur-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 7px;
+  background: var(--tm-stripe);
+  pointer-events: none;
 }
 
-.tm-home .tm-faq-answer p {
-  color: var(--tm-muted);
+.tm-home .kolhapur-hero-inner {
+  position: relative;
+  width: 100%;
+  max-width: 1500px;
+  min-height: 365px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  align-items: center;
+  gap: 65px;
 }
 
-/* =====================================================
-   CONTACT (dark)
-   ===================================================== */
-.tm-home .tm-contact-section {
-  background:
-    radial-gradient(700px 360px at 90% 0%, rgba(255, 180, 0, 0.16), transparent 65%),
-    radial-gradient(600px 360px at 0% 100%, rgba(225, 6, 0, 0.14), transparent 65%),
-    var(--tm-ink);
-  color: #fff;
+/* BRANDING */
+
+.tm-home .kolhapur-hero-brand {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--tm-ink);
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 1.8px;
 }
 
-.tm-home .tm-contact-left .tm-section-tag {
-  color: var(--tm-yellow);
-}
-
-.tm-home .tm-contact-left h2 {
-  color: #fff;
-}
-
-.tm-home .tm-contact-left h2 span {
-  color: var(--tm-yellow);
-}
-
-.tm-home .tm-contact-left > p {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.tm-home .tm-contact-detail {
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
-  border-radius: 16px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-  transition: box-shadow 0.25s ease, background 0.25s ease;
-}
-
-.tm-home .tm-contact-detail:hover {
-  background: rgba(255, 180, 0, 0.1);
-  box-shadow: inset 0 0 0 2px var(--tm-yellow);
-}
-
-.tm-home .tm-contact-detail-icon {
+.tm-home .kolhapur-brand-line {
+  width: 30px;
+  height: 3px;
   background: var(--tm-yellow);
-  color: var(--tm-ink);
-  border-radius: 12px;
 }
 
-.tm-home .tm-contact-detail small {
-  color: var(--tm-yellow);
-  font-weight: 800;
-}
-
-.tm-home .tm-contact-detail strong {
-  color: #fff;
-}
-
-.tm-home .tm-contact-detail > svg {
-  color: var(--tm-yellow);
-}
-
-/* form card */
-.tm-home .tm-contact-form-card {
-  background: #fff;
-  color: var(--tm-ink);
-  border-radius: 24px;
-  box-shadow:
-    0 30px 60px -30px rgba(0, 0, 0, 0.7),
-    inset 0 6px 0 var(--tm-yellow);
-}
-
-.tm-home .tm-contact-form-heading > span {
-  color: var(--tm-red);
-  font-weight: 800;
-}
-
-.tm-home .tm-contact-form-heading h3 {
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-contact-form-heading p {
-  color: var(--tm-muted);
-}
-
-.tm-home .tm-contact-form label {
-  color: var(--tm-ink);
-  font-weight: 800;
-}
-
-.tm-home .tm-contact-form input,
-.tm-home .tm-contact-form select,
-.tm-home .tm-contact-form textarea {
-  background: #faf7ee;
-  color: var(--tm-ink);
-  border-color: rgba(10, 10, 18, 0.16);
-  border-radius: 12px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-
-.tm-home .tm-contact-form input::placeholder,
-.tm-home .tm-contact-form textarea::placeholder {
-  color: rgba(10, 10, 18, 0.45);
-}
-
-.tm-home .tm-contact-form input:focus,
-.tm-home .tm-contact-form select:focus,
-.tm-home .tm-contact-form textarea:focus {
-  outline: none;
-  background: #fff;
-  border-color: var(--tm-yellow);
-  box-shadow: 0 0 0 4px rgba(255, 180, 0, 0.28);
-}
-
-.tm-home .tm-contact-submit {
-  background: var(--tm-ink);
-  color: #fff;
-  border-radius: 999px;
-  font-weight: 900;
-  box-shadow: 0 14px 28px -14px rgba(10, 10, 18, 0.7);
-  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
-}
-
-.tm-home .tm-contact-submit:hover {
-  transform: translateY(-2px);
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-form-note {
-  color: rgba(10, 10, 18, 0.6);
-}
-
-/* =====================================================
-   MAP (cream)
-   ===================================================== */
-.tm-home .tm-map-section {
-  background: linear-gradient(135deg, var(--tm-cream) 0%, var(--tm-cream-2) 100%);
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-map-heading h2 {
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-map-heading p {
-  color: var(--tm-muted);
-}
-
-.tm-home .tm-map-directions {
-  background: var(--tm-ink);
-  color: #fff;
-  border-radius: 999px;
-  font-weight: 900;
-  transition: background 0.25s ease, color 0.25s ease;
-}
-
-.tm-home .tm-map-directions:hover {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-map-frame {
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 0 0 5px #fff, 0 0 0 8px var(--tm-yellow), 0 30px 60px -30px rgba(10, 10, 18, 0.5);
-}
-
-/* =====================================================
-   SERVICE DETAILS POPUP
-   ===================================================== */
-.tm-home .tm-service-modal-overlay {
-  background: rgba(10, 10, 18, 0.74);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-}
-
-.tm-home .tm-service-modal {
-  background: var(--tm-stripe) top / 100% 5px no-repeat, var(--tm-cream);
-  color: var(--tm-ink);
-  border-radius: 24px;
-  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7);
-}
-
-.tm-home .tm-service-modal-close {
-  background: var(--tm-ink);
-  color: var(--tm-yellow);
-  transition: background 0.25s ease, color 0.25s ease;
-}
-
-.tm-home .tm-service-modal-close:hover {
-  background: var(--tm-red);
-  color: #fff;
-}
-
-.tm-home .tm-service-image-label {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
-  font-weight: 900;
-}
-
-.tm-home .tm-service-gallery-brand {
-  background: var(--tm-ink);
-  color: var(--tm-yellow);
-  font-weight: 800;
-}
-
-.tm-home .tm-service-modal-content h2 {
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-service-modal-content p {
-  color: var(--tm-muted);
-}
-
-.tm-home .tm-service-modal-content h4 {
-  color: var(--tm-red);
-  font-weight: 900;
-}
-
-.tm-home .tm-service-modal-content li {
-  color: var(--tm-ink);
-}
-
-.tm-home .tm-service-modal-content li svg {
+.tm-home .kolhapur-hero-brand span:not(.kolhapur-brand-line) {
   color: var(--tm-green);
 }
 
-/* =====================================================
-   GALLERY LIGHTBOX
-   ===================================================== */
-.tm-home .tm-gallery-lightbox {
-  background: rgba(10, 10, 18, 0.95);
+/* LOCATION */
+
+.tm-home .kolhapur-hero-location {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 30px;
+  color: var(--tm-green);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.6px;
 }
 
-.tm-home .tm-gallery-lightbox-close,
-.tm-home .tm-gallery-lightbox-arrow {
-  background: var(--tm-yellow);
+/* HEADLINE */
+
+.tm-home .kolhapur-hero h1 {
+  max-width: 850px;
+  margin: 17px 0;
   color: var(--tm-ink);
-  transition: background 0.25s ease, color 0.25s ease;
-}
-
-.tm-home .tm-gallery-lightbox-close:hover,
-.tm-home .tm-gallery-lightbox-arrow:hover {
-  background: #fff;
-}
-
-.tm-home .tm-gallery-lightbox-image-wrap {
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 0 0 3px var(--tm-yellow), 0 30px 60px -20px rgba(0, 0, 0, 0.8);
-}
-
-.tm-home .tm-gallery-lightbox-caption span:first-child {
-  color: var(--tm-yellow);
-  font-weight: 800;
-}
-
-.tm-home .tm-gallery-lightbox-caption h3 {
-  color: #fff;
-}
-
-.tm-home .tm-gallery-lightbox-caption p {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.tm-home .tm-gallery-lightbox-counter {
-  color: var(--tm-yellow);
   font-family: var(--tm-display);
+  font-size: clamp(43px, 5.2vw, 72px);
+  font-weight: 950;
+  font-style: italic;
+  line-height: 1.02;
+  letter-spacing: -2.5px;
 }
 
-/* =====================================================
-   LANGUAGE WIDGET
-   ===================================================== */
-.tm-home .tm-language-toggle {
-  background: var(--tm-ink);
+.tm-home .kolhapur-hero h1 span {
   color: var(--tm-yellow);
-  box-shadow: 0 0 0 3px var(--tm-yellow), 0 14px 28px -10px rgba(10, 10, 18, 0.7);
-  transition: background 0.25s ease, color 0.25s ease;
+  -webkit-text-stroke: 1px rgba(10, 10, 18, 0.08);
 }
 
-.tm-home .tm-language-toggle:hover {
-  background: var(--tm-yellow);
-  color: var(--tm-ink);
+/* DESCRIPTION */
+
+.tm-home .kolhapur-hero-description {
+  max-width: 700px;
+  margin: 0;
+  color: var(--tm-muted);
+  font-size: 14px;
+  line-height: 1.9;
 }
 
-.tm-home .tm-language-menu {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 24px 48px -20px rgba(10, 10, 18, 0.55), inset 0 4px 0 var(--tm-yellow);
-}
-
-.tm-home .tm-language-menu-heading {
-  color: var(--tm-red);
+.tm-home .kolhapur-hero-description strong {
+  color: var(--tm-green);
   font-weight: 900;
 }
 
-.tm-home .tm-language-menu button {
-  color: var(--tm-ink);
+/* ACTION ROW */
+
+.tm-home .kolhapur-hero-bottom {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 27px;
 }
 
-.tm-home .tm-language-menu button:hover {
-  background: var(--tm-cream-2);
+.tm-home .kolhapur-hero-coming {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--tm-green);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 1.3px;
 }
 
-.tm-home .tm-language-menu button.active {
+.tm-home .kolhapur-pulse {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--tm-green);
+  box-shadow: 0 0 0 5px rgba(15, 77, 58, 0.12);
+  animation: kolhapurPulse 1.7s infinite;
+}
+
+@keyframes kolhapurPulse {
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
+
+.tm-home .kolhapur-hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 20px;
   background: var(--tm-ink);
+  border: 1px solid var(--tm-ink);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.tm-home .kolhapur-hero-link:hover {
+  background: var(--tm-yellow);
+  border-color: var(--tm-yellow);
+  color: var(--tm-ink);
+  transform: translateY(-3px);
+}
+
+/* WORKSHOP AREA HIGHLIGHT */
+
+.tm-home .kolhapur-hero-highlight {
+  position: relative;
+  padding: 32px;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, #17231d, #0a0a12);
+  border: 2px solid var(--tm-yellow);
+  border-radius: 5px;
+  box-shadow: 0 22px 45px rgba(10, 10, 18, 0.18);
+}
+
+.tm-home .kolhapur-hero-highlight::after {
+  content: "";
+  position: absolute;
+  right: -45px;
+  bottom: -75px;
+  width: 180px;
+  height: 180px;
+  border: 25px solid rgba(255, 180, 0, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.tm-home .kolhapur-highlight-label {
+  position: relative;
+  z-index: 1;
+  color: var(--tm-yellow);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.tm-home .kolhapur-highlight-number {
+  position: relative;
+  z-index: 1;
+  margin-top: 22px;
+  color: #fff;
+  font-family: var(--tm-display);
+  font-size: clamp(66px, 7vw, 96px);
+  font-weight: 950;
+  line-height: 0.95;
+  letter-spacing: -5px;
+}
+
+.tm-home .kolhapur-highlight-unit {
+  position: relative;
+  z-index: 1;
+  margin-top: 12px;
+  color: var(--tm-yellow);
+  font-size: 14px;
+  font-weight: 950;
+  letter-spacing: 4px;
+}
+
+.tm-home .kolhapur-highlight-divider {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 2px;
+  margin: 26px 0;
+  background: linear-gradient(
+    90deg,
+    var(--tm-yellow),
+    rgba(255, 255, 255, 0.12)
+  );
+}
+
+.tm-home .kolhapur-highlight-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 13px;
   color: var(--tm-yellow);
 }
 
-/* reduced motion */
+.tm-home .kolhapur-highlight-footer span {
+  display: grid;
+  gap: 6px;
+}
+
+.tm-home .kolhapur-highlight-footer strong {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.tm-home .kolhapur-highlight-footer small {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* TABLET */
+
+@media (max-width: 900px) {
+  .tm-home .kolhapur-hero {
+    padding: 48px 4%;
+  }
+
+  .tm-home .kolhapur-hero-inner {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 30px;
+    min-height: 330px;
+  }
+
+  .tm-home .kolhapur-hero h1 {
+    font-size: 45px;
+  }
+
+  .tm-home .kolhapur-hero-highlight {
+    padding: 24px;
+  }
+
+  .tm-home .kolhapur-highlight-number {
+    font-size: 62px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+  .tm-home .kolhapur-hero {
+    padding: 38px 20px 43px;
+  }
+
+  .tm-home .kolhapur-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    min-height: auto;
+  }
+
+  .tm-home .kolhapur-hero-brand {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .tm-home .kolhapur-hero-location {
+    margin-top: 23px;
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .tm-home .kolhapur-hero h1 {
+    margin: 15px 0;
+    font-size: clamp(38px, 10vw, 49px);
+    line-height: 1.04;
+    letter-spacing: -1.8px;
+  }
+
+  .tm-home .kolhapur-hero-description {
+    font-size: 12px;
+    line-height: 1.85;
+  }
+
+  .tm-home .kolhapur-hero-bottom {
+    gap: 17px;
+    margin-top: 22px;
+  }
+
+  .tm-home .kolhapur-hero-highlight {
+    padding: 25px 22px;
+  }
+
+  .tm-home .kolhapur-highlight-number {
+    font-size: clamp(66px, 18vw, 82px);
+  }
+
+  .tm-home .kolhapur-highlight-divider {
+    margin: 20px 0;
+  }
+}
+
+/* ACCESSIBILITY */
+
 @media (prefers-reduced-motion: reduce) {
-  .tm-home * {
-    transition: none !important;
+  .tm-home .kolhapur-pulse {
+    animation: none;
+  }
+
+  .tm-home .kolhapur-hero-link {
+    transition: none;
+  }
+}
+
+/* =====================================================
+   KOLHAPUR HERO - RESPONSIVE CARD & CAR LAYOUT
+   Desktop / Tablet / Mobile
+===================================================== */
+
+/* Keep hero layers properly positioned */
+.kolhapur-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.kolhapur-hero .kolhapur-hero-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+/* Highlight card */
+.kolhapur-hero .kolhapur-hero-highlight {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 430px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* =====================================================
+   TABLET - 960px
+===================================================== */
+
+@media (max-width: 960px) {
+  .kolhapur-hero {
+    padding-top: 55px;
+    padding-bottom: 55px;
+  }
+
+  .kolhapur-hero .kolhapur-hero-inner {
+    grid-template-columns: 1fr 0.8fr;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .kolhapur-hero .kolhapur-hero-highlight {
+    margin: 35px 0 0;
+    max-width: 100%;
+    justify-self: stretch;
+  }
+
+  .kolhapur-hero .kolhapur-hero-inner::before {
+    right: 0;
+    width: 34%;
+    max-width: 300px;
+    height: 32%;
+  }
+
+  .kolhapur-hero::before {
+    right: -45px;
+    width: 40%;
+  }
+
+  .kolhapur-hero::after {
+    right: 45px;
+    width: 35%;
+  }
+}
+
+/* =====================================================
+   MOBILE LANDSCAPE / SMALL TABLET - 700px
+===================================================== */
+
+@media (max-width: 700px) {
+  .kolhapur-hero {
+    padding: 42px 22px;
+  }
+
+  .kolhapur-hero .kolhapur-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .kolhapur-hero .kolhapur-hero-highlight {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    justify-self: stretch;
+  }
+
+  /* Reduce decorative stripes */
+  .kolhapur-hero::before {
+    right: -35px;
+    width: 42%;
+    opacity: 0.75;
+  }
+
+  .kolhapur-hero::after {
+    right: 35px;
+    width: 36%;
+  }
+
+  /* Car image */
+  .kolhapur-hero .kolhapur-hero-inner::before {
+    right: 0;
+    bottom: 0;
+    width: 40%;
+    max-width: 230px;
+    height: 22%;
+    opacity: 0.65;
+  }
+}
+
+/* =====================================================
+   MOBILE - 480px
+===================================================== */
+
+@media (max-width: 480px) {
+  .kolhapur-hero {
+    padding: 34px 18px 38px;
+  }
+
+  .kolhapur-hero .kolhapur-hero-inner {
+    gap: 25px;
+  }
+
+  /* Hide oversized decorative car on narrow screens
+     to prevent text and card overlap */
+  .kolhapur-hero .kolhapur-hero-inner::before {
+    width: 34%;
+    height: 16%;
+    opacity: 0.35;
+  }
+
+  .kolhapur-hero::before {
+    right: -55px;
+    width: 55%;
+    opacity: 0.45;
+  }
+
+  .kolhapur-hero::after {
+    right: 25px;
+    width: 43%;
+  }
+
+  /* Card */
+  .kolhapur-hero .kolhapur-hero-highlight {
+    margin: 0;
+    padding: 23px 19px;
+    border-radius: 12px;
+  }
+
+  /* Large workshop number */
+  .kolhapur-hero .kolhapur-highlight-number {
+    font-size: clamp(55px, 17vw, 76px);
+    letter-spacing: -3px;
+    line-height: 1;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-unit {
+    font-size: 11px;
+    letter-spacing: 3px;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-label {
+    font-size: 9px;
+    line-height: 1.6;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-divider {
+    margin: 18px 0;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-footer {
+    gap: 10px;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-footer strong {
+    font-size: 10px;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-footer small {
+    font-size: 9px;
+    line-height: 1.5;
+  }
+}
+
+/* =====================================================
+   EXTRA SMALL MOBILE - 360px
+===================================================== */
+
+@media (max-width: 360px) {
+  .kolhapur-hero {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .kolhapur-hero .kolhapur-hero-highlight {
+    padding: 20px 15px;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-number {
+    font-size: 53px;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-unit {
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+}
+/* =========================================
+   KOLHAPUR HERO — KEEP HORIZONTAL ON MOBILE
+========================================= */
+
+.tm-home .kolhapur-hero .kolhapur-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(180px, 0.75fr);
+  align-items: center;
+  gap: clamp(12px, 3vw, 40px);
+}
+
+/* Keep highlight card beside content */
+.tm-home .kolhapur-hero .kolhapur-hero-highlight {
+  width: 100%;
+  min-width: 0;
+  margin: 150px 0 0;
+  justify-self: stretch;
+}
+
+/* Tablet */
+@media (max-width: 960px) {
+  .tm-home .kolhapur-hero .kolhapur-hero-inner {
+    grid-template-columns: minmax(0, 1.35fr) minmax(165px, 0.75fr);
+    gap: 14px;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-hero-highlight {
+    margin: 0;
+  }
+}
+
+/* Mobile — still horizontal */
+@media (max-width: 600px) {
+  .tm-home .kolhapur-hero .kolhapur-hero-inner {
+    grid-template-columns: minmax(0, 1.25fr) minmax(115px, 0.75fr);
+    gap: 10px;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-hero-content {
+    min-width: 0;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-hero-content h1 {
+    font-size: clamp(23px, 6vw, 34px);
+    line-height: 1.05;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-hero-description {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-hero-highlight {
+    padding: 14px 10px;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-highlight-number {
+    font-size: clamp(28px, 7vw, 43px);
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-highlight-unit {
+    font-size: 10px;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-highlight-footer {
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-highlight-footer small {
+    font-size: 9px;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-hero-bottom {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  .tm-home .kolhapur-hero .kolhapur-hero-inner {
+    grid-template-columns: minmax(0, 1.15fr) minmax(105px, 0.75fr);
+    gap: 7px;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-hero-content h1 {
+    font-size: 22px;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-hero-description {
+    font-size: 10px;
+  }
+
+  .tm-home .kolhapur-hero .kolhapur-hero-highlight {
+    padding: 11px 8px;
   }
 }
