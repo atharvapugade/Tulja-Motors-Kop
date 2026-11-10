@@ -15,6 +15,11 @@ import {
   CheckCircle2,
   Languages,
   X,
+  Building2,
+  MapPinned,
+  Sparkles,
+  Car,
+  Settings,
 } from "lucide-react";
 
 import "./home-page.css";
@@ -787,6 +792,71 @@ Please contact me regarding this enquiry.`;
 
   return (
     <main className="tm-home">
+
+     {/* KOLHAPUR WORKSHOP HERO */}
+<section className="kolhapur-hero" id="kolhapur-workshop">
+  <div className="kolhapur-hero-inner">
+    <div className="kolhapur-hero-content">
+      <div className="kolhapur-hero-brand">
+        <span className="kolhapur-brand-line" />
+        TULJA MOTORS <span>×</span> SHARVARI MOTORS
+      </div>
+
+      <div className="kolhapur-hero-location">
+        <MapPin size={14} />
+        A NEW AUTOMOTIVE DESTINATION FOR KOLHAPUR
+      </div>
+
+      <h1>
+        KOLHAPUR,
+        <span>GET READY.</span>
+      </h1>
+
+      <p className="kolhapur-hero-description">
+        A <strong>10,000 sq. ft. multi-brand automotive workshop</strong> bringing
+        repair, restoration, detailing and customisation together under one roof.
+      </p>
+
+      <div className="kolhapur-hero-bottom">
+        <div className="kolhapur-hero-coming">
+          <span className="kolhapur-pulse" />
+          COMING SOON
+        </div>
+
+        <a href="#services" className="kolhapur-hero-link">
+          EXPLORE OUR SERVICES <ArrowUpRight size={16} />
+        </a>
+      </div>
+
+      <div className="kolhapur-hero-features">
+        <div><Car size={22} /><span>Multi-Brand<br />Car Care</span></div>
+        <div><Wrench size={22} /><span>Accident Repair<br />&amp; Denting</span></div>
+        <div><Sparkles size={22} /><span>Premium<br />Detailing &amp; PPF</span></div>
+        <div><Settings size={22} /><span>Car Modification<br />&amp; Restoration</span></div>
+      </div>
+    </div>
+
+    <div className="kolhapur-hero-highlight">
+      <span className="kolhapur-highlight-label">UPCOMING WORKSHOP AREA</span>
+      <div className="kolhapur-highlight-number">10,000</div>
+      <div className="kolhapur-highlight-unit">SQ. FT.</div>
+      <div className="kolhapur-highlight-divider" />
+      <div className="kolhapur-highlight-footer">
+        <Building2 size={19} />
+        <span>
+          <strong>MULTI-BRAND WORKSHOP</strong>
+          <small>One destination. Multiple automotive services.</small>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div className="kolhapur-hero-strip">
+    <MapPin size={18} />
+    Serving Kolhapur &amp; Beyond
+  </div>
+</section>
+
       {/* TOP AUTOMOTIVE ADVERTISEMENT SLIDER */}
 
       <section className="tm-before-after-section" id="home">
@@ -922,6 +992,9 @@ Please contact me regarding this enquiry.`;
           ))}
         </div>
       </div>
+
+
+      
 
       {/* SERVICES */}
 
