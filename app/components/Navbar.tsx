@@ -21,7 +21,7 @@ export default function Navbar() {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header className="site-header">
+    <header className="site-header" id="main-site-header">
       <div className="nav-container">
 
         {/* COMBINED TULJA × SHARVARI BRANDING */}

@@ -3331,3 +3331,125 @@ main > section.scroll-revealed {
     will-change: auto;
   }
 }
+
+/* =========================================
+   MOBILE HORIZONTAL OVERFLOW FIX
+========================================= */
+
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip !important;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  overflow-x: clip !important;
+}
+
+#__next,
+main,
+.site-header {
+  max-width: 100%;
+}
+
+/* Prevent media from expanding viewport */
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+
+/* Mobile sections */
+@media (max-width: 768px) {
+  body {
+    overflow-x: clip !important;
+  }
+
+  main,
+  section {
+    max-width: 100%;
+  }
+
+  .tm-home {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  /* Prevent oversized animated elements */
+  .tm-home img,
+  .tm-home video {
+    max-width: 100%;
+  }
+
+  /* Sliders */
+  .tm-home .before-after-slider,
+  .tm-home .gallery-grid,
+  .tm-home .services-grid {
+    max-width: 100%;
+  }
+}
+/* MOBILE HORIZONTAL OVERFLOW FIX */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip !important;
+}
+
+body {
+  margin: 0;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  main,
+  section,
+  .tm-home {
+    max-width: 100%;
+  }
+
+  .tm-home {
+    width: 100%;
+    overflow-x: clip;
+  }
+
+  .tm-home img,
+  .tm-home video {
+    max-width: 100%;
+  }
+}
+
+/* HIDE NAVBAR WHILE PRELOADER IS ACTIVE */
+body.is-loading .site-header {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body:not(.is-loading) .site-header {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+/* Hide navbar during preloader */
+body.is-loading .site-header {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Reveal navbar after preloader */
+body:not(.is-loading) .site-header {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
