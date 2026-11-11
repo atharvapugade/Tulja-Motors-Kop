@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import {
   User,
@@ -55,7 +56,9 @@ interface DatabaseState {
   activityLogs: ActivityLog[];
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+const DATA_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'tulja-motors-data')
+  : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'tulja_motors_db.json');
 
 let memoryDb: DatabaseState | null = null;

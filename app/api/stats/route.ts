@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, connection } from 'next/server';
 import { db } from '@/lib/db/store';
 import { JobCard, Invoice, Payment, Expense, AttendanceRecord, MarketingLead } from '@/lib/models/types';
 
 export async function GET() {
+  await connection();
   try {
     const [
       users,

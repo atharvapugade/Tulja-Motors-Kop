@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, connection } from 'next/server';
 import { connectToDatabase, getDbConnectionStatus } from '@/lib/db/connect';
 
 export async function GET() {
+  await connection();
   try {
     const connResult = await connectToDatabase();
     const status = await getDbConnectionStatus();
