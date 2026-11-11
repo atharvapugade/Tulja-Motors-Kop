@@ -1240,3 +1240,138 @@ body {
     min-width: 82px;
   }
 }
+
+/* =========================================
+   NAVBAR MOBILE OVERFLOW FIX
+   ========================================= */
+
+.site-header {
+  width: 100%;
+  max-width: 100%;
+  left: 0;
+  right: 0;
+  overflow-x: clip;
+}
+
+.site-header,
+.site-header * {
+  box-sizing: border-box;
+}
+
+.site-header .nav-container {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* BRAND LOGOS */
+.site-header .nav-brand-lockup {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-shrink: 1;
+  max-width: 100%;
+  gap: 8px;
+}
+
+.site-header .nav-logo,
+.site-header .nav-sharvari-logo {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.site-header .tulja-navbar-svg {
+  display: block;
+  width: 120px;
+  max-width: 100%;
+  height: auto;
+}
+
+.site-header .sharvari-navbar-svg {
+  display: block;
+  width: 90px;
+  max-width: 100%;
+  height: auto;
+}
+
+.site-header .nav-brand-cross {
+  flex-shrink: 0;
+}
+
+/* MOBILE LAYOUT */
+@media (max-width: 1050px) {
+  .site-header .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .site-header .nav-brand-lockup {
+    flex: 0 1 auto;
+    gap: 5px;
+  }
+
+  .site-header .tulja-navbar-svg {
+    width: clamp(76px, 22vw, 112px);
+  }
+
+  .site-header .sharvari-navbar-svg {
+    width: clamp(55px, 17vw, 82px);
+  }
+
+  .site-header .nav-menu-toggle {
+    display: flex !important;
+    flex: 0 0 42px;
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    margin-left: auto;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 100005;
+  }
+
+  .site-header .nav-actions {
+    display: none !important;
+  }
+
+  .site-header .nav-links {
+    width: 100%;
+    max-width: 100%;
+    left: 0;
+    right: 0;
+  }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 380px) {
+  .site-header .nav-container {
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 4px;
+  }
+
+  .site-header .nav-brand-lockup {
+    gap: 3px;
+  }
+
+  .site-header .tulja-navbar-svg {
+    width: 88px;
+  }
+
+  .site-header .sharvari-navbar-svg {
+    width: 61px;
+  }
+
+  .site-header .nav-menu-toggle {
+    flex-basis: 38px;
+    width: 38px;
+    min-width: 38px;
+  }
+}
