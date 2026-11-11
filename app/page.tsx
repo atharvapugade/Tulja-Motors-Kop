@@ -807,7 +807,7 @@ Please contact me regarding this enquiry.`;
     </h1>
 
     <p className="kh6-text">
-     Our 10,000 sq. ft. multi-brand automotive workshop in Kolhapur brings accident repair, restoration, detailing and customisation together under one roof
+     Our 10,000 sq. ft. multi-brand automotive fully equipped workshop in Kolhapur brings accident repair, restoration, detailing and customisation together under one roof
     </p>
 
     <div className="kh6-actions">
