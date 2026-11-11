@@ -1,7 +1,7 @@
 
 /* =========================================
    TULJA MOTORS × SHARVARI MOTORS
-   CLEAN PREMIUM NAVBAR
+   PREMIUM RESPONSIVE NAVBAR
 ========================================= */
 
 :root {
@@ -14,81 +14,68 @@
   --tm-nav-teal: #00766e;
 }
 
-/* =========================================
-   FIXED HEADER
-========================================= */
+/* IMPORTANT: consistent width calculations */
+
+.site-header,
+.site-header *,
+.site-header *::before,
+.site-header *::after {
+  box-sizing: border-box;
+}
+
+/* HEADER */
 
 .site-header {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   z-index: 99999;
-
-  background: #ffffff;
-  border-bottom: 1px solid #eeeeee;
-
+  background: #fff;
+  border-bottom: 1px solid #eee;
   isolation: isolate;
-  overflow: visible;
 }
 
-/* =========================================
-   NAV CONTAINER
-========================================= */
+/* CONTAINER */
 
 .site-header .nav-container {
   position: relative;
   z-index: 5;
-
   width: min(1380px, calc(100% - 48px));
   max-width: 100%;
   min-width: 0;
   min-height: 90px;
-
   margin: 0 auto;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 22px;
 }
 
-/* =========================================
-   COMBINED BRAND LOGOS
-========================================= */
+/* BRAND */
 
 .nav-brand-lockup {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-
   flex: 0 0 auto;
   min-width: 0;
   gap: 10px;
-
   position: relative;
   z-index: 20;
-
   color: #10121b;
   text-decoration: none;
 }
-
-/* TULJA LOGO */
 
 .nav-brand-lockup .nav-logo {
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 150px;
   height: 76px;
-
   flex: 0 0 auto;
-  min-width: 0;
-
   overflow: hidden;
 }
 
@@ -99,34 +86,24 @@
   object-fit: contain;
 }
 
-/* SEPARATOR */
-
 .nav-brand-cross {
   display: flex;
   align-items: center;
   justify-content: center;
-
   flex: 0 0 auto;
-
-  color: #777777;
+  color: #777;
   font-size: 22px;
   font-weight: 600;
   line-height: 1;
 }
 
-/* SHARVARI LOGO */
-
 .nav-sharvari-logo {
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 108px;
   height: 65px;
-
   flex: 0 0 auto;
-  min-width: 0;
-
   overflow: hidden;
   border-radius: 4px;
 }
@@ -138,56 +115,43 @@
   object-fit: contain;
 }
 
-/* =========================================
-   DESKTOP NAVIGATION
-========================================= */
+/* DESKTOP LINKS */
 
 .nav-links {
   display: flex;
   align-items: center;
   justify-content: center;
-
   flex: 1 1 auto;
   min-width: 0;
-
   gap: clamp(12px, 1.5vw, 24px);
 }
 
 .nav-links > a,
 .nav-dropdown > a {
   position: relative;
-
   display: inline-flex;
   align-items: center;
   gap: 6px;
-
   padding: 12px 0;
-
   color: var(--tm-nav-text);
   text-decoration: none;
-
   font-size: 12px;
   font-weight: 750;
   letter-spacing: 0.015em;
   white-space: nowrap;
-
   transition: color 0.25s ease;
 }
 
 .nav-links > a::after,
 .nav-dropdown > a::after {
   content: "";
-
   position: absolute;
   left: 0;
   bottom: 4px;
-
   width: 0;
   height: 2px;
-
   background: var(--tm-nav-teal);
   border-radius: 10px;
-
   transition: width 0.3s ease;
 }
 
@@ -201,9 +165,7 @@
   width: 100%;
 }
 
-/* =========================================
-   DROPDOWNS
-========================================= */
+/* DROPDOWNS */
 
 .nav-dropdown {
   position: relative;
@@ -227,31 +189,20 @@
   position: absolute;
   top: calc(100% + 12px);
   left: -20px;
-
   width: 235px;
   max-width: calc(100vw - 24px);
-
   padding: 10px;
-
   display: flex;
   flex-direction: column;
   gap: 3px;
-
-  background: #ffffff;
+  background: #fff;
   border: 1px solid var(--tm-nav-border);
   border-radius: 12px;
-
   box-shadow: 0 16px 45px rgba(12, 43, 40, 0.12);
-
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
-
-  transition:
-    opacity 0.25s ease,
-    visibility 0.25s ease,
-    transform 0.25s ease;
-
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
   z-index: 100;
 }
 
@@ -265,15 +216,11 @@
 .nav-dropdown-menu a {
   display: flex;
   align-items: center;
-
   padding: 12px 13px;
-
   color: var(--tm-nav-text);
   text-decoration: none;
-
   font-size: 12px;
   font-weight: 650;
-
   border-radius: 7px;
   transition: background 0.2s ease, color 0.2s ease;
 }
@@ -283,15 +230,12 @@
   background: #eef6f2;
 }
 
-/* =========================================
-   RIGHT ACTIONS
-========================================= */
+/* ACTIONS */
 
 .nav-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-
   flex: 0 0 auto;
   gap: 16px;
 }
@@ -300,10 +244,8 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
-
   color: var(--tm-nav-text);
   text-decoration: none;
-
   font-size: 12px;
   font-weight: 750;
   white-space: nowrap;
@@ -317,32 +259,22 @@
   color: var(--tm-nav-teal);
 }
 
-/* QUOTE BUTTON */
-
 .nav-cta {
   min-height: 45px;
   padding: 0 17px;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 9px;
-
   color: #111b17;
   background: var(--tm-nav-yellow);
-
   border: 1px solid var(--tm-nav-yellow);
   border-radius: 4px;
-
   text-decoration: none;
   white-space: nowrap;
-
   font-size: 12px;
   font-weight: 850;
-
-  transition:
-    background 0.25s ease,
-    transform 0.25s ease;
+  transition: background 0.25s ease, transform 0.25s ease;
 }
 
 .nav-cta:hover {
@@ -350,26 +282,19 @@
   transform: translateY(-2px);
 }
 
-/* =========================================
-   MOBILE MENU BUTTON
-========================================= */
+/* MOBILE TOGGLE */
 
 .nav-menu-toggle {
   display: none;
-
   width: 44px;
   min-width: 44px;
   height: 44px;
-
   align-items: center;
   justify-content: center;
-
   color: var(--tm-nav-text);
   background: #edf3ee;
-
   border: 1px solid var(--tm-nav-border);
   border-radius: 8px;
-
   cursor: pointer;
 }
 
@@ -377,20 +302,15 @@
   display: none !important;
 }
 
-/* =========================================
-   AMBIENT LIGHT
-========================================= */
+/* AMBIENT LIGHT */
 
 .site-header::after {
   content: "";
-
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-
   height: 1px;
-
   background: linear-gradient(
     90deg,
     transparent,
@@ -400,7 +320,6 @@
     rgba(0, 118, 110, 0.12),
     transparent
   );
-
   pointer-events: none;
 }
 
@@ -408,22 +327,17 @@
   position: absolute;
   top: calc(100% - 1px);
   left: 0;
-
   width: 100%;
-  max-width: 100%;
   height: 150px;
-
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
-
   background: radial-gradient(
     ellipse 70% 70% at 50% 0%,
     rgba(0, 118, 110, 0.10) 0%,
     rgba(0, 118, 110, 0.045) 40%,
     transparent 78%
   );
-
   filter: blur(16px);
   opacity: 0.85;
 }
@@ -432,18 +346,14 @@
   position: absolute;
   top: 0;
   left: 50%;
-
   width: min(800px, 90%);
-  max-width: 100%;
   height: 100px;
-
   background: radial-gradient(
     ellipse at top,
     rgba(0, 118, 110, 0.09) 0%,
     rgba(0, 118, 110, 0.035) 42%,
     transparent 75%
   );
-
   filter: blur(24px);
   animation: tmAmbientBreathing 6s ease-in-out infinite;
 }
@@ -453,16 +363,13 @@
     opacity: 0.6;
     transform: translateX(-50%) scale(0.95);
   }
-
   50% {
     opacity: 1;
     transform: translateX(-50%) scale(1.05);
   }
 }
 
-/* =========================================
-   TABLET AND MOBILE
-========================================= */
+/* TABLET AND MOBILE */
 
 @media (max-width: 1050px) {
   .site-header .nav-container {
@@ -513,39 +420,27 @@
     top: 100%;
     left: 0;
     right: 0;
-
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    max-height: calc(100dvh - 76px);
+    overflow-x: clip;
+    overflow-y: auto;
+    padding: 14px 20px 22px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-
-    width: 100%;
-    max-width: 100%;
-    max-height: calc(100dvh - 76px);
-
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    padding: 14px 20px 22px;
-
-    background: #ffffff;
+    background: #fff;
     border-top: 1px solid var(--tm-nav-border);
     border-bottom: 1px solid var(--tm-nav-border);
-
     box-shadow: 0 18px 35px rgba(0, 45, 40, 0.10);
-
     gap: 0;
-
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-
     transform: translateY(-8px);
-
-    transition:
-      opacity 0.25s ease,
-      visibility 0.25s ease,
-      transform 0.25s ease;
+    transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
   }
 
   .site-header .nav-links.nav-links-open {
@@ -559,13 +454,10 @@
   .nav-dropdown > a {
     display: flex;
     align-items: center;
-
     width: 100%;
     min-height: 48px;
     padding: 13px 5px;
-
     font-size: 13px;
-
     border-bottom: 1px solid rgba(0, 80, 75, 0.09);
   }
 
@@ -573,8 +465,6 @@
   .nav-dropdown > a::after {
     display: none;
   }
-
-  /* MOBILE DROPDOWNS */
 
   .nav-dropdown {
     width: 100%;
@@ -584,27 +474,25 @@
     justify-content: space-between;
   }
 
+  /* Keep dropdowns closed until focused or hovered.
+     This prevents touch hover from opening them unexpectedly. */
+
   .nav-dropdown-menu {
     position: static;
-
     display: none;
     width: 100%;
     max-width: 100%;
-
     padding: 5px 0 10px 12px;
-
     background: transparent;
     border: 0;
     border-radius: 0;
     box-shadow: none;
-
     opacity: 1;
     visibility: visible;
     transform: none;
     transition: none;
   }
 
-  .nav-dropdown:hover .nav-dropdown-menu,
   .nav-dropdown:focus-within .nav-dropdown-menu {
     display: flex;
   }
@@ -615,25 +503,20 @@
     font-size: 12px;
   }
 
-  /* MOBILE CALL */
-
   .mobile-call-link {
     display: flex !important;
     align-items: center;
     gap: 10px;
-
     margin-top: 12px;
     padding: 14px !important;
-
-    color: #ffffff !important;
+    color: #fff !important;
     background: var(--tm-nav-teal);
-
     border-radius: 7px;
     border: 0 !important;
   }
 
   .mobile-call-link svg {
-    color: #ffffff;
+    color: #fff;
   }
 
   .nav-ambient-light {
@@ -645,9 +528,7 @@
   }
 }
 
-/* =========================================
-   SMALL MOBILE
-========================================= */
+/* SMALL MOBILE */
 
 @media (max-width: 480px) {
   .site-header .nav-container {
@@ -714,9 +595,7 @@
   }
 }
 
-/* =========================================
-   BODY OFFSET FOR FIXED NAVBAR
-========================================= */
+/* BODY OFFSET */
 
 body {
   padding-top: 90px;
@@ -734,9 +613,7 @@ body {
   }
 }
 
-/* =========================================
-   REDUCED MOTION
-========================================= */
+/* REDUCED MOTION */
 
 @media (prefers-reduced-motion: reduce) {
   .nav-ambient-core {
@@ -747,14 +624,5 @@ body {
   .nav-cta,
   .nav-dropdown-menu {
     transition: none;
-  }
-}
-@media (max-width: 1050px) {
-  .site-header {
-    display: none !important;
-  }
-
-  body {
-    padding-top: 0 !important;
   }
 }
