@@ -1,12 +1,12 @@
-
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import WhatsAppFloat from "./components/WhatsAppFloat";
-import ScrollReveal from "./components/ScrollReveal";
-import RoutePreloader from "./components/RoutePreloader";
+import {
+  PublicPreloaderChrome,
+  PublicHeaderChrome,
+  PublicFooterChrome,
+} from "./components/PublicChrome";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
@@ -31,11 +31,12 @@ export const metadata: Metadata = {
     "PPF Installation Kolhapur",
   ],
 
-  metadataBase: new URL("https://www.tuljamotors.com"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.tuljamotors.com"
+  ),
 
   openGraph: {
-    title:
-      "Tulja Motors | Accident Repair & Denting Painting in Kolhapur",
+    title: "Tulja Motors | Accident Repair & Denting Painting in Kolhapur",
     description:
       "Professional vehicle repair, restoration and automotive customisation in Kolhapur.",
     url: "https://www.tuljamotors.com",
@@ -62,25 +63,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* PRELOADER ON EVERY PAGE NAVIGATION */}
-        <RoutePreloader />
+        {/* PRELOADER & SCROLL ANIMATION ON PUBLIC PAGES ONLY */}
+        <Suspense fallback={null}>
+          <PublicPreloaderChrome />
+        </Suspense>
 
-        {/* GLOBAL SCROLL ANIMATION */}
-        <ScrollReveal />
+        {/* WEBSITE NAVIGATION (HIDDEN ON /panels) */}
+        <Suspense fallback={null}>
+          <PublicHeaderChrome />
+        </Suspense>
 
-        {/* WEBSITE NAVIGATION */}
-        <Navbar />
+        {/* ALL WEBSITE & PANEL PAGES */}
+        <div className="site-content">{children}</div>
 
-        {/* ALL WEBSITE PAGES */}
-        <div className="site-content">
-          {children}
-        </div>
-
-        {/* WEBSITE FOOTER */}
-        <Footer />
-
-        {/* FLOATING WHATSAPP */}
-        <WhatsAppFloat />
+        {/* WEBSITE FOOTER & FLOATING WHATSAPP (HIDDEN ON /panels) */}
+        <Suspense fallback={null}>
+          <PublicFooterChrome />
+        </Suspense>
 
         {/* VERCEL WEB ANALYTICS */}
         <Analytics />

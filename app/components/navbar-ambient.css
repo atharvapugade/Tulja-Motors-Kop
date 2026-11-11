@@ -722,18 +722,18 @@
    BODY OFFSET
 ========================================= */
 
-body {
+body:has(.site-header) {
   padding-top: 90px;
 }
 
 @media (max-width: 1050px) {
-  body {
+  body:has(.site-header) {
     padding-top: 76px;
   }
 }
 
 @media (max-width: 480px) {
-  body {
+  body:has(.site-header) {
     padding-top: 70px;
   }
 }

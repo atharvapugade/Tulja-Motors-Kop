@@ -66,6 +66,7 @@ export default function Footer() {
           <Link href="/about">About Us</Link>
           <Link href="/gallery">Our Work</Link>
           <Link href="/contact">Contact Us</Link>
+          <Link href="/panels">Management Panels</Link>
         </div>
 
         {/* TULJA */}
