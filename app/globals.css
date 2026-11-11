@@ -3453,3 +3453,49 @@ body:not(.is-loading) .site-header {
   opacity: 1;
   transition: opacity 0.4s ease;
 }
+/* NAVBAR MOBILE WIDTH FIX */
+
+.site-header {
+  width: 100%;
+  max-width: 100%;
+  left: 0;
+  right: 0;
+  overflow-x: clip;
+}
+
+.site-header,
+.site-header * {
+  box-sizing: border-box;
+}
+
+@media (max-width: 1050px) {
+  .site-header {
+    width: 100%;
+    overflow: clip;
+  }
+
+  .site-header .nav-container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 14px;
+    padding-right: 14px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .site-header .nav-logo,
+  .site-header .nav-logos {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .site-header .nav-menu-toggle {
+    flex: 0 0 42px;
+    width: 42px;
+    min-width: 42px;
+    margin-left: auto;
+  }
+}
