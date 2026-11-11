@@ -1075,3 +1075,87 @@
     gap: 6px;
   }
 }
+/* =========================================
+   FIX NAVBAR OVERLAPPING WITH HERO
+========================================= */
+
+/* Keep navbar above all page sections */
+.site-header {
+  position: sticky !important;
+  top: 0;
+  z-index: 9999 !important;
+  width: 100%;
+  background: #ffffff !important;
+  isolation: isolate;
+}
+
+/* Keep navbar contents above ambient effects */
+.site-header .nav-container {
+  position: relative;
+  z-index: 3;
+  min-height: 90px;
+  overflow: visible !important;
+}
+
+/* Prevent logo from getting clipped */
+.site-header .nav-brand-lockup {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  overflow: visible !important;
+}
+
+/* Ensure complete Tulja logo and brand text remain visible */
+.site-header .nav-logo {
+  width: 150px;
+  min-width: 150px;
+  flex-shrink: 0;
+  overflow: visible !important;
+}
+
+.site-header .tulja-navbar-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Sharvari logo */
+.site-header .nav-sharvari-logo {
+  width: 108px;
+  min-width: 108px;
+  flex-shrink: 0;
+}
+
+/* Ambient light must never cover navbar content */
+.site-header .nav-ambient-light {
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Keep navigation and actions visible */
+.site-header .nav-links,
+.site-header .nav-actions,
+.site-header .nav-menu-toggle {
+  position: relative;
+  z-index: 4;
+}
+
+/* Mobile navbar */
+@media (max-width: 768px) {
+  .site-header .nav-container {
+    min-height: 76px;
+  }
+
+  .site-header .nav-logo {
+    width: 112px;
+    min-width: 112px;
+  }
+
+  .site-header .nav-sharvari-logo {
+    width: 82px;
+    min-width: 82px;
+  }
+}
