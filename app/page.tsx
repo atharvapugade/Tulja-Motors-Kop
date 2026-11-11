@@ -803,13 +803,11 @@ Please contact me regarding this enquiry.`;
 
     <h1>
       KOLHAPUR,
-      <span>GET READY.</span>
+      <span>GET READY !</span>
     </h1>
 
     <p className="kh6-text">
-      A 10,000 sq. ft. multi-brand workshop is coming soon to Kolhapur:
-      accident repair, restoration, detailing and customisation, all under
-      one roof.
+     Our 10,000 sq. ft. multi-brand automotive workshop in Kolhapur brings accident repair, restoration, detailing and customisation together under one roof
     </p>
 
     <div className="kh6-actions">
@@ -1332,7 +1330,7 @@ Please contact me regarding this enquiry.`;
             <h2>
               EXPERIENCE THAT
               <br />
-              MOVES WITH YOU.
+              MOVES WITH YOU
             </h2>
 
             <p>
@@ -1440,7 +1438,7 @@ Please contact me regarding this enquiry.`;
               <h2>
                 GOOD TO KNOW
                 <br />
-                BEFORE YOU VISIT.
+                BEFORE YOU VISIT
               </h2>
             </div>
 
@@ -1500,9 +1498,9 @@ Please contact me regarding this enquiry.`;
             <span className="tm-section-tag">LET'S TALK CARS</span>
 
             <h2>
-              YOUR CAR.
+              YOUR CAR
               <br />
-              OUR <span>CRAFT.</span>
+              OUR <span>RESPONSBILITY</span>
             </h2>
 
             <p>
@@ -1561,7 +1559,7 @@ Please contact me regarding this enquiry.`;
           <div className="tm-contact-form-card">
             <div className="tm-contact-form-heading">
               <span>01 / ENQUIRY</span>
-              <h3>LET'S GET STARTED.</h3>
+              <h3>LET'S GET STARTED</h3>
               <p>Share a few details and we will get back to you.</p>
             </div>
 
