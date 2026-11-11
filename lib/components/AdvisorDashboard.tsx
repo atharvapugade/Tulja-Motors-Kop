@@ -1152,7 +1152,7 @@ export default function AdvisorDashboard({
           {/* Consistent Workspace Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">Service Advisory & Intake</span>
                 <span className="stage-badge badge-active">MongoDB Live Synced</span>
               </div>
@@ -1245,14 +1245,7 @@ export default function AdvisorDashboard({
               </div>
               <span className="stage-badge badge-info">Standard Operating Flow</span>
             </div>
-            <div
-              style={{
-                padding: '18px 20px',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                gap: '14px',
-              }}
-            >
+            <div className="wms-workflow-grid" style={{ padding: '18px 20px' }}>
               <Link
                 href="/panels/advisor/dashboard?tab=customers"
                 style={{
@@ -1359,7 +1352,7 @@ export default function AdvisorDashboard({
                 <h3>Quick Intake Actions</h3>
                 <Sparkles size={16} color="#045F60" />
               </div>
-              <div style={{ padding: '18px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div className="wms-form-grid-2" style={{ padding: '18px 20px' }}>
                 <button
                   type="button"
                   className="btn-primary-action"
@@ -1427,13 +1420,15 @@ export default function AdvisorDashboard({
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '8px',
                         padding: '10px 14px',
                         background: '#fafdfc',
                         border: '1px solid #e2eeec',
                         borderRadius: '8px',
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
                         <div
                           style={{
                             width: '34px',
@@ -1445,13 +1440,14 @@ export default function AdvisorDashboard({
                             placeItems: 'center',
                             fontWeight: '800',
                             fontSize: '13px',
+                            flexShrink: 0,
                           }}
                         >
                           {sup.name.charAt(0)}
                         </div>
-                        <div>
+                        <div style={{ minWidth: 0 }}>
                           <strong style={{ fontSize: '13px', display: 'block' }}>{sup.name}</strong>
-                          <span style={{ fontSize: '11px', color: '#64748b' }}>
+                          <span style={{ fontSize: '11px', color: '#64748b', wordBreak: 'break-word' }}>
                             {sup.designation} · {sup.phone}
                           </span>
                         </div>
@@ -1585,7 +1581,7 @@ export default function AdvisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">CRM & Owner Registry</span>
                 <span className="stage-badge badge-active">{customers.length} Customers</span>
               </div>
@@ -1656,17 +1652,14 @@ export default function AdvisorDashboard({
           </div>
 
           <div className="wms-filter-bar">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <div style={{ position: 'relative' }}>
-                <input
-                  type="text"
-                  className="table-search-input"
-                  style={{ width: '300px' }}
-                  placeholder="Search customer code, name, phone, city..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
+            <div className="wms-filter-controls">
+              <input
+                type="text"
+                className="table-search-input"
+                placeholder="Search customer code, name, phone, city..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
             <span className="stage-badge badge-info">
               Showing {filteredCustomers.length} of {customers.length} Customers
@@ -1793,7 +1786,7 @@ export default function AdvisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">Vehicle Intake Master</span>
                 <span className="stage-badge badge-active">{vehicles.length} Registered</span>
               </div>
@@ -1875,7 +1868,6 @@ export default function AdvisorDashboard({
               <input
                 type="text"
                 className="table-search-input"
-                style={{ width: '280px' }}
                 placeholder="Search reg no, make, model, VIN, owner..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -2003,7 +1995,7 @@ export default function AdvisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">Job Cards & Estimates</span>
                 <span className="stage-badge badge-active">{jobCards.length} DB Records</span>
               </div>
@@ -2082,7 +2074,6 @@ export default function AdvisorDashboard({
               <input
                 type="text"
                 className="table-search-input"
-                style={{ width: '250px' }}
                 placeholder="Search JC #, vehicle reg, customer..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -2266,7 +2257,7 @@ export default function AdvisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-purple">Floor Handover Desk</span>
                 <span className="stage-badge badge-active">
                   {pendingHandoverJobs.length} Pending Handover
@@ -2354,14 +2345,7 @@ export default function AdvisorDashboard({
               </div>
               <span className="stage-badge badge-info">{supervisors.length} Supervisors Online</span>
             </div>
-            <div
-              style={{
-                padding: '18px 20px',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))',
-                gap: '14px',
-              }}
-            >
+            <div className="wms-supervisor-cards-grid" style={{ padding: '18px 20px' }}>
               {supervisors.map((sup) => {
                 const supId = sup.userId || sup.id;
                 const assignedJobs = handedOverJobs.filter(
@@ -2370,8 +2354,8 @@ export default function AdvisorDashboard({
                     j.jobStatus === 'Active'
                 );
                 return (
-                  <div key={sup.id} className="wms-org-node" style={{ justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div key={sup.id} className="wms-org-node" style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
                       <div
                         style={{
                           width: '42px',
@@ -2388,14 +2372,14 @@ export default function AdvisorDashboard({
                       >
                         {sup.name.charAt(0)}
                       </div>
-                      <div>
+                      <div style={{ minWidth: 0 }}>
                         <strong style={{ fontSize: '14px', color: '#141b1b', display: 'block' }}>
                           {sup.name}
                         </strong>
-                        <div style={{ fontSize: '12px', color: '#045F60', fontWeight: '600' }}>
+                        <div style={{ fontSize: '12px', color: '#045F60', fontWeight: '600', wordBreak: 'break-word' }}>
                           {sup.designation}
                         </div>
-                        <div style={{ fontSize: '11px', color: '#64748b' }}>
+                        <div style={{ fontSize: '11px', color: '#64748b', wordBreak: 'break-word' }}>
                           {sup.phone} · {sup.department}
                         </div>
                       </div>
@@ -2567,7 +2551,7 @@ export default function AdvisorDashboard({
                         <span className="stage-badge badge-active">{job.jobStatus}</span>
                       </td>
                       <td>
-                        <div style={{ display: 'flex', gap: '6px' }}>
+                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                           <button
                             type="button"
                             className="btn-secondary-action"
@@ -2619,7 +2603,7 @@ export default function AdvisorDashboard({
             </div>
             <form onSubmit={handleSaveCustomer}>
               <div className="modal-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="wms-form-grid-2">
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
                       Customer Full Name *
@@ -2750,7 +2734,7 @@ export default function AdvisorDashboard({
             </div>
             <form onSubmit={handleSaveVehicle}>
               <div className="modal-body" style={{ maxHeight: '72vh', overflowY: 'auto' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="wms-form-grid-2">
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
                       Vehicle Owner (Customer) *
@@ -2960,7 +2944,7 @@ export default function AdvisorDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-active">MongoDB Live Save</span>
                   <span className="stage-badge badge-info">
                     {jobModalMode === 'create' ? 'New Job Card Intake' : 'Editing Job Card'}
@@ -2983,16 +2967,7 @@ export default function AdvisorDashboard({
             </div>
 
             {/* Section Stepper Bar */}
-            <div
-              style={{
-                display: 'flex',
-                gap: '8px',
-                padding: '10px 24px',
-                background: '#f5f9f8',
-                borderBottom: '1px solid #d9e8e6',
-                overflowX: 'auto',
-              }}
-            >
+            <div className="wms-stepper-bar">
               {[
                 { num: 1 as const, label: '1. Customer & Vehicle' },
                 { num: 2 as const, label: '2. Damage & Insurance' },
@@ -3039,6 +3014,8 @@ export default function AdvisorDashboard({
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
+                          flexWrap: 'wrap',
+                          gap: '8px',
                           marginBottom: '12px',
                         }}
                       >
@@ -3046,7 +3023,7 @@ export default function AdvisorDashboard({
                           CUSTOMER / OWNER INFORMATION
                         </strong>
                         {jobModalMode === 'create' && (
-                          <div style={{ display: 'flex', gap: '6px' }}>
+                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                             <button
                               type="button"
                               className={`stage-badge ${
@@ -3101,7 +3078,7 @@ export default function AdvisorDashboard({
                           </select>
                         </div>
                       ) : (
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <div className="wms-form-grid-2">
                           <div>
                             <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
                               New Customer Full Name *
@@ -3180,6 +3157,8 @@ export default function AdvisorDashboard({
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
+                          flexWrap: 'wrap',
+                          gap: '8px',
                           marginBottom: '12px',
                         }}
                       >
@@ -3187,7 +3166,7 @@ export default function AdvisorDashboard({
                           VEHICLE INTAKE SPECIFICATIONS
                         </strong>
                         {jobModalMode === 'create' && jobForm.customerMode === 'existing' && (
-                          <div style={{ display: 'flex', gap: '6px' }}>
+                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                             <button
                               type="button"
                               className={`stage-badge ${
@@ -3232,7 +3211,7 @@ export default function AdvisorDashboard({
                           </select>
                         </div>
                       ) : (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+                        <div className="wms-form-grid-3">
                           <div>
                             <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
                               Registration # *
@@ -3396,7 +3375,7 @@ export default function AdvisorDashboard({
                       />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                    <div className="wms-form-grid-2">
                       <div>
                         <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
                           Customer Complaints (one per line or comma separated)
@@ -3472,14 +3451,7 @@ export default function AdvisorDashboard({
                       </label>
 
                       {jobForm.hasInsurance && (
-                        <div
-                          style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            gap: '12px',
-                            marginTop: '12px',
-                          }}
-                        >
+                        <div className="wms-form-grid-3" style={{ marginTop: '12px' }}>
                           <div>
                             <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
                               Insurance Company
@@ -3561,7 +3533,7 @@ export default function AdvisorDashboard({
                 {/* SECTION 3: ESTIMATE (18% GST) & INITIAL TASKS */}
                 {jobModalSection === 3 && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px' }}>
+                    <div className="wms-form-grid-5">
                       <div>
                         <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
                           Labour (₹)
@@ -3672,6 +3644,8 @@ export default function AdvisorDashboard({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '10px',
                         padding: '10px 14px',
                         background: '#fafdfc',
                         border: '1px solid #e2eeec',
@@ -3701,7 +3675,7 @@ export default function AdvisorDashboard({
                         <input
                           type="date"
                           className="table-search-input"
-                          style={{ width: '160px', height: '32px' }}
+                          style={{ width: '160px', minHeight: '34px' }}
                           value={jobForm.approvalDate || getDefaultDates().today}
                           onChange={(e) => setJobForm({ ...jobForm, approvalDate: e.target.value })}
                         />
@@ -3724,7 +3698,7 @@ export default function AdvisorDashboard({
                         <input
                           type="text"
                           className="table-search-input"
-                          style={{ flex: '2', minWidth: '180px', height: '34px' }}
+                          style={{ flex: '2', minWidth: 'min(180px, 100%)', height: '34px' }}
                           placeholder="Task title e.g. Front Bumper Replacement"
                           value={newTaskDraft.title}
                           onChange={(e) =>
@@ -3777,6 +3751,8 @@ export default function AdvisorDashboard({
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
+                                flexWrap: 'wrap',
+                                gap: '8px',
                                 padding: '6px 10px',
                                 background: '#f8fafc',
                                 borderRadius: '6px',
@@ -3812,7 +3788,7 @@ export default function AdvisorDashboard({
                 {/* SECTION 4: SCHEDULE & SUPERVISOR HANDOVER */}
                 {jobModalSection === 4 && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+                    <div className="wms-form-grid-3">
                       <div>
                         <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
                           Intake Date
@@ -3972,10 +3948,7 @@ export default function AdvisorDashboard({
                 )}
               </div>
 
-              <div
-                className="modal-footer"
-                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-              >
+              <div className="modal-footer wms-modal-footer-split">
                 <div style={{ display: 'flex', gap: '8px' }}>
                   {jobModalSection > 1 && (
                     <button
@@ -4042,7 +4015,7 @@ export default function AdvisorDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-warning">{viewingJob.currentStage}</span>
                   <span
                     className={`stage-badge ${
@@ -4066,10 +4039,8 @@ export default function AdvisorDashboard({
             </div>
             <div className="modal-body" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
               <div
+                className="wms-form-grid-2"
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '14px',
                   fontSize: '13px',
                   marginBottom: '16px',
                 }}
@@ -4155,7 +4126,7 @@ export default function AdvisorDashboard({
                           fontSize: '12px',
                         }}
                       >
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 10px' }}>
                           <strong>{h.stage}</strong>
                           <span style={{ color: '#64748b', fontSize: '11px' }}>
                             {h.updatedBy} ·{' '}
@@ -4224,7 +4195,7 @@ export default function AdvisorDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-active">Floor Release Protocol</span>
                   <span className="stage-badge badge-info">{handoverJob.jobCardNumber}</span>
                 </div>
@@ -4251,7 +4222,7 @@ export default function AdvisorDashboard({
                     padding: '12px 16px',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                     <div>
                       <strong style={{ fontSize: '15px', color: '#045F60' }}>
                         {handoverJob.vehicleRegistration}

@@ -1222,11 +1222,11 @@ export default function SupervisorDashboard({
       </div>
 
       {isOwnerMode && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', maxWidth: '100%' }}>
           <strong style={{ color: '#6b21a8' }}>Preview Supervisor Queue:</strong>
           <select
             className="wms-select-input"
-            style={{ height: '32px', fontSize: '12px' }}
+            style={{ height: '32px', fontSize: '12px', maxWidth: '100%' }}
             value={adminViewSupervisorId}
             onChange={(e) => setAdminViewSupervisorId(e.target.value)}
           >
@@ -1309,7 +1309,7 @@ export default function SupervisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-danger">Workshop Floor Supervision</span>
                 <span className="stage-badge badge-active">{authUser.name}</span>
               </div>
@@ -1410,14 +1410,7 @@ export default function SupervisorDashboard({
               </div>
               <span className="stage-badge badge-info">Floor Execution Standard</span>
             </div>
-            <div
-              style={{
-                padding: '18px 20px',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                gap: '14px',
-              }}
-            >
+            <div className="wms-workflow-grid" style={{ padding: '18px 20px' }}>
               <div
                 style={{
                   background: '#fafdfc',
@@ -1519,7 +1512,6 @@ export default function SupervisorDashboard({
               <input
                 type="text"
                 className="table-search-input"
-                style={{ width: '280px' }}
                 placeholder="Search job #, reg #, customer, handover note..."
                 value={activeFilters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
@@ -1775,8 +1767,8 @@ export default function SupervisorDashboard({
                         background: '#fafdfc',
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                        <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '4px' }}>
+                        <div style={{ minWidth: 0 }}>
                           <strong style={{ color: '#045F60', fontSize: '13px' }}>
                             {job.jobCardNumber} · {job.vehicleRegistration}
                           </strong>
@@ -1832,13 +1824,15 @@ export default function SupervisorDashboard({
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '8px',
                         padding: '10px 14px',
                         background: '#fafdfc',
                         border: '1px solid #e2eeec',
                         borderRadius: '8px',
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
                         <div
                           style={{
                             width: '34px',
@@ -1855,9 +1849,9 @@ export default function SupervisorDashboard({
                         >
                           {tech.name.charAt(0)}
                         </div>
-                        <div>
+                        <div style={{ minWidth: 0 }}>
                           <strong style={{ fontSize: '13px', display: 'block' }}>{tech.name}</strong>
-                          <span style={{ fontSize: '11px', color: '#64748b' }}>
+                          <span style={{ fontSize: '11px', color: '#64748b', wordBreak: 'break-word' }}>
                             {tech.designation} · {tech.phone}
                           </span>
                         </div>
@@ -1886,7 +1880,7 @@ export default function SupervisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">Bay Progression Control</span>
                 <span className="stage-badge badge-active">13 Standardized Stages</span>
               </div>
@@ -1997,13 +1991,7 @@ export default function SupervisorDashboard({
             </div>
 
             <div style={{ padding: '18px 20px' }}>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(128px, 1fr))',
-                  gap: '8px',
-                }}
-              >
+              <div className="wms-stage-board-grid">
                 {ALL_13_STAGES.map((stg, idx) => {
                   const count = scopedJobs.filter((j) => j.currentStage === stg).length;
                   const isSelected = activeFilters.stage === stg;
@@ -2074,7 +2062,6 @@ export default function SupervisorDashboard({
               <input
                 type="text"
                 className="table-search-input"
-                style={{ width: '270px' }}
                 placeholder="Search job #, reg #, vehicle..."
                 value={activeFilters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
@@ -2262,7 +2249,7 @@ export default function SupervisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-danger">Multi-Technician Bay Matrix</span>
                 <span className="stage-badge badge-active">{technicians.length} Active Technicians</span>
               </div>
@@ -2427,7 +2414,7 @@ export default function SupervisorDashboard({
                         {tech.name.charAt(0)}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '6px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
                           <strong style={{ fontSize: '14px', color: '#141b1b' }}>{tech.name}</strong>
                           <span className={`stage-badge ${openCount > 0 ? 'badge-warning' : 'badge-active'}`} style={{ fontSize: '10px' }}>
                             {openCount} Open
@@ -2453,7 +2440,6 @@ export default function SupervisorDashboard({
               <input
                 type="text"
                 className="table-search-input"
-                style={{ width: '250px' }}
                 placeholder="Search vehicle, job #, task, tech..."
                 value={activeFilters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
@@ -2717,7 +2703,7 @@ export default function SupervisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-active">Final Quality Gate</span>
                 <span className="stage-badge badge-info">5-Point Workshop Certification</span>
               </div>
@@ -2790,7 +2776,6 @@ export default function SupervisorDashboard({
               <input
                 type="text"
                 className="table-search-input"
-                style={{ width: '270px' }}
                 placeholder="Search job #, reg #, customer, QC notes..."
                 value={activeFilters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
@@ -2961,7 +2946,7 @@ export default function SupervisorDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-warning">{dossierJob.currentStage}</span>
                   <span className={`stage-badge ${getPriorityBadgeClass(dossierJob.priority)}`}>
                     {dossierJob.priority || 'Normal'} Priority
@@ -3018,7 +3003,7 @@ export default function SupervisorDashboard({
                   dossierJob.vehicleRegistration
                 );
                 return (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', fontSize: '13px' }}>
+                  <div className="wms-form-grid-2" style={{ fontSize: '13px' }}>
                     <div style={{ background: '#f8fafc', padding: '12px 14px', borderRadius: '8px', border: '1px solid #e2eeec' }}>
                       <strong style={{ fontSize: '11px', color: '#64748b', display: 'block', marginBottom: '4px' }}>
                         VEHICLE &amp; TECHNICAL SPECS
@@ -3028,11 +3013,11 @@ export default function SupervisorDashboard({
                       </div>
                       <div style={{ fontWeight: '700' }}>{dossierJob.vehicleModel}</div>
                       {vehSpec && (
-                        <div style={{ fontSize: '11px', color: '#475569', marginTop: '4px', lineHeight: 1.5 }}>
+                        <div style={{ fontSize: '11px', color: '#475569', marginTop: '4px', lineHeight: 1.5, wordBreak: 'break-word' }}>
                           {vehSpec.year} · {vehSpec.color} · {vehSpec.fuelType}
                           <br />
                           <Gauge size={11} style={{ display: 'inline', marginRight: '4px' }} />
-                          Odometer: {vehSpec.odometer?.toLocaleString('en-IN')} km · VIN: <code>{vehSpec.vin}</code>
+                          Odometer: {vehSpec.odometer?.toLocaleString('en-IN')} km · VIN: <code style={{ wordBreak: 'break-all' }}>{vehSpec.vin}</code>
                         </div>
                       )}
                     </div>
@@ -3108,7 +3093,7 @@ export default function SupervisorDashboard({
                   {dossierJob.inspection?.accidentDescription || 'No accident narrative recorded.'}
                 </p>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '10px' }}>
+                <div className="wms-form-grid-2" style={{ gap: '12px', marginTop: '10px' }}>
                   <div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', marginBottom: '5px' }}>
                       CUSTOMER COMPLAINTS
@@ -3153,7 +3138,7 @@ export default function SupervisorDashboard({
 
               {/* Multi-Technician Tasks Table */}
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
                   <strong style={{ fontSize: '12px', color: '#045F60', textTransform: 'uppercase' }}>
                     Multi-Technician Repair Allocation ({(dossierJob.tasks || []).length} Tasks)
                   </strong>
@@ -3303,7 +3288,7 @@ export default function SupervisorDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-danger">Multi-Technician Bay Assignment</span>
                   <span className="stage-badge badge-info">{allocJob.jobCardNumber}</span>
                 </div>
@@ -3364,7 +3349,7 @@ export default function SupervisorDashboard({
                   + Add Bay Work Item &amp; Assign Specific Technician
                 </strong>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div className="wms-form-grid-2" style={{ gap: '10px' }}>
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
                       Specific Repair Task Title *
@@ -3431,10 +3416,10 @@ export default function SupervisorDashboard({
                     <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
                       Task Priority &amp; Est. Hours
                     </label>
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                       <select
                         className="wms-select-input"
-                        style={{ flex: 1 }}
+                        style={{ flex: '1 1 150px' }}
                         value={newTaskDraft.priority}
                         onChange={(e) =>
                           setNewTaskDraft({
@@ -3544,12 +3529,12 @@ export default function SupervisorDashboard({
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0, flexWrap: 'wrap' }}>
                           <span className="stage-badge badge-neutral">#{idx + 1}</span>
                           <input
                             type="text"
                             className="table-search-input"
-                            style={{ flex: 1, height: '34px', fontWeight: '700' }}
+                            style={{ flex: '1 1 160px', minWidth: 0, height: '34px', fontWeight: '700' }}
                             value={t.title}
                             onChange={(e) =>
                               setAllocTasks((prev) =>
@@ -3577,7 +3562,7 @@ export default function SupervisorDashboard({
                         </button>
                       </div>
 
-                      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.6fr 0.9fr 1fr 0.6fr', gap: '8px' }}>
+                      <div className="wms-task-edit-grid">
                         <select
                           className="wms-select-input"
                           style={{ height: '34px', fontSize: '12px' }}
@@ -3756,7 +3741,7 @@ export default function SupervisorDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-info">13-Stage Workflow Update</span>
                   <span className="stage-badge badge-warning">{stageJob.currentStage}</span>
                 </div>
@@ -3871,7 +3856,7 @@ export default function SupervisorDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-active">Final Quality Inspection</span>
                   <span className="stage-badge badge-info">{qcJob.jobCardNumber}</span>
                 </div>
@@ -3920,7 +3905,7 @@ export default function SupervisorDashboard({
               })()}
 
               {/* 5 Checkpoints */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                 <strong style={{ fontSize: '12px', color: '#045F60', textTransform: 'uppercase' }}>
                   Mandatory Workshop QC Checkpoints
                 </strong>
@@ -4002,7 +3987,7 @@ export default function SupervisorDashboard({
               </div>
 
               {/* Target Stages Row for Pass vs Rework */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div className="wms-form-grid-2">
                 <div>
                   <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px', color: '#067a46' }}>
                     Release Stage if QC Passes
@@ -4051,7 +4036,7 @@ export default function SupervisorDashboard({
               </div>
             </div>
 
-            <div className="modal-footer" style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <div className="modal-footer wms-modal-footer-split">
               <button
                 type="button"
                 className="btn-secondary-action"
@@ -4108,7 +4093,7 @@ export default function SupervisorDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-active">Saved to MongoDB</span>
                   <span className="stage-badge badge-info">Technician Workbench Access</span>
                 </div>
@@ -4125,95 +4110,97 @@ export default function SupervisorDashboard({
             </div>
 
             <form onSubmit={handleRegisterTechnician}>
-              <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Technician Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    placeholder="e.g. Akash Suryawanshi"
-                    value={newTechForm.name}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, name: e.target.value })}
-                    required
-                  />
-                </div>
+              <div className="modal-body">
+                <div className="wms-form-grid-2">
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Technician Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      placeholder="e.g. Akash Suryawanshi"
+                      value={newTechForm.name}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, name: e.target.value })}
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Work Email (Login) *
-                  </label>
-                  <input
-                    type="email"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    placeholder="akash.tech@tuljamotors.com"
-                    value={newTechForm.email}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, email: e.target.value })}
-                    required
-                  />
-                </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Work Email (Login) *
+                    </label>
+                    <input
+                      type="email"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      placeholder="akash.tech@tuljamotors.com"
+                      value={newTechForm.email}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, email: e.target.value })}
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Portal Password *
-                  </label>
-                  <input
-                    type="text"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    placeholder="e.g. Tech@2026"
-                    value={newTechForm.password}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, password: e.target.value })}
-                    required
-                  />
-                </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Portal Password *
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      placeholder="e.g. Tech@2026"
+                      value={newTechForm.password}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, password: e.target.value })}
+                      required
+                    />
+                  </div>
 
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Specialty Trade / Designation *
-                  </label>
-                  <select
-                    className="wms-select-input"
-                    style={{ width: '100%' }}
-                    value={newTechForm.designation}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, designation: e.target.value })}
-                  >
-                    <option value="Master Denting Technician">Master Denting Technician (Denting Bay)</option>
-                    <option value="Senior Paint Booth Specialist">Senior Paint Booth Specialist (Painting Bay)</option>
-                    <option value="Mechanical & Suspension Specialist">Mechanical &amp; Suspension Specialist (Mechanical Bay)</option>
-                    <option value="Auto Electrical & Detailing Tech">Auto Electrical &amp; Detailing Tech (Electrical/Detailing Bay)</option>
-                    <option value="Bodyshop Assembly Technician">Bodyshop Assembly Technician (Assembly Bay)</option>
-                  </select>
-                </div>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Specialty Trade / Designation *
+                    </label>
+                    <select
+                      className="wms-select-input"
+                      style={{ width: '100%' }}
+                      value={newTechForm.designation}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, designation: e.target.value })}
+                    >
+                      <option value="Master Denting Technician">Master Denting Technician (Denting Bay)</option>
+                      <option value="Senior Paint Booth Specialist">Senior Paint Booth Specialist (Painting Bay)</option>
+                      <option value="Mechanical & Suspension Specialist">Mechanical &amp; Suspension Specialist (Mechanical Bay)</option>
+                      <option value="Auto Electrical & Detailing Tech">Auto Electrical &amp; Detailing Tech (Electrical/Detailing Bay)</option>
+                      <option value="Bodyshop Assembly Technician">Bodyshop Assembly Technician (Assembly Bay)</option>
+                    </select>
+                  </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Mobile Phone
-                  </label>
-                  <input
-                    type="text"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    placeholder="+91 98220 XXXXX"
-                    value={newTechForm.phone}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, phone: e.target.value })}
-                  />
-                </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Mobile Phone
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      placeholder="+91 98220 XXXXX"
+                      value={newTechForm.phone}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, phone: e.target.value })}
+                    />
+                  </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Monthly Salary (₹)
-                  </label>
-                  <input
-                    type="number"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    value={newTechForm.salary}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, salary: e.target.value })}
-                  />
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Monthly Salary (₹)
+                    </label>
+                    <input
+                      type="number"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={newTechForm.salary}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, salary: e.target.value })}
+                    />
+                  </div>
                 </div>
               </div>
 

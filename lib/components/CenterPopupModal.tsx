@@ -142,6 +142,7 @@ export default function CenterPopupModal({
             padding: '14px 24px 22px',
             display: 'flex',
             justifyContent: 'center',
+            flexWrap: 'wrap',
             gap: '10px',
             background: '#fafdfc',
             borderTop: '1px solid #e2eeec',

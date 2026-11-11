@@ -52,7 +52,9 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') || '';
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navKey = `${pathname}?${currentTab}`;
+  const [drawerOpenForNav, setDrawerOpenForNav] = useState<string | null>(null);
+  const mobileMenuOpen = drawerOpenForNav === navKey;
   const [userName, setUserName] = useState('Staff User');
   const [userRole, setUserRole] = useState(roleTitle);
 
@@ -71,6 +73,28 @@ export default function DashboardLayout({
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.body.classList.toggle('wms-mobile-menu-open', mobileMenuOpen);
+
+    if (!mobileMenuOpen) {
+      return () => {
+        document.body.classList.remove('wms-mobile-menu-open');
+      };
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setDrawerOpenForNav(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.classList.remove('wms-mobile-menu-open');
+    };
+  }, [mobileMenuOpen]);
 
   const handleLogout = async () => {
     try {
@@ -170,10 +194,23 @@ export default function DashboardLayout({
 
   return (
     <div className="dashboard-layout">
+      {mobileMenuOpen && (
+        <div
+          className="sidebar-backdrop"
+          onClick={() => setDrawerOpenForNav(null)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* SIDEBAR NAVIGATION */}
       <aside className={`dashboard-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <Link href="/" className="portal-brand" style={{ gap: '10px' }}>
+          <Link
+            href="/"
+            className="portal-brand"
+            style={{ gap: '10px', minWidth: 0 }}
+            onClick={() => setDrawerOpenForNav(null)}
+          >
             <Image
               src="/tulja-motors-logo.png"
               alt="Tulja Motors Logo"
@@ -183,6 +220,14 @@ export default function DashboardLayout({
               priority
             />
           </Link>
+          <button
+            type="button"
+            className="sidebar-close-btn"
+            onClick={() => setDrawerOpenForNav(null)}
+            aria-label="Close navigation"
+          >
+            <X size={18} />
+          </button>
         </div>
 
         <div className="sidebar-nav-container">
@@ -202,7 +247,7 @@ export default function DashboardLayout({
                 key={item.name}
                 href={item.href}
                 className={`sidebar-link ${isActive ? 'active' : ''}`}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => setDrawerOpenForNav(null)}
               >
                 <Icon size={18} />
                 <span>{item.name}</span>
@@ -212,11 +257,19 @@ export default function DashboardLayout({
 
           <div style={{ marginTop: 'auto', paddingTop: '15px' }}>
             <span className="sidebar-section-title">Portals Gateway</span>
-            <Link href="/panels" className="sidebar-link">
+            <Link
+              href="/panels"
+              className="sidebar-link"
+              onClick={() => setDrawerOpenForNav(null)}
+            >
               <Grid size={18} />
               <span>All Panels Gateway</span>
             </Link>
-            <Link href="/" className="sidebar-link">
+            <Link
+              href="/"
+              className="sidebar-link"
+              onClick={() => setDrawerOpenForNav(null)}
+            >
               <Car size={18} />
               <span>Public Website</span>
             </Link>
@@ -233,6 +286,9 @@ export default function DashboardLayout({
               <span>{departmentName}</span>
             </div>
           </div>
+          <div className="sidebar-mobile-branch">
+            <span /> Main Workshop (Kolhapur)
+          </div>
         </div>
       </aside>
 
@@ -244,11 +300,14 @@ export default function DashboardLayout({
             <button
               type="button"
               className="topbar-action-btn mobile-menu-toggle"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setDrawerOpenForNav(mobileMenuOpen ? null : navKey)}
               aria-label="Toggle navigation"
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
+
+            <div className="topbar-mobile-title">{roleTitle}</div>
 
             <div className="topbar-breadcrumbs">
               <span>Tulja Motors</span>
@@ -269,6 +328,7 @@ export default function DashboardLayout({
               className="topbar-action-btn"
               onClick={() => window.location.reload()}
               title="Refresh Workspace"
+              aria-label="Refresh Workspace"
             >
               <RefreshCw size={17} />
             </button>
@@ -277,6 +337,7 @@ export default function DashboardLayout({
               type="button"
               className="topbar-action-btn"
               title="Notifications"
+              aria-label="Notifications"
             >
               <Bell size={17} />
             </button>
@@ -285,8 +346,10 @@ export default function DashboardLayout({
               type="button"
               className="topbar-logout-btn"
               onClick={handleLogout}
+              aria-label="Logout"
             >
-              <LogOut size={15} /> Logout
+              <LogOut size={15} />
+              <span className="topbar-logout-text">Logout</span>
             </button>
           </div>
         </header>

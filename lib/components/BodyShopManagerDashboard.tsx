@@ -1350,7 +1350,7 @@ export default function BodyShopManagerDashboard({
         color: '#045F60',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
         <Wrench size={15} style={{ flexShrink: 0 }} />
         <span>
           <strong>Central Workshop Operations Command ({managerName}):</strong> Full cross-floor visibility across{' '}
@@ -1358,7 +1358,7 @@ export default function BodyShopManagerDashboard({
           <strong>{technicians.length} Specialist Technicians</strong>, and all 13 repair bays.
         </span>
       </div>
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
         <span className="stage-badge badge-active">
           WIP Pipeline: ₹{wipRevenueTotal.toLocaleString('en-IN')}
         </span>
@@ -1384,7 +1384,7 @@ export default function BodyShopManagerDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-danger">Body Shop Floor Command</span>
                 <span className="stage-badge badge-active">{managerName}</span>
               </div>
@@ -1493,11 +1493,9 @@ export default function BodyShopManagerDashboard({
             </div>
 
             <div
+              className="wms-workflow-grid"
               style={{
                 padding: '18px 20px',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                gap: '14px',
               }}
             >
               <Link
@@ -1620,13 +1618,7 @@ export default function BodyShopManagerDashboard({
               </Link>
             </div>
             <div style={{ padding: '18px 20px' }}>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(128px, 1fr))',
-                  gap: '8px',
-                }}
-              >
+              <div className="wms-stage-board-grid">
                 {ALL_13_STAGES.map((stg, idx) => {
                   const count = jobCards.filter((j) => j.currentStage === stg).length;
                   return (
@@ -1717,7 +1709,7 @@ export default function BodyShopManagerDashboard({
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
                             <div
                               style={{
                                 width: '38px',
@@ -1734,7 +1726,7 @@ export default function BodyShopManagerDashboard({
                             >
                               {sup.name.charAt(0)}
                             </div>
-                            <div>
+                            <div style={{ minWidth: 0 }}>
                               <strong style={{ fontSize: '14px', color: '#141b1b', display: 'block' }}>
                                 {sup.name}
                               </strong>
@@ -1761,7 +1753,7 @@ export default function BodyShopManagerDashboard({
                           </div>
                         </div>
 
-                        <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#475569' }}>
+                        <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', fontSize: '12px', color: '#475569' }}>
                           <span>Total Handled: {supJobs.length} job cards</span>
                           <Link
                             href="/panels/body-shop-manager/dashboard?tab=jobs"
@@ -1797,18 +1789,19 @@ export default function BodyShopManagerDashboard({
                         paddingBottom: '10px',
                         display: 'flex',
                         justifyContent: 'space-between',
+                        flexWrap: 'wrap',
                         gap: '10px',
                         fontSize: '12px',
                       }}
                     >
-                      <div>
+                      <div style={{ minWidth: 0, flex: '1 1 200px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                           <strong style={{ color: '#141b1b' }}>{log.performedBy}</strong>
                           <span className="stage-badge badge-neutral" style={{ fontSize: '10px' }}>
                             {log.action}
                           </span>
                         </div>
-                        <div style={{ color: '#475569', marginTop: '3px' }}>{log.details}</div>
+                        <div style={{ color: '#475569', marginTop: '3px', wordBreak: 'break-word' }}>{log.details}</div>
                       </div>
                       <span style={{ fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap' }}>
                         {log.timestamp
@@ -1965,7 +1958,7 @@ export default function BodyShopManagerDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">Master Floor Tracker</span>
                 <span className="stage-badge badge-active">{jobCards.length} Workshop Orders</span>
               </div>
@@ -2057,7 +2050,6 @@ export default function BodyShopManagerDashboard({
               <input
                 type="text"
                 className="table-search-input"
-                style={{ width: '250px' }}
                 placeholder="Search job #, reg #, customer, tech..."
                 value={activeFilters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
@@ -2321,7 +2313,7 @@ export default function BodyShopManagerDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-danger">Workshop Workforce Utilization</span>
                 <span className="stage-badge badge-active">
                   {technicians.length} Active Technicians
@@ -2440,11 +2432,9 @@ export default function BodyShopManagerDashboard({
             </div>
 
             <div
+              className="wms-bay-filter-grid"
               style={{
                 padding: '16px 20px',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(155px, 1fr))',
-                gap: '10px',
               }}
             >
               {DEPARTMENTS.map((dept) => {
@@ -2474,7 +2464,7 @@ export default function BodyShopManagerDashboard({
                       border: selected ? '2px solid #F7C21F' : '1px solid #d9eae8',
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
                       <strong style={{ fontSize: '13px' }}>{dept}</strong>
                       <span
                         className={`stage-badge ${selected ? 'badge-warning' : getDepartmentBadgeClass(dept)}`}
@@ -2575,7 +2565,7 @@ export default function BodyShopManagerDashboard({
                         {tech.name.charAt(0)}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '6px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
                           <strong style={{ fontSize: '14px', color: '#141b1b' }}>{tech.name}</strong>
                           <span
                             className={`stage-badge ${
@@ -2611,7 +2601,6 @@ export default function BodyShopManagerDashboard({
               <input
                 type="text"
                 className="table-search-input"
-                style={{ width: '240px' }}
                 placeholder="Search vehicle, job #, task, tech..."
                 value={activeFilters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
@@ -2836,7 +2825,7 @@ export default function BodyShopManagerDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-danger">SLA &amp; Bottleneck Control</span>
                 <span className="stage-badge badge-warning">
                   {delayedJobsList.length} Delayed / Attention Required
@@ -2940,7 +2929,6 @@ export default function BodyShopManagerDashboard({
               <input
                 type="text"
                 className="table-search-input"
-                style={{ width: '270px' }}
                 placeholder="Search job #, reg #, supervisor, reason..."
                 value={activeFilters.search}
                 onChange={(e) => patchFilters({ search: e.target.value })}
@@ -3150,7 +3138,7 @@ export default function BodyShopManagerDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-warning">{dossierJob.currentStage}</span>
                   <span className={`stage-badge ${getPriorityBadgeClass(dossierJob.priority)}`}>
                     {dossierJob.priority || 'Normal'} Priority
@@ -3204,7 +3192,7 @@ export default function BodyShopManagerDashboard({
                   dossierJob.vehicleRegistration
                 );
                 return (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', fontSize: '13px' }}>
+                  <div className="wms-form-grid-2" style={{ fontSize: '13px' }}>
                     <div style={{ background: '#f8fafc', padding: '12px 14px', borderRadius: '8px', border: '1px solid #e2eeec' }}>
                       <strong style={{ fontSize: '11px', color: '#64748b', display: 'block', marginBottom: '4px' }}>
                         VEHICLE &amp; SPECS
@@ -3303,6 +3291,8 @@ export default function BodyShopManagerDashboard({
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
+                          flexWrap: 'wrap',
+                          gap: '8px',
                           padding: '8px 12px',
                           background: '#fafdfc',
                           border: '1px solid #e2eeec',
@@ -3310,7 +3300,7 @@ export default function BodyShopManagerDashboard({
                           fontSize: '12px',
                         }}
                       >
-                        <div>
+                        <div style={{ minWidth: 0, flex: '1 1 200px' }}>
                           <strong>{t.title}</strong> ({t.department}) —{' '}
                           <strong>{getTechName(t.assignedTechnicianId, t.assignedTechnicianName)}</strong>{' '}
                           ({t.estimatedHours}h)
@@ -3345,7 +3335,7 @@ export default function BodyShopManagerDashboard({
                           fontSize: '12px',
                         }}
                       >
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 10px' }}>
                           <strong>{h.stage}</strong>
                           <span style={{ fontSize: '11px', color: '#64748b' }}>
                             {h.updatedBy} · {new Date(h.timestamp).toLocaleDateString('en-IN')}
@@ -3409,7 +3399,7 @@ export default function BodyShopManagerDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-info">Manager Stage &amp; Approval</span>
                   <span className="stage-badge badge-warning">{stageJob.currentStage}</span>
                 </div>
@@ -3527,7 +3517,7 @@ export default function BodyShopManagerDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-purple">Supervisor Load Balancing</span>
                   <span className="stage-badge badge-info">{reassignJob.jobCardNumber}</span>
                 </div>
@@ -3567,7 +3557,7 @@ export default function BodyShopManagerDashboard({
                   </select>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="wms-form-grid-2" style={{ gap: '12px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
                       Repair Priority *
@@ -3657,7 +3647,7 @@ export default function BodyShopManagerDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-danger">Workshop Crew Rebalancing</span>
                   <span className="stage-badge badge-info">{allocJob.jobCardNumber}</span>
                 </div>
@@ -3688,7 +3678,7 @@ export default function BodyShopManagerDashboard({
                   + Add Bay Work Item &amp; Specialist Technician
                 </strong>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div className="wms-form-grid-2" style={{ gap: '10px' }}>
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
                       Repair Task Title *
@@ -3755,10 +3745,10 @@ export default function BodyShopManagerDashboard({
                     <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
                       Priority &amp; Est. Hours
                     </label>
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                       <select
                         className="wms-select-input"
-                        style={{ flex: 1 }}
+                        style={{ flex: '1 1 150px' }}
                         value={newTaskDraft.priority}
                         onChange={(e) =>
                           setNewTaskDraft({
@@ -3835,13 +3825,13 @@ export default function BodyShopManagerDashboard({
                         gap: '8px',
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 200px', minWidth: 0, flexWrap: 'wrap' }}>
                           <span className="stage-badge badge-neutral">#{idx + 1}</span>
                           <input
                             type="text"
                             className="table-search-input"
-                            style={{ flex: 1, height: '34px', fontWeight: '700' }}
+                            style={{ flex: '1 1 160px', minWidth: 0, height: '34px', fontWeight: '700' }}
                             value={t.title}
                             onChange={(e) =>
                               setAllocTasks((prev) =>
@@ -3871,7 +3861,7 @@ export default function BodyShopManagerDashboard({
                         </button>
                       </div>
 
-                      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.6fr 0.9fr 1fr 0.6fr', gap: '8px' }}>
+                      <div className="wms-task-edit-grid">
                         <select
                           className="wms-select-input"
                           style={{ height: '34px', fontSize: '12px' }}
@@ -4045,7 +4035,7 @@ export default function BodyShopManagerDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-active">Saved to Database</span>
                   <span className="stage-badge badge-info">Workshop Technician</span>
                 </div>
@@ -4062,95 +4052,97 @@ export default function BodyShopManagerDashboard({
             </div>
 
             <form onSubmit={handleRegisterTechnician}>
-              <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Technician Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    placeholder="e.g. Akash Suryawanshi"
-                    value={newTechForm.name}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, name: e.target.value })}
-                    required
-                  />
-                </div>
+              <div className="modal-body">
+                <div className="wms-form-grid-2" style={{ gap: '12px' }}>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Technician Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      placeholder="e.g. Akash Suryawanshi"
+                      value={newTechForm.name}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, name: e.target.value })}
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Email (Portal Login) *
-                  </label>
-                  <input
-                    type="email"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    placeholder="akash.tech@tuljamotors.com"
-                    value={newTechForm.email}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, email: e.target.value })}
-                    required
-                  />
-                </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Email (Portal Login) *
+                    </label>
+                    <input
+                      type="email"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      placeholder="akash.tech@tuljamotors.com"
+                      value={newTechForm.email}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, email: e.target.value })}
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Password *
-                  </label>
-                  <input
-                    type="text"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    placeholder="e.g. Tech@2026"
-                    value={newTechForm.password}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, password: e.target.value })}
-                    required
-                  />
-                </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Password *
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      placeholder="e.g. Tech@2026"
+                      value={newTechForm.password}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, password: e.target.value })}
+                      required
+                    />
+                  </div>
 
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Trade Specialty / Designation *
-                  </label>
-                  <select
-                    className="wms-select-input"
-                    style={{ width: '100%' }}
-                    value={newTechForm.designation}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, designation: e.target.value })}
-                  >
-                    <option value="Master Denting Technician">Master Denting Technician (Denting Bay)</option>
-                    <option value="Senior Paint Booth Specialist">Senior Paint Booth Specialist (Painting Bay)</option>
-                    <option value="Mechanical & Suspension Specialist">Mechanical &amp; Suspension Specialist (Mechanical Bay)</option>
-                    <option value="Auto Electrical & Detailing Tech">Auto Electrical &amp; Detailing Tech (Electrical/Detailing Bay)</option>
-                    <option value="Bodyshop Assembly Technician">Bodyshop Assembly Technician (Assembly Bay)</option>
-                  </select>
-                </div>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Trade Specialty / Designation *
+                    </label>
+                    <select
+                      className="wms-select-input"
+                      style={{ width: '100%' }}
+                      value={newTechForm.designation}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, designation: e.target.value })}
+                    >
+                      <option value="Master Denting Technician">Master Denting Technician (Denting Bay)</option>
+                      <option value="Senior Paint Booth Specialist">Senior Paint Booth Specialist (Painting Bay)</option>
+                      <option value="Mechanical & Suspension Specialist">Mechanical &amp; Suspension Specialist (Mechanical Bay)</option>
+                      <option value="Auto Electrical & Detailing Tech">Auto Electrical &amp; Detailing Tech (Electrical/Detailing Bay)</option>
+                      <option value="Bodyshop Assembly Technician">Bodyshop Assembly Technician (Assembly Bay)</option>
+                    </select>
+                  </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Phone Number
-                  </label>
-                  <input
-                    type="text"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    placeholder="+91 98220 XXXXX"
-                    value={newTechForm.phone}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, phone: e.target.value })}
-                  />
-                </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      placeholder="+91 98220 XXXXX"
+                      value={newTechForm.phone}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, phone: e.target.value })}
+                    />
+                  </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                    Monthly Salary (₹)
-                  </label>
-                  <input
-                    type="number"
-                    className="table-search-input"
-                    style={{ width: '100%' }}
-                    value={newTechForm.salary}
-                    onChange={(e) => setNewTechForm({ ...newTechForm, salary: e.target.value })}
-                  />
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Monthly Salary (₹)
+                    </label>
+                    <input
+                      type="number"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={newTechForm.salary}
+                      onChange={(e) => setNewTechForm({ ...newTechForm, salary: e.target.value })}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -4195,7 +4187,7 @@ export default function BodyShopManagerDashboard({
           >
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-danger">Floor Delay Escalation</span>
                   <span className="stage-badge badge-info">{delayJob.jobCardNumber}</span>
                 </div>
@@ -4215,7 +4207,7 @@ export default function BodyShopManagerDashboard({
 
             <form onSubmit={handleSaveDelayEscalation}>
               <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="wms-form-grid-2" style={{ gap: '12px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
                       Bottleneck Category *
@@ -4269,7 +4261,7 @@ export default function BodyShopManagerDashboard({
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="wms-form-grid-2" style={{ gap: '12px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
                       Manager Action Plan / Owner

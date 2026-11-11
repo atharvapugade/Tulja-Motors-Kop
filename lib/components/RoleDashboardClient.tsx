@@ -344,12 +344,13 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             marginBottom: '20px',
             fontSize: '13px',
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             gap: '8px',
             boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
           }}
         >
-          <CheckCircle2 size={16} /> {feedbackMsg}
+          <CheckCircle2 size={16} style={{ flexShrink: 0, marginTop: '2px' }} />{' '}
+          <span style={{ minWidth: 0 }}>{feedbackMsg}</span>
         </div>
       )}
 
@@ -361,7 +362,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Executive Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">Super Admin / Owner Access</span>
                 <span className="stage-badge badge-active">Live System Online</span>
               </div>
@@ -672,7 +673,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             </div>
 
             <div style={{ padding: '20px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
+              <div className="wms-stage-board-grid">
                 {ALL_13_STAGES.map((stg, idx) => {
                   const count = jobCards.filter((j) => j.currentStage === stg).length;
                   return (
@@ -772,8 +773,8 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                     <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#eef7f6', color: '#045F60', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
                       <Activity size={16} />
                     </div>
-                    <div style={{ flex: 1, fontSize: '13px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ flex: 1, minWidth: 0, fontSize: '13px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '4px' }}>
                         <strong>{log.performedBy}</strong>
                         <span style={{ fontSize: '11px', color: '#888' }}>
                           {log.timestamp ? new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Today'}
@@ -901,7 +902,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">Organizational Master</span>
                 <span className="stage-badge badge-active">{employees.length} Staff Registered</span>
               </div>
@@ -1034,7 +1035,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div className="wms-filter-controls">
                 <input
                   type="text"
                   className="table-search-input"
@@ -1139,7 +1140,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">Repair Lifecycle Master</span>
                 <span className="stage-badge badge-active">{jobCards.length} Active Records</span>
               </div>
@@ -1273,7 +1274,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
               <span className="stage-badge badge-info">ISO-Compliant SOP</span>
             </div>
             <div style={{ padding: '16px 20px', overflowX: 'auto' }}>
-              <div style={{ display: 'flex', gap: '8px', minWidth: '950px' }}>
+              <div className="wms-stage-pipeline-row">
                 {ALL_13_STAGES.map((stageName, idx) => {
                   const count = jobCards.filter((j) => j.currentStage === stageName).length;
                   return (
@@ -1314,7 +1315,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div className="wms-filter-controls">
                 <input
                   type="text"
                   className="table-search-input"
@@ -1441,7 +1442,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-info">Financial Governance</span>
                 <span className="stage-badge badge-active">18% GST Compliant</span>
               </div>
@@ -1597,7 +1598,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </button>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <div className="wms-filter-controls">
                 <input
                   type="text"
                   className="table-search-input"
@@ -1771,7 +1772,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="wms-header-badges">
                 <span className="stage-badge badge-purple">Security & Compliance</span>
                 <span className="stage-badge badge-active">100% Audit Integrity</span>
               </div>
@@ -1897,7 +1898,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div className="wms-filter-controls">
                 <input
                   type="text"
                   className="table-search-input"
@@ -2339,7 +2340,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                           Allocated Parts: ₹{job.costEstimate?.spareParts?.toLocaleString('en-IN') || '0'} · Stage: {job.currentStage}
                         </div>
                       </div>
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                         <button
                           type="button"
                           className="btn-secondary-action"
@@ -2395,7 +2396,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                       marginBottom: '16px',
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
                       <div>
                         <strong style={{ fontSize: '16px', color: '#141b1b' }}>{job.vehicleModel}</strong>
                         <div style={{ fontSize: '13px', color: '#045F60', fontWeight: '700' }}>
@@ -2409,7 +2410,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                       <strong>Damage Assessment:</strong> {job.inspection?.accidentDescription || 'LH front collision damage'}
                     </div>
 
-                    <div style={{ marginTop: '14px', display: 'flex', gap: '10px' }}>
+                    <div style={{ marginTop: '14px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                       <button
                         type="button"
                         className="btn-primary-action"
@@ -2495,7 +2496,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           <div className="wms-modal-card" style={{ maxWidth: '640px' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div className="wms-header-badges">
                   <span className="stage-badge badge-active">Live Database Write</span>
                   <span className="stage-badge badge-info">Portal User Account</span>
                 </div>
@@ -2515,7 +2516,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             </div>
             <form onSubmit={handleCreateEmployee}>
               <div className="modal-body" style={{ maxHeight: '72vh', overflowY: 'auto' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="wms-form-grid-2">
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
                       Full Name *
@@ -2692,14 +2693,17 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                     fontSize: '12px',
                     color: '#045F60',
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
                     gap: '10px',
                   }}
                 >
-                  <Lock size={16} style={{ flexShrink: 0 }} />
-                  <div>
+                  <Lock size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <div style={{ minWidth: 0 }}>
                     <strong>Live Database Storage:</strong> Saving will hash the password with bcrypt and write both the employee record and user account into the database.
-                    The user can immediately log in at <code>/panels/{newEmpForm.role === 'body_shop_manager' ? 'body-shop-manager' : newEmpForm.role === 'spare_parts_manager' ? 'spare-parts-manager' : newEmpForm.role}</code>.
+                    The user can immediately log in at{' '}
+                    <code style={{ wordBreak: 'break-word' }}>
+                      /panels/{newEmpForm.role === 'body_shop_manager' ? 'body-shop-manager' : newEmpForm.role === 'spare_parts_manager' ? 'spare-parts-manager' : newEmpForm.role}
+                    </code>.
                   </div>
                 </div>
               </div>
@@ -2749,7 +2753,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
               </button>
             </div>
             <div className="modal-body">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', fontSize: '13px' }}>
+              <div className="wms-form-grid-2" style={{ fontSize: '13px' }}>
                 <div>
                   <strong style={{ color: '#888', fontSize: '11px', display: 'block' }}>DESIGNATION</strong>
                   <div>{selectedEmployee.designation}</div>
@@ -2819,7 +2823,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
               </button>
             </div>
             <div className="modal-body" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', fontSize: '13px', marginBottom: '18px' }}>
+              <div className="wms-form-grid-2" style={{ fontSize: '13px', marginBottom: '18px' }}>
                 <div>
                   <strong style={{ color: '#888', fontSize: '11px', display: 'block' }}>VEHICLE REGISTRATION</strong>
                   <div style={{ fontSize: '15px', fontWeight: '700', color: '#045F60' }}>
@@ -2870,6 +2874,9 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                         style={{
                           display: 'flex',
                           justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                          gap: '8px',
                           padding: '8px 12px',
                           background: '#f9fbfb',
                           borderRadius: '6px',
@@ -2933,7 +2940,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
               </button>
             </div>
             <div className="modal-body" style={{ background: '#fff', padding: '24px' }}>
-              <div style={{ borderBottom: '2px solid #045F60', paddingBottom: '16px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ borderBottom: '2px solid #045F60', paddingBottom: '16px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
                 <div>
                   <h2 style={{ fontSize: '20px', color: '#045F60', fontWeight: '900', margin: 0 }}>TULJA MOTORS</h2>
                   <div style={{ fontSize: '12px', color: '#555' }}>Authorized Multi-Brand Bodyshop & Service Station</div>
@@ -2945,13 +2952,13 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '12px', marginBottom: '18px' }}>
+              <div className="wms-modal-spec-grid" style={{ fontSize: '12px', marginBottom: '18px' }}>
                 <div>
                   <strong style={{ color: '#888' }}>BILLED TO:</strong>
                   <div style={{ fontWeight: '700', fontSize: '14px', marginTop: '2px' }}>{selectedInvoice.customerName}</div>
                   <div>Vehicle: {selectedInvoice.vehicleRegistration}</div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
+                <div>
                   <strong style={{ color: '#888' }}>PAYMENT STATUS:</strong>
                   <div style={{ fontWeight: '700', color: selectedInvoice.paymentStatus === 'Paid' ? '#059669' : '#b45309', fontSize: '14px', marginTop: '2px' }}>
                     {selectedInvoice.paymentStatus}
@@ -2959,46 +2966,48 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </div>
               </div>
 
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: '18px' }}>
-                <thead>
-                  <tr style={{ background: '#f5f8f8', borderBottom: '1px solid #ddd' }}>
-                    <th style={{ padding: '8px', textAlign: 'left' }}>Description</th>
-                    <th style={{ padding: '8px', textAlign: 'right' }}>Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style={{ borderBottom: '1px solid #eee' }}>
-                    <td style={{ padding: '8px' }}>Accidental Bodyshop Repairs & Painting Base</td>
-                    <td style={{ padding: '8px', textAlign: 'right' }}>₹{selectedInvoice.subtotal?.toLocaleString('en-IN')}</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #eee' }}>
-                    <td style={{ padding: '8px' }}>CGST @ 9%</td>
-                    <td style={{ padding: '8px', textAlign: 'right' }}>₹{selectedInvoice.cgst?.toLocaleString('en-IN')}</td>
-                  </tr>
-                  <tr style={{ borderBottom: '1px solid #eee' }}>
-                    <td style={{ padding: '8px' }}>SGST @ 9%</td>
-                    <td style={{ padding: '8px', textAlign: 'right' }}>₹{selectedInvoice.sgst?.toLocaleString('en-IN')}</td>
-                  </tr>
-                  <tr style={{ background: '#f5f8f8', fontWeight: '800' }}>
-                    <td style={{ padding: '10px 8px', fontSize: '14px' }}>Grand Total (Incl. 18% GST)</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', fontSize: '15px', color: '#045F60' }}>
-                      ₹{selectedInvoice.grandTotal?.toLocaleString('en-IN')}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{ padding: '8px', color: '#059669' }}>Amount Paid (Advance / Settlement)</td>
-                    <td style={{ padding: '8px', textAlign: 'right', color: '#059669', fontWeight: '700' }}>
-                      - ₹{selectedInvoice.paidAmount?.toLocaleString('en-IN')}
-                    </td>
-                  </tr>
-                  <tr style={{ fontWeight: '700', color: '#dc2626' }}>
-                    <td style={{ padding: '8px' }}>Balance Due</td>
-                    <td style={{ padding: '8px', textAlign: 'right' }}>
-                      ₹{selectedInvoice.balanceDue?.toLocaleString('en-IN')}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="wms-table-responsive">
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: '18px' }}>
+                  <thead>
+                    <tr style={{ background: '#f5f8f8', borderBottom: '1px solid #ddd' }}>
+                      <th style={{ padding: '8px', textAlign: 'left' }}>Description</th>
+                      <th style={{ padding: '8px', textAlign: 'right' }}>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid #eee' }}>
+                      <td style={{ padding: '8px' }}>Accidental Bodyshop Repairs & Painting Base</td>
+                      <td style={{ padding: '8px', textAlign: 'right' }}>₹{selectedInvoice.subtotal?.toLocaleString('en-IN')}</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #eee' }}>
+                      <td style={{ padding: '8px' }}>CGST @ 9%</td>
+                      <td style={{ padding: '8px', textAlign: 'right' }}>₹{selectedInvoice.cgst?.toLocaleString('en-IN')}</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #eee' }}>
+                      <td style={{ padding: '8px' }}>SGST @ 9%</td>
+                      <td style={{ padding: '8px', textAlign: 'right' }}>₹{selectedInvoice.sgst?.toLocaleString('en-IN')}</td>
+                    </tr>
+                    <tr style={{ background: '#f5f8f8', fontWeight: '800' }}>
+                      <td style={{ padding: '10px 8px', fontSize: '14px' }}>Grand Total (Incl. 18% GST)</td>
+                      <td style={{ padding: '10px 8px', textAlign: 'right', fontSize: '15px', color: '#045F60' }}>
+                        ₹{selectedInvoice.grandTotal?.toLocaleString('en-IN')}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: '8px', color: '#059669' }}>Amount Paid (Advance / Settlement)</td>
+                      <td style={{ padding: '8px', textAlign: 'right', color: '#059669', fontWeight: '700' }}>
+                        - ₹{selectedInvoice.paidAmount?.toLocaleString('en-IN')}
+                      </td>
+                    </tr>
+                    <tr style={{ fontWeight: '700', color: '#dc2626' }}>
+                      <td style={{ padding: '8px' }}>Balance Due</td>
+                      <td style={{ padding: '8px', textAlign: 'right' }}>
+                        ₹{selectedInvoice.balanceDue?.toLocaleString('en-IN')}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
             <div className="modal-footer">
               <button

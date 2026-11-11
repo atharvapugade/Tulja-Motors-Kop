@@ -61,6 +61,14 @@ const roleMeta: Record<
     accentBg: '#fbebed',
     defaultEmail: 'supervisor@tuljamotors.com',
   },
+  'spare-parts-manager': {
+    roleTitle: 'Spare Parts & Inventory Manager',
+    departmentName: 'Parts & Procurement',
+    description: 'Sign in to manage workshop spare parts catalog, stock levels, job card requisitions, and vendor purchase orders.',
+    accentColor: '#D97706',
+    accentBg: '#fffbeb',
+    defaultEmail: 'parts@tuljamotors.com',
+  },
   accounts: {
     roleTitle: 'Accounts & Finance',
     departmentName: 'Billing & Ledger',

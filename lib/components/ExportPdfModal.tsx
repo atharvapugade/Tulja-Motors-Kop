@@ -106,7 +106,7 @@ export default function ExportPdfModal({
         {/* MODAL HEADER */}
         <div className="modal-header">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <div className="wms-header-badges">
               <span className="stage-badge badge-active">Executive PDF Export</span>
               <span className="stage-badge badge-info">Tulja Motors Official</span>
             </div>
@@ -141,7 +141,7 @@ export default function ExportPdfModal({
               Choose Report Frequency / Period:
             </label>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+            <div className="wms-pdf-period-grid">
               {periodOptions.map((opt) => {
                 const isSelected = selectedPeriod === opt.id;
                 return (
@@ -191,7 +191,7 @@ export default function ExportPdfModal({
             <div style={{ fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '8px' }}>
               Report Document Specification:
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px', color: '#475569' }}>
+            <div className="wms-modal-spec-grid" style={{ fontSize: '12px', color: '#475569' }}>
               <div>
                 • <strong>Document:</strong> {pageTitle}
               </div>
@@ -214,7 +214,7 @@ export default function ExportPdfModal({
           </div>
 
           {/* QUICK TRIGGER BUTTONS */}
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '11px', color: '#64748b', fontWeight: '600' }}>Instant Download:</span>
             <button
               type="button"
@@ -247,7 +247,7 @@ export default function ExportPdfModal({
         </div>
 
         {/* MODAL FOOTER */}
-        <div className="modal-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="modal-footer">
           <button
             type="button"
             className="btn-secondary-action"
