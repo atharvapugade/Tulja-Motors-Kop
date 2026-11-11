@@ -19826,3 +19826,540 @@ body {
     padding: 11px 8px;
   }
 }
+/* ===== KOLHAPUR HERO: MOBILE FIX ===== */
+@media (max-width: 700px) {
+  .kolhapur-hero {
+    padding: 22px 18px 0 !important;
+  }
+
+  /* hide desktop decorations */
+  .kolhapur-hero::before,
+  .kolhapur-hero::after,
+  .kolhapur-hero .kolhapur-hero-inner::before {
+    display: none !important;
+  }
+
+  /* single column, normal flow */
+  .kolhapur-hero .kolhapur-hero-inner {
+    display: flex !important;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* brand line: one tidy row */
+  .kolhapur-hero .kolhapur-hero-brand {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    margin: 0 0 10px !important;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+
+  .kolhapur-hero .kolhapur-hero-location {
+    margin: 0 0 8px !important;
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.03em;
+  }
+
+  .kolhapur-hero .kolhapur-hero-content h1 {
+    font-size: clamp(36px, 11.5vw, 50px) !important;
+    margin: 0 0 12px !important;
+  }
+
+  .kolhapur-hero .kolhapur-hero-description {
+    max-width: none;
+    margin: 0 0 16px !important;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* buttons: two equal full-width rows */
+  .kolhapur-hero .kolhapur-hero-bottom {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 18px !important;
+  }
+
+  .kolhapur-hero .kolhapur-hero-coming {
+    justify-content: center;
+    padding: 12px 18px;
+    font-size: 13px;
+  }
+
+  .kolhapur-hero a.kolhapur-hero-link {
+    justify-content: space-between;
+    padding: 10px 10px 10px 20px;
+    font-size: 11px;
+  }
+
+  /* features: neat 2 x 2 grid, icon beside text */
+  .kolhapur-hero .kolhapur-hero-features {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 12px;
+    margin-bottom: 4px !important;
+  }
+
+  .kolhapur-hero .kolhapur-hero-features > div,
+  .kolhapur-hero .kolhapur-hero-features > div:first-child,
+  .kolhapur-hero .kolhapur-hero-features > div:nth-child(3) {
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 10px 12px !important;
+    border: 0 !important;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 0 0 1px rgba(10, 10, 18, 0.1);
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .kolhapur-hero .kolhapur-hero-features svg {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: #e10600;
+  }
+
+  /* card: full width, straight, no overlap */
+  .kolhapur-hero .kolhapur-hero-highlight {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-self: stretch;
+    width: 100%;
+    max-width: none !important;
+    margin: 4px 0 6px !important;
+    padding: 14px 18px 16px !important;
+    transform: none !important;
+    animation: none !important;
+    border-radius: 18px;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-label {
+    font-size: 11px !important;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-number {
+    font-size: clamp(46px, 15vw, 62px) !important;
+  }
+
+  .kolhapur-hero .kolhapur-highlight-unit {
+    margin: 0 !important;
+    font-size: 18px !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  /* hide the extra footer text inside the card */
+  .kolhapur-hero .kolhapur-highlight-divider,
+  .kolhapur-hero .kolhapur-highlight-footer,
+  .kolhapur-hero .kolhapur-hero-index {
+    display: none !important;
+  }
+
+  /* bottom strip */
+  .kolhapur-hero .kolhapur-hero-strip {
+    width: min(340px, 90%) !important;
+    margin: 6px 0 0 -18px !important;
+    padding: 11px 44px 11px 18px !important;
+    font-size: 14px;
+  }
+}
+/* ============ KOLHAPUR HERO v7: photo hero, English, 3 colour themes ============ */
+.kh6 {
+  --kh-display: var(--font-display, "Archivo Black", "Arial Black", Impact, sans-serif);
+  /* real Indian car photo: change to any photo from your gallery */
+  --kh-photo: url("/images/sharvari/thar.jpeg");
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: clamp(520px, 76vh, 680px);
+  padding: clamp(40px, 6vw, 72px) clamp(20px, 5vw, 64px);
+  background: var(--hbg);
+  color: var(--fg);
+}
+
+/* ---------- COLOUR THEMES ---------- */
+.kh6--cream {
+  --hbg:
+    radial-gradient(600px 360px at 0% 0%, rgba(255, 214, 190, 0.7), transparent 65%),
+    linear-gradient(100deg, #fffaf6 0%, #fff1cf 100%);
+  --fg: #0a0a12;
+  --mu: #4d5957;
+  --ey: #9b1c1c;
+  --h2: #b11f1f;
+  --b1: #e10600;
+  --b1t: #fff;
+  --ol: rgba(10, 10, 18, 0.55);
+  --star: #e10600;
+  --wm: rgba(15, 97, 89, 0.16);
+  --vl: rgba(255, 250, 246, 0.96);
+  --vm: rgba(255, 250, 246, 0.62);
+  --vr: rgba(255, 250, 246, 0);
+  --tint: transparent;
+}
+
+.kh6--teal {
+  --hbg: linear-gradient(100deg, #083b37 0%, #0f6159 60%, #14827a 100%);
+  --fg: #fff;
+  --mu: rgba(255, 255, 255, 0.86);
+  --ey: #ffd21f;
+  --h2: #ffd21f;
+  --b1: #ffd21f;
+  --b1t: #0a0a12;
+  --ol: rgba(255, 255, 255, 0.7);
+  --star: #ffd21f;
+  --wm: rgba(255, 255, 255, 0.1);
+  --vl: rgba(8, 59, 55, 0.94);
+  --vm: rgba(8, 59, 55, 0.55);
+  --vr: rgba(8, 59, 55, 0);
+  --tint: rgba(15, 97, 89, 0.3);
+}
+
+.kh6--red {
+  --hbg: linear-gradient(100deg, #6e0804 0%, #a8120a 60%, #c8261b 100%);
+  --fg: #fff;
+  --mu: rgba(255, 255, 255, 0.88);
+  --ey: #ffd21f;
+  --h2: #ffd21f;
+  --b1: #ffd21f;
+  --b1t: #0a0a12;
+  --ol: rgba(255, 255, 255, 0.75);
+  --star: #ffd21f;
+  --wm: rgba(255, 255, 255, 0.1);
+  --vl: rgba(110, 8, 4, 0.94);
+  --vm: rgba(110, 8, 4, 0.55);
+  --vr: rgba(110, 8, 4, 0);
+  --tint: rgba(168, 18, 10, 0.3);
+}
+
+/* ---------- PHOTO ---------- */
+.kh6-photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -2;
+  width: 68%;
+  background: var(--kh-photo) 60% center / cover no-repeat;
+  animation: kh6-zoom 22s ease-in-out infinite alternate;
+}
+
+.kh6-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--tint);
+}
+
+/* colour fade so the text is always readable */
+.kh6::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, var(--vl) 0%, var(--vl) 28%, var(--vm) 55%, var(--vr) 100%);
+}
+
+/* logo stripe at the bottom edge */
+.kh6::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    #e10600 0 25%,
+    #ffd21f 25% 50%,
+    #1c9a62 50% 75%,
+    #0d6b64 75% 100%
+  );
+}
+
+/* big faint 10,000 */
+.kh6-mark {
+  position: absolute;
+  right: 18px;
+  bottom: -30px;
+  z-index: -1;
+  font-family: var(--kh-display);
+  font-size: clamp(90px, 15vw, 220px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--wm);
+  pointer-events: none;
+}
+
+/* ---------- CONTENT ---------- */
+.kh6-inner {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.kh6-inner > * {
+  animation: kh6-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.kh6-inner > *:nth-child(1) { animation-delay: 0.05s; }
+.kh6-inner > *:nth-child(2) { animation-delay: 0.12s; }
+.kh6-inner > *:nth-child(3) { animation-delay: 0.22s; }
+.kh6-inner > *:nth-child(4) { animation-delay: 0.32s; }
+.kh6-inner > *:nth-child(5) { animation-delay: 0.42s; }
+
+.kh6-eyebrow {
+  display: block;
+  max-width: 560px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.6;
+  letter-spacing: 0.28em;
+  color: var(--ey);
+}
+
+.kh6 h1 {
+  max-width: 640px;
+  margin: 16px 0 18px;
+  font-family: var(--kh-display);
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 88px);
+  line-height: 0.97;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.kh6 h1 span {
+  display: block;
+  color: var(--h2);
+}
+
+.kh6 h1 span::after {
+  content: "";
+  display: block;
+  width: 130px;
+  height: 6px;
+  margin-top: 16px;
+  border-radius: 3px;
+  background: linear-gradient(
+    90deg,
+    #e10600 0 25%,
+    #ffd21f 25% 50%,
+    #1c9a62 50% 75%,
+    #0d6b64 75% 100%
+  );
+}
+
+.kh6-text {
+  max-width: 500px;
+  margin: 0;
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.7;
+  color: var(--mu);
+}
+
+.kh6-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.kh6-btn,
+.kh6-btn:visited {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 26px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.kh6-btn-primary,
+.kh6-btn-primary:visited {
+  background: var(--b1);
+  color: var(--b1t);
+  box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.55);
+}
+
+.kh6-btn-primary:hover {
+  transform: translateY(-3px);
+}
+
+.kh6-btn-outline,
+.kh6-btn-outline:visited {
+  background: transparent;
+  color: var(--fg);
+  box-shadow: inset 0 0 0 1.5px var(--ol);
+}
+
+.kh6-btn-outline:hover {
+  transform: translateY(-3px);
+  background: var(--fg);
+  color: var(--b1t);
+}
+
+.kh6--cream .kh6-btn-outline:hover {
+  color: #fff;
+}
+
+.kh6-points {
+  display: grid;
+  gap: 12px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kh6-points li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--fg);
+}
+
+.kh6-points span {
+  font-size: 16px;
+  color: var(--star);
+}
+
+@keyframes kh6-up {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes kh6-zoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 760px) {
+  .kh6 {
+    align-items: flex-end;
+    min-height: 640px;
+    padding: 70px 20px 40px;
+  }
+  .kh6-photo {
+    width: 100%;
+    background-position: 72% 30%;
+  }
+  .kh6::before {
+    background: linear-gradient(180deg, var(--vr) 0%, var(--vm) 28%, var(--vl) 58%, var(--vl) 100%);
+  }
+  .kh6-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+  .kh6 h1 {
+    font-size: clamp(38px, 12vw, 52px);
+  }
+  .kh6-text {
+    font-size: 14.5px;
+  }
+  .kh6-actions {
+    flex-direction: column;
+  }
+  .kh6-btn {
+    width: 100%;
+  }
+  .kh6-points li {
+    font-size: 12px;
+  }
+  .kh6-mark {
+    font-size: 96px;
+    right: 6px;
+    bottom: -14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kh6 *,
+  .kh6 *::before,
+  .kh6 *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}.kh6-text strong {
+  padding: 0 4px;
+  font-weight: 900;
+  color: var(--fg);
+  background: linear-gradient(transparent 58%, #ffd21f 58%);
+}
+
+/* on the teal and red themes, a yellow marker with dark text reads better */
+.kh6--teal .kh6-text strong,
+.kh6--red .kh6-text strong {
+  color: #0a0a12;
+  background: linear-gradient(transparent 0%, #ffd21f 0%);
+  border-radius: 3px;
+}
+/* ===== Hero theme: warm white, yellow accents ===== */
+.kh6--warm {
+  --hbg: linear-gradient(180deg, #fffdf8 0%, #fff6e8 100%);
+  --fg: #0a0a12;
+  --mu: #4d5957;
+  --h2: #ffb400;
+  --b1: #ffd21f;
+  --b1t: #0a0a12;
+  --ol: rgba(10, 10, 18, 0.55);
+  --star: #f5a800;
+  --wm: rgba(245, 168, 0, 0.22);
+  --vl: rgba(255, 250, 243, 0.96);
+  --vm: rgba(255, 250, 243, 0.62);
+  --vr: rgba(255, 250, 243, 0);
+  --tint: transparent;
+}
+
+/* eyebrow: yellow text on a dark pill */
+.kh6--warm .kh6-eyebrow {
+  display: inline-block;
+  max-width: none;
+  padding: 9px 14px;
+  border-radius: 3px;
+  background: #0a0a12;
+  color: #ffd21f;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+}
+
+/* GET READY. in yellow with a thin dark outline */
+.kh6--warm h1 span {
+  color: #ffb400;
+  -webkit-text-stroke: 1.5px #0a0a12;
+  paint-order: stroke fill;
+  text-shadow: 0 3px 0 rgba(10, 10, 18, 0.9);
+}
+
+.kh6--warm .kh6-btn-outline:hover {
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .kh6--warm .kh6-eyebrow {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    line-height: 1.7;
+  }
+}

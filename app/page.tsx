@@ -792,71 +792,48 @@ Please contact me regarding this enquiry.`;
 
   return (
     <main className="tm-home">
+{/* KOLHAPUR WORKSHOP HERO */}
+<section className="kh6 kh6--warm" id="kolhapur-workshop">
+  <div className="kh6-photo" />
 
-     {/* KOLHAPUR WORKSHOP HERO */}
-<section className="kolhapur-hero" id="kolhapur-workshop">
-  <div className="kolhapur-hero-inner">
-    <div className="kolhapur-hero-content">
-      <div className="kolhapur-hero-brand">
-        <span className="kolhapur-brand-line" />
-        TULJA MOTORS <span>×</span> SHARVARI MOTORS
-      </div>
+  <div className="kh6-inner">
+    <span className="kh6-eyebrow">
+      TULJA MOTORS × SHARVARI MOTORS · KOLHAPUR
+    </span>
 
-      <div className="kolhapur-hero-location">
-        <MapPin size={14} />
-        A NEW AUTOMOTIVE DESTINATION FOR KOLHAPUR
-      </div>
+    <h1>
+      KOLHAPUR,
+      <span>GET READY.</span>
+    </h1>
 
-      <h1>
-        KOLHAPUR,
-        <span>GET READY.</span>
-      </h1>
+    <p className="kh6-text">
+      A 10,000 sq. ft. multi-brand workshop is coming soon to Kolhapur:
+      accident repair, restoration, detailing and customisation, all under
+      one roof.
+    </p>
 
-      <p className="kolhapur-hero-description">
-        A <strong>10,000 sq. ft. multi-brand automotive workshop</strong> bringing
-        repair, restoration, detailing and customisation together under one roof.
-      </p>
-
-      <div className="kolhapur-hero-bottom">
-        <div className="kolhapur-hero-coming">
-          <span className="kolhapur-pulse" />
-          COMING SOON
-        </div>
-
-        <a href="#services" className="kolhapur-hero-link">
-          EXPLORE OUR SERVICES <ArrowUpRight size={16} />
-        </a>
-      </div>
-
-      <div className="kolhapur-hero-features">
-        <div><Car size={22} /><span>Multi-Brand<br />Car Care</span></div>
-        <div><Wrench size={22} /><span>Accident Repair<br />&amp; Denting</span></div>
-        <div><Sparkles size={22} /><span>Premium<br />Detailing &amp; PPF</span></div>
-        <div><Settings size={22} /><span>Car Modification<br />&amp; Restoration</span></div>
-      </div>
+    <div className="kh6-actions">
+      <a href="#services" className="kh6-btn kh6-btn-primary">
+        DISCOVER OUR SERVICES
+      </a>
+      <a
+        href={`https://wa.me/${WHATSAPP}?text=Hello%20Tulja%20Motors%2C%20I%20would%20like%20to%20enquire%20about%20your%20services.`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="kh6-btn kh6-btn-outline"
+      >
+        CHAT ON WHATSAPP
+      </a>
     </div>
 
-    <div className="kolhapur-hero-highlight">
-      <span className="kolhapur-highlight-label">UPCOMING WORKSHOP AREA</span>
-      <div className="kolhapur-highlight-number">10,000</div>
-      <div className="kolhapur-highlight-unit">SQ. FT.</div>
-      <div className="kolhapur-highlight-divider" />
-      <div className="kolhapur-highlight-footer">
-        <Building2 size={19} />
-        <span>
-          <strong>MULTI-BRAND WORKSHOP</strong>
-          <small>One destination. Multiple automotive services.</small>
-        </span>
-      </div>
-    </div>
+    <ul className="kh6-points">
+      <li><span>✦</span>TULJA MOTORS · REPAIR &amp; RESTORE</li>
+      <li><span>✦</span>SHARVARI MOTORS · CUSTOMISE &amp; PROTECT</li>
+    </ul>
   </div>
 
-  <div className="kolhapur-hero-strip">
-    <MapPin size={18} />
-    Serving Kolhapur &amp; Beyond
-  </div>
+  <div className="kh6-mark">10,000</div>
 </section>
-
       {/* TOP AUTOMOTIVE ADVERTISEMENT SLIDER */}
 
       <section className="tm-before-after-section" id="home">
