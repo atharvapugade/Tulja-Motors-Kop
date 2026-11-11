@@ -24,14 +24,18 @@ export default function Navbar() {
     <header className="site-header">
       <div className="nav-container">
 
-        {/* BRAND LOGOS */}
+        {/* COMBINED TULJA × SHARVARI BRANDING */}
         <Link
           href="/"
           className="nav-brand-lockup"
           onClick={closeMenu}
           aria-label="Tulja Motors and Sharvari Motors Home"
         >
-          {/* TULJA MOTORS */}
+
+          {/* ================================= */}
+          {/* TULJA MOTORS ORIGINAL SVG LOGO */}
+          {/* ================================= */}
+
           <span className="nav-logo">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -40,36 +44,84 @@ export default function Navbar() {
               aria-label="Tulja Motors"
               className="tulja-navbar-svg"
             >
+              {/* LEFT AND RIGHT WINGS */}
               <g>
-                <path fill="#89161A" d="M62 68 H167 L176 93 H83 Z" />
-                <path fill="#F9C31D" d="M89 101 H176 L184 126 H111 Z" />
-                <path fill="#0B5F61" d="M116 134 H194 L201 159 H139 Z" />
+                {/* LEFT WINGS */}
+                <path
+                  fill="#89161A"
+                  d="M62 68 H167 L176 93 H83 Z"
+                />
+                <path
+                  fill="#F9C31D"
+                  d="M89 101 H176 L184 126 H111 Z"
+                />
+                <path
+                  fill="#0B5F61"
+                  d="M116 134 H194 L201 159 H139 Z"
+                />
 
-                <path fill="#89161A" d="M451 68 H346 L337 93 H430 Z" />
-                <path fill="#F9C31D" d="M424 101 H337 L329 126 H402 Z" />
-                <path fill="#0B5F61" d="M397 134 H319 L312 159 H374 Z" />
+                {/* RIGHT WINGS */}
+                <path
+                  fill="#89161A"
+                  d="M451 68 H346 L337 93 H430 Z"
+                />
+                <path
+                  fill="#F9C31D"
+                  d="M424 101 H337 L329 126 H402 Z"
+                />
+                <path
+                  fill="#0B5F61"
+                  d="M397 134 H319 L312 159 H374 Z"
+                />
               </g>
 
+              {/* OUTER SHIELD */}
               <path
                 fill="#0B5F61"
-                d="M151 37 H370 L350 66 L334 166 L260.5 214 L187 166 L171 66 Z"
+                d="M151 37 H370 L350 66 L334 166
+                   L260.5 214 L187 166 L171 66 Z"
               />
 
+              {/* INNER WHITE SHIELD */}
               <path
                 fill="#FFFFFF"
-                d="M174 50 H348 L332 72 L318 157 L260.5 199 L202 157 L188 72 Z"
+                d="M174 50 H348 L332 72 L318 157
+                   L260.5 199 L202 157 L188 72 Z"
               />
 
+              {/* TEAL LETTER T */}
               <path
                 fill="#0B5F61"
-                d="M202 76 H274 L267 94 H246 L227 157 H205 L224 94 H196 Z"
+                d="M202 76
+                   H274
+                   L267 94
+                   H246
+                   L227 157
+                   H205
+                   L224 94
+                   H196
+                   Z"
               />
 
+              {/* YELLOW LETTER M */}
               <path
                 fill="#F9C31D"
-                d="M247 157 L263 111 H280 L288 132 L309 111 H326 L310 157 H290 L300 130 L285 144 L278 130 L269 157 Z"
+                d="M247 157
+                   L263 111
+                   H280
+                   L288 132
+                   L309 111
+                   H326
+                   L310 157
+                   H290
+                   L300 130
+                   L285 144
+                   L278 130
+                   L269 157
+                   Z"
               />
 
+              {/* BRAND NAME */}
               <text
                 x="256.5"
                 y="274"
@@ -85,9 +137,13 @@ export default function Navbar() {
             </svg>
           </span>
 
+          {/* BRAND SEPARATOR */}
           <span className="nav-brand-cross">×</span>
 
-          {/* SHARVARI MOTORS */}
+          {/* ================================= */}
+          {/* SHARVARI MOTORS ORIGINAL SVG LOGO */}
+          {/* ================================= */}
+
           <span className="nav-sharvari-logo">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -96,8 +152,14 @@ export default function Navbar() {
               aria-label="Sharvari Motors"
               className="sharvari-navbar-svg"
             >
-              <rect width="250" height="110" fill="#0A0A12" />
+              {/* BACKGROUND */}
+              <rect
+                width="250"
+                height="110"
+                fill="#0A0A12"
+              />
 
+              {/* SHAR */}
               <text
                 x="14"
                 y="62"
@@ -111,16 +173,19 @@ export default function Navbar() {
                 SHAR
               </text>
 
+              {/* V - WHITE LEFT ARM */}
               <polygon
                 points="127,33 137.5,33 146,62 135.5,62"
                 fill="#FFFFFF"
               />
 
+              {/* V - RED RIGHT ARM */}
               <polygon
                 points="146.6,23 157.1,23 146,62 135.5,62"
                 fill="#E10600"
               />
 
+              {/* ARI */}
               <text
                 x="150"
                 y="62"
@@ -134,6 +199,7 @@ export default function Navbar() {
                 ARI
               </text>
 
+              {/* MOTORS */}
               <text
                 x="16"
                 y="84"
@@ -146,76 +212,124 @@ export default function Navbar() {
                 MOTORS
               </text>
 
-              <path d="M112 80H236" stroke="#FFFFFF" strokeWidth="3" />
+              {/* UNDERLINE */}
+              <path
+                d="M112 80H236"
+                stroke="#FFFFFF"
+                strokeWidth="3"
+              />
             </svg>
           </span>
+
         </Link>
 
-        {/* MOBILE MENU BUTTON */}
-        <button
-          className="nav-menu-toggle"
-          type="button"
-          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={menuOpen}
-          aria-controls="main-navigation"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          {menuOpen ? <X size={25} /> : <Menu size={25} />}
-        </button>
-
+        {/* ================================= */}
         {/* MAIN NAVIGATION */}
+        {/* ================================= */}
+
         <nav
-          id="main-navigation"
           className={`nav-links ${menuOpen ? "nav-links-open" : ""}`}
         >
-          <Link href="/" onClick={closeMenu}>Home</Link>
-          <Link href="/about" onClick={closeMenu}>About Us</Link>
 
+          <Link href="/" onClick={closeMenu}>
+            Home
+          </Link>
+
+          <Link href="/about" onClick={closeMenu}>
+            About Us
+          </Link>
+
+          {/* TULJA MOTORS DROPDOWN */}
           <div className="nav-dropdown">
+
             <Link href="/tulja-motors" onClick={closeMenu}>
-              Tulja Motors <ChevronDown size={14} />
+              Tulja Motors
+              <ChevronDown size={14} />
             </Link>
 
             <div className="nav-dropdown-menu">
-              <Link href="/tulja-motors#accident-repair" onClick={closeMenu}>
+
+              <Link
+                href="/tulja-motors#accident-repair"
+                onClick={closeMenu}
+              >
                 Accident Repair
               </Link>
-              <Link href="/tulja-motors#denting-painting" onClick={closeMenu}>
+
+              <Link
+                href="/tulja-motors#denting-painting"
+                onClick={closeMenu}
+              >
                 Denting & Painting
               </Link>
-              <Link href="/tulja-motors#restoration" onClick={closeMenu}>
+
+              <Link
+                href="/tulja-motors#restoration"
+                onClick={closeMenu}
+              >
                 Restoration
               </Link>
-              <Link href="/tulja-motors#insurance" onClick={closeMenu}>
+
+              <Link
+                href="/tulja-motors#insurance"
+                onClick={closeMenu}
+              >
                 Insurance Assistance
               </Link>
+
             </div>
           </div>
 
+          {/* SHARVARI MOTORS DROPDOWN */}
           <div className="nav-dropdown">
+
             <Link href="/sharvari-motors" onClick={closeMenu}>
-              Sharvari Motors <ChevronDown size={14} />
+              Sharvari Motors
+              <ChevronDown size={14} />
             </Link>
 
             <div className="nav-dropdown-menu">
-              <Link href="/sharvari-motors#exterior" onClick={closeMenu}>
+
+              <Link
+                href="/sharvari-motors#exterior"
+                onClick={closeMenu}
+              >
                 Exterior Modification
               </Link>
-              <Link href="/sharvari-motors#interior" onClick={closeMenu}>
+
+              <Link
+                href="/sharvari-motors#interior"
+                onClick={closeMenu}
+              >
                 Interior Modification
               </Link>
-              <Link href="/sharvari-motors#detailing" onClick={closeMenu}>
+
+              <Link
+                href="/sharvari-motors#detailing"
+                onClick={closeMenu}
+              >
                 Ceramic Coating & Detailing
               </Link>
-              <Link href="/sharvari-motors#accessories" onClick={closeMenu}>
+
+              <Link
+                href="/sharvari-motors#accessories"
+                onClick={closeMenu}
+              >
                 Accessories
               </Link>
+
             </div>
           </div>
 
-          <Link href="/gallery" onClick={closeMenu}>Our Work</Link>
-          <Link href="/contact" onClick={closeMenu}>Contact</Link>
+          <Link href="/gallery" onClick={closeMenu}>
+            Our Work
+          </Link>
 
+          <Link href="/contact" onClick={closeMenu}>
+            Contact
+          </Link>
+
+          {/* MOBILE CALL */}
           <a
             href={`tel:+91${PHONE}`}
             className="mobile-call-link"
@@ -224,20 +338,51 @@ export default function Navbar() {
             <Phone size={17} />
             Call +91 {PHONE}
           </a>
+
         </nav>
 
-        {/* DESKTOP ACTIONS */}
+        {/* ================================= */}
+        {/* RIGHT SIDE ACTIONS */}
+        {/* ================================= */}
+
         <div className="nav-actions">
-          <a href={`tel:+91${PHONE}`} className="nav-call">
+
+          <a
+            href={`tel:+91${PHONE}`}
+            className="nav-call"
+          >
             <Phone size={17} />
             <span>+91 {PHONE}</span>
           </a>
 
-          <Link href="/contact" className="nav-cta" onClick={closeMenu}>
+          <Link
+            href="/contact"
+            className="nav-cta"
+            onClick={closeMenu}
+          >
             Get a Quote
             <ArrowUpRight size={17} />
           </Link>
+
         </div>
+
+        {/* ================================= */}
+        {/* MOBILE MENU BUTTON */}
+        {/* ================================= */}
+
+        <button
+          className="nav-menu-toggle"
+          type="button"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? (
+            <X size={25} />
+          ) : (
+            <Menu size={25} />
+          )}
+        </button>
 
       </div>
 
@@ -245,6 +390,7 @@ export default function Navbar() {
       <div className="nav-ambient-light" aria-hidden="true">
         <div className="nav-ambient-core" />
       </div>
+
     </header>
   );
 }
