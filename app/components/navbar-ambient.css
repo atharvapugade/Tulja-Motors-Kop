@@ -975,3 +975,103 @@
     font-size: 17px;
   }
 }
+/* =========================================
+   WHITE NAVBAR + LOGO SIZE BALANCE
+========================================= */
+
+.site-header {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid #eeeeee;
+}
+
+/* Keep navbar content aligned */
+.nav-container {
+  background: transparent;
+}
+
+/* Combined brand logos */
+.nav-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-shrink: 0;
+}
+
+/* TULJA MOTORS — PRIMARY / LARGER LOGO */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  width: 150px;
+  flex-shrink: 0;
+}
+
+.tulja-navbar-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* BRAND CROSS */
+.nav-brand-cross {
+  font-size: 21px;
+  font-weight: 600;
+  color: #777777;
+  flex-shrink: 0;
+}
+
+/* SHARVARI MOTORS — SLIGHTLY SMALLER LOGO */
+.nav-sharvari-logo {
+  display: flex;
+  align-items: center;
+  width: 108px;
+  flex-shrink: 0;
+}
+
+.sharvari-navbar-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* NAVIGATION TEXT */
+.nav-links > a,
+.nav-dropdown > a {
+  color: #171717;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .nav-brand-lockup {
+    gap: 8px;
+  }
+
+  .nav-logo {
+    width: 112px;
+  }
+
+  .nav-brand-cross {
+    font-size: 17px;
+  }
+
+  .nav-sharvari-logo {
+    width: 82px;
+  }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 380px) {
+  .nav-logo {
+    width: 100px;
+  }
+
+  .nav-sharvari-logo {
+    width: 73px;
+  }
+
+  .nav-brand-lockup {
+    gap: 6px;
+  }
+}
