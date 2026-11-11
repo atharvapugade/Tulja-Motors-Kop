@@ -1159,3 +1159,84 @@
     min-width: 82px;
   }
 }
+/* =========================================
+   FIXED WHITE NAVBAR
+========================================= */
+
+.site-header {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 99999 !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #eeeeee;
+  isolation: isolate;
+}
+
+/* Navbar height */
+.site-header .nav-container {
+  position: relative;
+  z-index: 3;
+  min-height: 90px;
+  overflow: visible !important;
+}
+
+/* Prevent first hero section from going behind navbar */
+body {
+  padding-top: 90px;
+}
+
+/* Logo visibility */
+.site-header .nav-brand-lockup {
+  position: relative;
+  z-index: 5;
+  overflow: visible !important;
+}
+
+.site-header .nav-logo {
+  width: 150px;
+  min-width: 150px;
+  flex-shrink: 0;
+}
+
+.site-header .nav-sharvari-logo {
+  width: 108px;
+  min-width: 108px;
+  flex-shrink: 0;
+}
+
+/* Keep navbar contents above ambient light */
+.site-header .nav-links,
+.site-header .nav-actions,
+.site-header .nav-menu-toggle {
+  position: relative;
+  z-index: 4;
+}
+
+.site-header .nav-ambient-light {
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .site-header .nav-container {
+    min-height: 76px;
+  }
+
+  body {
+    padding-top: 76px;
+  }
+
+  .site-header .nav-logo {
+    width: 112px;
+    min-width: 112px;
+  }
+
+  .site-header .nav-sharvari-logo {
+    width: 82px;
+    min-width: 82px;
+  }
+}
