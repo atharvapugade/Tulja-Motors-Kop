@@ -749,3 +749,12 @@ body {
     transition: none;
   }
 }
+@media (max-width: 1050px) {
+  .site-header {
+    display: none !important;
+  }
+
+  body {
+    padding-top: 0 !important;
+  }
+}
