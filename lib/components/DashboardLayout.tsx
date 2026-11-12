@@ -15,7 +15,6 @@ import {
   Megaphone,
   Hammer,
   LogOut,
-  Bell,
   Grid,
   Car,
   FileText,
@@ -23,7 +22,6 @@ import {
   CheckCircle2,
   Menu,
   X,
-  RefreshCw,
   Building2,
   UserCheck,
   Package,
@@ -323,25 +321,6 @@ export default function DashboardLayout({
           </div>
 
           <div className="topbar-right">
-            <button
-              type="button"
-              className="topbar-action-btn"
-              onClick={() => window.location.reload()}
-              title="Refresh Workspace"
-              aria-label="Refresh Workspace"
-            >
-              <RefreshCw size={17} />
-            </button>
-
-            <button
-              type="button"
-              className="topbar-action-btn"
-              title="Notifications"
-              aria-label="Notifications"
-            >
-              <Bell size={17} />
-            </button>
-
             <button
               type="button"
               className="topbar-logout-btn"

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   Car,
@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   Plus,
-  RefreshCw,
   ClipboardList,
   Phone,
   FileText,
@@ -27,7 +26,6 @@ import {
   MapPin,
   Gauge,
   FileCheck,
-  Sparkles,
   Trash2,
 } from 'lucide-react';
 import type {
@@ -273,6 +271,7 @@ export default function AdvisorDashboard({
   const [showJobModal, setShowJobModal] = useState(false);
   const [jobModalMode, setJobModalMode] = useState<'create' | 'edit'>('create');
   const [jobModalSection, setJobModalSection] = useState<1 | 2 | 3 | 4>(1);
+  const stepperBarRef = useRef<HTMLDivElement | null>(null);
   const [submittingJob, setSubmittingJob] = useState(false);
   const [jobForm, setJobForm] = useState<JobFormState>(() => {
     const { today, est } = getDefaultDates();
@@ -403,6 +402,14 @@ export default function AdvisorDashboard({
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!showJobModal || !stepperBarRef.current) return;
+    const activeBtn = stepperBarRef.current.querySelector<HTMLButtonElement>(
+      `button[data-step="${jobModalSection}"]`
+    );
+    activeBtn?.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
+  }, [showJobModal, jobModalSection]);
 
   // Supervisors from employees list
   const supervisors = useMemo(() => {
@@ -1106,42 +1113,6 @@ export default function AdvisorDashboard({
     return matchesSearch && matchesStage && matchesHandover;
   });
 
-  // Quick Pill Nav component reused identically across all 5 pages
-  const renderTabNavBar = () => (
-    <div className="wms-tab-nav-bar">
-      <Link
-        href="/panels/advisor/dashboard"
-        className={`wms-tab-pill-btn ${currentTab === 'intake' ? 'active' : ''}`}
-      >
-        <ClipboardList size={15} /> Intake Desk
-      </Link>
-      <Link
-        href="/panels/advisor/dashboard?tab=customers"
-        className={`wms-tab-pill-btn ${currentTab === 'customers' ? 'active' : ''}`}
-      >
-        <Users size={15} /> Customer Records ({customers.length})
-      </Link>
-      <Link
-        href="/panels/advisor/dashboard?tab=vehicles"
-        className={`wms-tab-pill-btn ${currentTab === 'vehicles' ? 'active' : ''}`}
-      >
-        <Car size={15} /> Vehicle Intake ({vehicles.length})
-      </Link>
-      <Link
-        href="/panels/advisor/dashboard?tab=jobs"
-        className={`wms-tab-pill-btn ${currentTab === 'jobs' ? 'active' : ''}`}
-      >
-        <FileText size={15} /> Job Cards & Estimates ({jobCards.length})
-      </Link>
-      <Link
-        href="/panels/advisor/dashboard?tab=supervisors"
-        className={`wms-tab-pill-btn ${currentTab === 'supervisors' ? 'active' : ''}`}
-      >
-        <UserCheck size={15} /> Supervisor Coordination ({pendingHandoverJobs.length} Pending)
-      </Link>
-    </div>
-  );
-
   return (
     <div>
       {/* ============================================================== */}
@@ -1152,25 +1123,10 @@ export default function AdvisorDashboard({
           {/* Consistent Workspace Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">Service Advisory & Intake</span>
-                <span className="stage-badge badge-active">MongoDB Live Synced</span>
-              </div>
               <h1>Service Advisor Intake Desk</h1>
-              <p>
-                Service Advisor <strong>{advisorName}</strong> • Manage customer walk-ins, vehicle inspections, detailed repair estimates, and floor handovers to Workshop Supervisors.
-              </p>
             </div>
 
             <div className="workspace-actions">
-              <button
-                type="button"
-                className="btn-secondary-action"
-                onClick={handleAllRefresh}
-                title="Refresh Live Data"
-              >
-                <RefreshCw size={15} /> Refresh
-              </button>
               <button
                 type="button"
                 className="btn-primary-action"
@@ -1180,8 +1136,6 @@ export default function AdvisorDashboard({
               </button>
             </div>
           </div>
-
-          {renderTabNavBar()}
 
           {/* 4 KPI Cards */}
           <div className="wms-stats-grid">
@@ -1234,125 +1188,14 @@ export default function AdvisorDashboard({
             </div>
           </div>
 
-          {/* 4-Step Intake Workflow Banner */}
-          <div className="wms-panel-card" style={{ marginBottom: '24px' }}>
-            <div className="panel-card-header">
-              <div>
-                <h3>Advisor 4-Step Intake-to-Floor Workflow</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Click any step below to jump directly to that desk or register new records.
-                </p>
-              </div>
-              <span className="stage-badge badge-info">Standard Operating Flow</span>
-            </div>
-            <div className="wms-workflow-grid" style={{ padding: '18px 20px' }}>
-              <Link
-                href="/panels/advisor/dashboard?tab=customers"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#fafdfc',
-                  border: '1px solid #d9eae8',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-info">Step 1</span>
-                  <Users size={16} color="#045F60" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#141b1b' }}>Customer Records</strong>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Verify or add owner profile ({customers.length} registered)
-                </span>
-              </Link>
-
-              <Link
-                href="/panels/advisor/dashboard?tab=vehicles"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#fafdfc',
-                  border: '1px solid #d9eae8',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-info">Step 2</span>
-                  <Car size={16} color="#045F60" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#141b1b' }}>Vehicle Intake</strong>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Log registration, VIN, odometer & model ({vehicles.length} vehicles)
-                </span>
-              </Link>
-
-              <Link
-                href="/panels/advisor/dashboard?tab=jobs"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#fafdfc',
-                  border: '1px solid #d9eae8',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-warning">Step 3</span>
-                  <FileText size={16} color="#b45309" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#141b1b' }}>Job Cards & Estimates</strong>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Capture damages, insurance & 18% GST estimate ({jobCards.length} cards)
-                </span>
-              </Link>
-
-              <Link
-                href="/panels/advisor/dashboard?tab=supervisors"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#f0fdfa',
-                  border: '1px solid #045F60',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-active">Step 4</span>
-                  <UserCheck size={16} color="#045F60" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#045F60' }}>Supervisor Handover</strong>
-                <span style={{ fontSize: '12px', color: '#475569' }}>
-                  Brief & release job card to workshop floor ({pendingHandoverJobs.length} waiting)
-                </span>
-              </Link>
-            </div>
-          </div>
-
           {/* 2-Column Overview Grid */}
           <div className="wms-grid-2col">
             {/* Quick Desk Launchpad */}
             <div className="wms-panel-card" style={{ marginBottom: 0 }}>
               <div className="panel-card-header">
                 <h3>Quick Intake Actions</h3>
-                <Sparkles size={16} color="#045F60" />
               </div>
-              <div className="wms-form-grid-2" style={{ padding: '18px 20px' }}>
+              <div className="wms-form-grid-2 wms-quick-actions-grid" style={{ padding: '18px 20px' }}>
                 <button
                   type="button"
                   className="btn-primary-action"
@@ -1463,12 +1306,7 @@ export default function AdvisorDashboard({
           {/* Pending & Recent Job Cards Queue */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Recent Intake & Pre-Handover Job Cards</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Edit job details, update repair estimates, or hand over directly to a Workshop Supervisor.
-                </p>
-              </div>
+              <h3>Recent Intake & Pre-Handover Job Cards</h3>
               <Link href="/panels/advisor/dashboard?tab=jobs" className="btn-secondary-action">
                 View All Job Cards ({jobCards.length})
               </Link>
@@ -1581,27 +1419,15 @@ export default function AdvisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">CRM & Owner Registry</span>
-                <span className="stage-badge badge-active">{customers.length} Customers</span>
-              </div>
               <h1>Customer Records</h1>
-              <p>
-                Service Advisor <strong>{advisorName}</strong> • Manage customer contact directory, billing addresses, linked vehicles, and service history.
-              </p>
             </div>
 
             <div className="workspace-actions">
-              <button type="button" className="btn-secondary-action" onClick={handleAllRefresh}>
-                <RefreshCw size={15} /> Refresh
-              </button>
               <button type="button" className="btn-primary-action" onClick={openCreateCustomer}>
                 <Plus size={16} /> Register Customer
               </button>
             </div>
           </div>
-
-          {renderTabNavBar()}
 
           <div className="wms-stats-grid">
             <div className="wms-stat-card">
@@ -1622,7 +1448,7 @@ export default function AdvisorDashboard({
                   <Car size={20} />
                 </div>
               </div>
-              <div className="stat-card-value">{vehicles.length}</div>
+              <div className="stat-card-value">{loadingRegistry ? '...' : vehicles.length}</div>
               <div className="stat-card-subtext">Registered across clients</div>
             </div>
 
@@ -1633,7 +1459,7 @@ export default function AdvisorDashboard({
                   <ShieldCheck size={20} />
                 </div>
               </div>
-              <div className="stat-card-value">{insuranceJobsCount}</div>
+              <div className="stat-card-value">{loading ? '...' : insuranceJobsCount}</div>
               <div className="stat-card-subtext">Active cashless / claim jobs</div>
             </div>
 
@@ -1645,7 +1471,9 @@ export default function AdvisorDashboard({
                 </div>
               </div>
               <div className="stat-card-value">
-                {customers.filter((c) => c.city?.toLowerCase() === 'kolhapur').length}
+                {loadingRegistry
+                  ? '...'
+                  : customers.filter((c) => c.city?.toLowerCase() === 'kolhapur').length}
               </div>
               <div className="stat-card-subtext">Local service catchment</div>
             </div>
@@ -1786,20 +1614,10 @@ export default function AdvisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">Vehicle Intake Master</span>
-                <span className="stage-badge badge-active">{vehicles.length} Registered</span>
-              </div>
               <h1>Vehicle Intake</h1>
-              <p>
-                Service Advisor <strong>{advisorName}</strong> • Log arriving vehicles with registration plate, VIN/chassis number, odometer reading, and initiate repair job cards.
-              </p>
             </div>
 
             <div className="workspace-actions">
-              <button type="button" className="btn-secondary-action" onClick={handleAllRefresh}>
-                <RefreshCw size={15} /> Refresh
-              </button>
               <button
                 type="button"
                 className="btn-primary-action"
@@ -1809,8 +1627,6 @@ export default function AdvisorDashboard({
               </button>
             </div>
           </div>
-
-          {renderTabNavBar()}
 
           <div className="wms-stats-grid">
             <div className="wms-stat-card">
@@ -1832,8 +1648,9 @@ export default function AdvisorDashboard({
                 </div>
               </div>
               <div className="stat-card-value">
-                {vehicles.filter((v) => v.fuelType === 'Diesel').length}D /{' '}
-                {vehicles.filter((v) => v.fuelType === 'Petrol').length}P
+                {loadingRegistry
+                  ? '...'
+                  : `${vehicles.filter((v) => v.fuelType === 'Diesel').length}D / ${vehicles.filter((v) => v.fuelType === 'Petrol').length}P`}
               </div>
               <div className="stat-card-subtext">Primary fuel configurations</div>
             </div>
@@ -1845,7 +1662,7 @@ export default function AdvisorDashboard({
                   <Wrench size={20} />
                 </div>
               </div>
-              <div className="stat-card-value">{activeJobs.length}</div>
+              <div className="stat-card-value">{loading ? '...' : activeJobs.length}</div>
               <div className="stat-card-subtext">Currently assigned to job cards</div>
             </div>
 
@@ -1857,7 +1674,9 @@ export default function AdvisorDashboard({
                 </div>
               </div>
               <div className="stat-card-value">
-                {vehicles.filter((v) => v.vin && v.vin !== 'NOT_RECORDED').length}
+                {loadingRegistry
+                  ? '...'
+                  : vehicles.filter((v) => v.vin && v.vin !== 'NOT_RECORDED').length}
               </div>
               <div className="stat-card-subtext">Chassis numbers recorded</div>
             </div>
@@ -1995,20 +1814,10 @@ export default function AdvisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">Job Cards & Estimates</span>
-                <span className="stage-badge badge-active">{jobCards.length} DB Records</span>
-              </div>
               <h1>Job Cards & Estimates</h1>
-              <p>
-                Service Advisor <strong>{advisorName}</strong> • Create comprehensive job cards, assess damages & insurance claims, compute 18% GST repair estimates, and edit any job details.
-              </p>
             </div>
 
             <div className="workspace-actions">
-              <button type="button" className="btn-secondary-action" onClick={handleAllRefresh}>
-                <RefreshCw size={15} /> Refresh
-              </button>
               <button
                 type="button"
                 className="btn-primary-action"
@@ -2018,8 +1827,6 @@ export default function AdvisorDashboard({
               </button>
             </div>
           </div>
-
-          {renderTabNavBar()}
 
           <div className="wms-stats-grid">
             <div className="wms-stat-card">
@@ -2257,22 +2064,10 @@ export default function AdvisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-purple">Floor Handover Desk</span>
-                <span className="stage-badge badge-active">
-                  {pendingHandoverJobs.length} Pending Handover
-                </span>
-              </div>
               <h1>Supervisor Coordination</h1>
-              <p>
-                Service Advisor <strong>{advisorName}</strong> • Review intake completeness, assign a Floor Supervisor, and formally hand over approved job cards to the repair floor.
-              </p>
             </div>
 
             <div className="workspace-actions">
-              <button type="button" className="btn-secondary-action" onClick={handleAllRefresh}>
-                <RefreshCw size={15} /> Refresh
-              </button>
               <button
                 type="button"
                 className="btn-primary-action"
@@ -2282,8 +2077,6 @@ export default function AdvisorDashboard({
               </button>
             </div>
           </div>
-
-          {renderTabNavBar()}
 
           {/* KPI Cards */}
           <div className="wms-stats-grid">
@@ -2337,12 +2130,7 @@ export default function AdvisorDashboard({
           {/* Supervisor Team Load Strip */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Available Workshop Supervisors & Floor Load</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Live supervisor roster fetched from database. Assign jobs balanced across floor leads.
-                </p>
-              </div>
+              <h3>Available Workshop Supervisors & Floor Load</h3>
               <span className="stage-badge badge-info">{supervisors.length} Supervisors Online</span>
             </div>
             <div className="wms-supervisor-cards-grid" style={{ padding: '18px 20px' }}>
@@ -2396,12 +2184,7 @@ export default function AdvisorDashboard({
           {/* QUEUE 1: JOB CARDS AWAITING HANDOVER TO SUPERVISOR */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Job Cards Ready / Awaiting Handover to Supervisor ({pendingHandoverJobs.length})</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Newly created or intake-stage job cards waiting to be assigned and released to floor supervision.
-                </p>
-              </div>
+              <h3>Job Cards Awaiting Handover ({pendingHandoverJobs.length})</h3>
               <span className="stage-badge badge-danger">Action Required</span>
             </div>
             <div className="wms-table-responsive">
@@ -2494,12 +2277,7 @@ export default function AdvisorDashboard({
           {/* QUEUE 2: ALREADY HANDED OVER TO FLOOR SUPERVISION */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Jobs Handed Over to Floor Supervision ({handedOverJobs.length})</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Confirmed handovers currently being executed under supervisor floor control.
-                </p>
-              </div>
+              <h3>Jobs Handed Over to Floor Supervision ({handedOverJobs.length})</h3>
               <span className="stage-badge badge-active">Floor Synced</span>
             </div>
             <div className="wms-table-responsive">
@@ -2967,7 +2745,7 @@ export default function AdvisorDashboard({
             </div>
 
             {/* Section Stepper Bar */}
-            <div className="wms-stepper-bar">
+            <div className="wms-stepper-bar" ref={stepperBarRef}>
               {[
                 { num: 1 as const, label: '1. Customer & Vehicle' },
                 { num: 2 as const, label: '2. Damage & Insurance' },
@@ -2977,6 +2755,7 @@ export default function AdvisorDashboard({
                 <button
                   key={sec.num}
                   type="button"
+                  data-step={sec.num}
                   onClick={() => setJobModalSection(sec.num)}
                   style={{
                     padding: '7px 14px',

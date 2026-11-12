@@ -9,10 +9,8 @@ import {
   Check,
   CheckCircle2,
   ClipboardCheck,
-  ClipboardList,
   Clock,
   Eye,
-  FileText,
   Gauge,
   Hammer,
   Layers,
@@ -21,7 +19,6 @@ import {
   Pencil,
   Phone,
   Plus,
-  RefreshCw,
   RotateCcw,
   ShieldAlert,
   ShieldCheck,
@@ -352,15 +349,6 @@ export default function SupervisorDashboard({
 
   const isOwnerMode =
     authUser?.role === 'super_admin' || authUser?.role === 'admin';
-
-  const currentSupervisorEmployee = useMemo(() => {
-    if (!authUser) return undefined;
-    return employees.find(
-      (e) =>
-        e.userId === authUser.id ||
-        e.email?.toLowerCase() === authUser.email?.toLowerCase()
-    );
-  }, [authUser, employees]);
 
   const fetchSupervisorWorkspaceData = useCallback(
     async (sessionUser: AuthSessionUser, ownerSelectedSupId: string) => {
@@ -1159,88 +1147,46 @@ export default function SupervisorDashboard({
     return [...filteredJobs].sort((a, b) => score(a) - score(b));
   }, [filteredJobs]);
 
-  // Shared 4-Tab Pill Bar matching DashboardLayout Supervisor Navigation
-  const renderTabNavBar = () => (
-    <div className="wms-tab-nav-bar">
-      <Link
-        href="/panels/supervisor/dashboard"
-        className={`wms-tab-pill-btn ${currentTab === 'overview' ? 'active' : ''}`}
+  // Super Admin Oversight Switcher (hidden for individual supervisors)
+  const renderScopeBanner = () => {
+    if (!isOwnerMode) return null;
+    return (
+      <div
+        style={{
+          background: '#f3e8ff',
+          border: '1px solid #d8b4fe',
+          borderRadius: '10px',
+          padding: '10px 14px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '10px',
+          fontSize: '12px',
+        }}
       >
-        <ClipboardList size={15} /> Floor Supervision ({scopedJobs.length})
-      </Link>
-      <Link
-        href="/panels/supervisor/dashboard?tab=stages"
-        className={`wms-tab-pill-btn ${currentTab === 'stages' ? 'active' : ''}`}
-      >
-        <Layers size={15} /> 13-Stage Repair Board
-      </Link>
-      <Link
-        href="/panels/supervisor/dashboard?tab=tasks"
-        className={`wms-tab-pill-btn ${currentTab === 'tasks' ? 'active' : ''}`}
-      >
-        <Hammer size={15} /> Technicians Team Allocation ({totalOpenTasks} Open Tasks)
-      </Link>
-      <Link
-        href="/panels/supervisor/dashboard?tab=quality"
-        className={`wms-tab-pill-btn ${currentTab === 'quality' ? 'active' : ''}`}
-      >
-        <CheckCircle2 size={15} /> Quality Inspection ({qcQueueJobs.length} Queue)
-      </Link>
-    </div>
-  );
-
-  // Supervisor Identity & Isolation Banner (plus Super Admin Oversight dropdown when signed in as owner)
-  const renderScopeBanner = () => (
-    <div
-      style={{
-        background: isOwnerMode ? '#f3e8ff' : '#eef7f6',
-        border: isOwnerMode ? '1px solid #d8b4fe' : '1px solid #cce3e0',
-        borderRadius: '10px',
-        padding: '10px 16px',
-        marginBottom: '18px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '10px',
-        fontSize: '12px',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: isOwnerMode ? '#6b21a8' : '#045F60' }}>
-        <Lock size={15} style={{ flexShrink: 0 }} />
-        {isOwnerMode ? (
-          <span>
-            <strong>Super Admin Oversight Mode ({authUser?.name}):</strong> Inspect all handed-over floor jobs or filter to verify individual supervisor isolation.
-          </span>
-        ) : (
-          <span>
-            <strong>Private Supervisor Queue ({authUser?.name}):</strong> Strictly isolated to job cards handed over directly to{' '}
-            <strong>{authUser?.name}</strong>
-            {currentSupervisorEmployee?.designation ? ` (${currentSupervisorEmployee.designation})` : ''}. Other supervisors&rsquo; queues are hidden.
-          </span>
-        )}
-      </div>
-
-      {isOwnerMode && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', maxWidth: '100%' }}>
-          <strong style={{ color: '#6b21a8' }}>Preview Supervisor Queue:</strong>
-          <select
-            className="wms-select-input"
-            style={{ height: '32px', fontSize: '12px', maxWidth: '100%' }}
-            value={adminViewSupervisorId}
-            onChange={(e) => setAdminViewSupervisorId(e.target.value)}
-          >
-            <option value="ALL">All Supervisors (Combined Oversight)</option>
-            {supervisors.map((sup) => (
-              <option key={sup.id} value={sup.userId || sup.id}>
-                {sup.name} ({sup.designation})
-              </option>
-            ))}
-          </select>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#6b21a8' }}>
+          <Lock size={14} style={{ flexShrink: 0 }} />
+          <strong>Oversight Queue</strong>
         </div>
-      )}
-    </div>
-  );
+
+        <select
+          className="wms-select-input"
+          style={{ height: '34px', fontSize: '12px', maxWidth: '100%' }}
+          value={adminViewSupervisorId}
+          onChange={(e) => setAdminViewSupervisorId(e.target.value)}
+        >
+          <option value="ALL">All Supervisors (Combined Oversight)</option>
+          {supervisors.map((sup) => (
+            <option key={sup.id} value={sup.userId || sup.id}>
+              {sup.name} ({sup.designation})
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  };
 
   // Loading / Auth Gate Render
   if (authLoading) {
@@ -1309,25 +1255,10 @@ export default function SupervisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-danger">Workshop Floor Supervision</span>
-                <span className="stage-badge badge-active">{authUser.name}</span>
-              </div>
               <h1>Floor Supervision &amp; Advisor Handovers</h1>
-              <p>
-                Workshop Supervisor <strong>{authUser.name}</strong> • Inspect full Service Advisor dossiers, assign multi-trade technicians per vehicle, track 13 repair bays, and certify Quality Inspection.
-              </p>
             </div>
 
             <div className="workspace-actions">
-              <button
-                type="button"
-                className="btn-secondary-action"
-                onClick={handleFullRefresh}
-                title="Refresh Handed-Over Queue"
-              >
-                <RefreshCw size={15} /> Refresh Queue
-              </button>
               <Link
                 href="/panels/supervisor/dashboard?tab=tasks"
                 className="btn-primary-action"
@@ -1339,7 +1270,6 @@ export default function SupervisorDashboard({
           </div>
 
           {renderScopeBanner()}
-          {renderTabNavBar()}
 
           {/* 4 Supervisor KPI Cards */}
           <div className="wms-stats-grid">
@@ -1399,113 +1329,6 @@ export default function SupervisorDashboard({
             </div>
           </div>
 
-          {/* 4-Step Supervisor Workflow Banner */}
-          <div className="wms-panel-card" style={{ marginBottom: '24px' }}>
-            <div className="panel-card-header">
-              <div>
-                <h3>Supervisor Handover-to-Delivery Floor Workflow</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Review complete Service Advisor intake dossiers and orchestrate your specialized technician crews across bays.
-                </p>
-              </div>
-              <span className="stage-badge badge-info">Floor Execution Standard</span>
-            </div>
-            <div className="wms-workflow-grid" style={{ padding: '18px 20px' }}>
-              <div
-                style={{
-                  background: '#fafdfc',
-                  border: '1px solid #d9eae8',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-info">Step 1</span>
-                  <FileText size={16} color="#045F60" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#141b1b' }}>Inspect Handover Dossier</strong>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Review Advisor damage notes, customer complaints &amp; claims ({scopedJobs.length} jobs)
-                </span>
-              </div>
-
-              <Link
-                href="/panels/supervisor/dashboard?tab=tasks"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#fafdfc',
-                  border: '1px solid #d9eae8',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-danger">Step 2</span>
-                  <Hammer size={16} color="#8A181A" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#141b1b' }}>Multi-Tech Allocation</strong>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Assign Denters, Painters, Mechanics &amp; Electrical techs per vehicle ({jobsNeedingTechs.length} pending)
-                </span>
-              </Link>
-
-              <Link
-                href="/panels/supervisor/dashboard?tab=stages"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#fafdfc',
-                  border: '1px solid #d9eae8',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-warning">Step 3</span>
-                  <Layers size={16} color="#b45309" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#141b1b' }}>13-Stage Repair Board</strong>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Advance bays &amp; log stage history notes across repair bays
-                </span>
-              </Link>
-
-              <Link
-                href="/panels/supervisor/dashboard?tab=quality"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#f0fdfa',
-                  border: '1px solid #045F60',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-active">Step 4</span>
-                  <CheckCircle2 size={16} color="#045F60" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#045F60' }}>5-Point Quality Inspection</strong>
-                <span style={{ fontSize: '12px', color: '#475569' }}>
-                  Certify final delivery readiness or return to bay for rework
-                </span>
-              </Link>
-            </div>
-          </div>
-
           {/* Search & Quick Filters */}
           <div className="wms-filter-bar">
             <div className="wms-filter-controls">
@@ -1548,13 +1371,8 @@ export default function SupervisorDashboard({
           {/* Main Handed-Over Job Cards Table */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Handed-Over Job Cards &amp; Advisor Work Details</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Open any job card to read Advisor damage inspection &amp; insurance details, or assign multiple trade technicians directly.
-                </p>
-              </div>
-              <span className="stage-badge badge-active">Scoped to {isOwnerMode && adminViewSupervisorId === 'ALL' ? 'All Floor Supervisors' : authUser.name}</span>
+              <h3>Handed-Over Job Cards &amp; Advisor Work Details</h3>
+              <span className="stage-badge badge-active">{isOwnerMode && adminViewSupervisorId === 'ALL' ? 'All Floor Supervisors' : authUser.name}</span>
             </div>
 
             <div className="wms-table-responsive">
@@ -1880,25 +1698,11 @@ export default function SupervisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">Bay Progression Control</span>
-                <span className="stage-badge badge-active">13 Standardized Stages</span>
-              </div>
               <h1>13-Stage Repair Workflow Board</h1>
-              <p>
-                Supervisor <strong>{authUser.name}</strong> • Click any stage tile to filter vehicles, track multi-tech task readiness, and advance bay stages with audit notes.
-              </p>
-            </div>
-
-            <div className="workspace-actions">
-              <button type="button" className="btn-secondary-action" onClick={handleFullRefresh}>
-                <RefreshCw size={15} /> Refresh Board
-              </button>
             </div>
           </div>
 
           {renderScopeBanner()}
-          {renderTabNavBar()}
 
           {/* 4 Stage Board KPI Cards */}
           <div className="wms-stats-grid">
@@ -1971,12 +1775,12 @@ export default function SupervisorDashboard({
           <div className="wms-panel-card">
             <div className="panel-card-header">
               <div>
-                <h3>Live Workshop Bay Pipeline (Click Any Stage to Filter)</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  {activeFilters.stage === 'ALL'
-                    ? 'Showing all repair stages in your supervisor queue.'
-                    : `Filtered strictly to stage: "${activeFilters.stage}"`}
-                </p>
+                <h3>Live Workshop Bay Pipeline</h3>
+                {activeFilters.stage !== 'ALL' && (
+                  <p style={{ fontSize: '12px', color: '#045F60', fontWeight: 600, marginTop: '2px' }}>
+                    Filtered to stage: &ldquo;{activeFilters.stage}&rdquo;
+                  </p>
+                )}
               </div>
               {activeFilters.stage !== 'ALL' && (
                 <button
@@ -2249,24 +2053,10 @@ export default function SupervisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-danger">Multi-Technician Bay Matrix</span>
-                <span className="stage-badge badge-active">{technicians.length} Active Technicians</span>
-              </div>
               <h1>Technicians Team Allocation</h1>
-              <p>
-                Supervisor <strong>{authUser.name}</strong> • Assign multiple specialist technicians (Denting, Painting, Mechanical, Electrical, Detailing) to a single vehicle based on Advisor work requirements.
-              </p>
             </div>
 
             <div className="workspace-actions">
-              <button
-                type="button"
-                className="btn-secondary-action"
-                onClick={handleFullRefresh}
-              >
-                <RefreshCw size={15} /> Refresh
-              </button>
               <button
                 type="button"
                 className="btn-primary-action"
@@ -2278,7 +2068,6 @@ export default function SupervisorDashboard({
           </div>
 
           {renderScopeBanner()}
-          {renderTabNavBar()}
 
           {/* 4 Allocation KPI Cards */}
           <div className="wms-stats-grid">
@@ -2342,12 +2131,7 @@ export default function SupervisorDashboard({
           {/* Technician Roster Load Cards (Clickable filter!) */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Specialist Technicians Workload &amp; Trade Availability</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Click a technician card to filter the vehicle allocation matrix below to that specialist&rsquo;s jobs.
-                </p>
-              </div>
+              <h3>Specialist Technicians Workload &amp; Trade Availability</h3>
               {activeFilters.techId !== 'ALL' && (
                 <button
                   type="button"
@@ -2703,25 +2487,11 @@ export default function SupervisorDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-active">Final Quality Gate</span>
-                <span className="stage-badge badge-info">5-Point Workshop Certification</span>
-              </div>
               <h1>Quality Inspection &amp; Rework Control</h1>
-              <p>
-                Supervisor <strong>{authUser.name}</strong> • Execute final 5-point alignment, paint shade, road-test, electrical &amp; detailing inspection before releasing vehicles for delivery.
-              </p>
-            </div>
-
-            <div className="workspace-actions">
-              <button type="button" className="btn-secondary-action" onClick={handleFullRefresh}>
-                <RefreshCw size={15} /> Refresh QC Queue
-              </button>
             </div>
           </div>
 
           {renderScopeBanner()}
-          {renderTabNavBar()}
 
           {/* 4 QC KPI Cards */}
           <div className="wms-stats-grid">
@@ -2807,12 +2577,7 @@ export default function SupervisorDashboard({
           {/* QC Queue Table */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>5-Point Final Quality Inspection Queue</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Verify technician task completion across bays before signing off Final Approval or returning for rework.
-                </p>
-              </div>
+              <h3>5-Point Final Quality Inspection Queue</h3>
               <span className="stage-badge badge-active">Saved Directly to MongoDB</span>
             </div>
 

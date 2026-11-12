@@ -84,10 +84,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Set secure HTTP-only cookie
+    const isHttps =
+      req.nextUrl.protocol === 'https:' ||
+      req.headers.get('x-forwarded-proto')?.split(',')[0]?.trim() === 'https';
+
+    // Set HTTP-only cookie (Secure when served over HTTPS, allowing local HTTP production testing)
     response.cookies.set('tm_auth_token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isHttps,
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days

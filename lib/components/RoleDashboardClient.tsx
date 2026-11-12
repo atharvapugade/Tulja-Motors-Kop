@@ -13,13 +13,11 @@ import {
   CheckCircle2,
   AlertTriangle,
   Plus,
-  RefreshCw,
   Search,
   ArrowUpRight,
   ShieldAlert,
   Hammer,
   ClipboardList,
-  Sparkles,
   Phone,
   Calendar,
   FileCheck,
@@ -362,14 +360,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Executive Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">Super Admin / Owner Access</span>
-                <span className="stage-badge badge-active">Live System Online</span>
-              </div>
               <h1>Executive Workshop Overview</h1>
-              <p>
-                Managing Director <strong>Ranjeet B. Patil</strong> • Centralized command center overseeing all 6 workshop departments, repair floor operations, and financial performance.
-              </p>
             </div>
 
             <div className="workspace-actions">
@@ -410,58 +401,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
               >
                 <Plus size={15} /> Add HR / Employee
               </button>
-
-              <button
-                type="button"
-                className="btn-secondary-action"
-                onClick={fetchData}
-                title="Refresh Workspace Data"
-              >
-                <RefreshCw size={15} /> Refresh
-              </button>
-
-              <button
-                type="button"
-                className="btn-secondary-action"
-                onClick={() => {
-                  showCenterPopup(
-                    'Reset system demo data back to initial seed state?',
-                    'Confirm Demo Seed Reset',
-                    'warning',
-                    {
-                      confirmLabel: 'Reset Demo Seed',
-                      onConfirm: async () => {
-                        await fetch('/api/auth/seed', { method: 'POST' });
-                        fetchData();
-                        setFeedbackMsg('System demo database reset to factory seed successfully.');
-                        setTimeout(() => setFeedbackMsg(''), 4000);
-                      },
-                    }
-                  );
-                }}
-              >
-                <Sparkles size={15} /> Reset Demo Seed
-              </button>
             </div>
-          </div>
-
-          {/* Quick Tab Switcher Pills */}
-          <div className="wms-tab-nav-bar">
-            <Link href="/panels/admin/dashboard" className="wms-tab-pill-btn active">
-              <Activity size={15} /> System Overview
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=employees" className="wms-tab-pill-btn">
-              <Users size={15} /> Employees Directory ({employees.length})
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=jobs" className="wms-tab-pill-btn">
-              <ClipboardList size={15} /> Job Cards Master ({jobCards.length})
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=finance" className="wms-tab-pill-btn">
-              <ReceiptIndianRupee size={15} /> Billing & Invoices (₹{stats?.totalRevenue?.toLocaleString('en-IN') || '84,252'})
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=logs" className="wms-tab-pill-btn">
-              <ShieldAlert size={15} /> System Audit Logs ({activityLogs.length})
-            </Link>
           </div>
 
           {/* 6 Executive Metric Cards */}
@@ -560,12 +500,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Department Throughput Status Matrix */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Departmental Operations & Floor Status Matrix</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Real-time operational sync across Tulja Motors workshop organizational units.
-                </p>
-              </div>
+              <h3>Departmental Operations & Floor Status Matrix</h3>
               <span className="stage-badge badge-active">All 6 Departments Active</span>
             </div>
 
@@ -661,12 +596,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* 13-Stage Workflow Health Bar */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>13-Stage Vehicle Repair Workflow Distribution</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Live distribution of vehicles across the standardized Tulja Motors repair lifecycle.
-                </p>
-              </div>
+              <h3>13-Stage Vehicle Repair Workflow Distribution</h3>
               <Link href="/panels/admin/dashboard?tab=jobs" className="btn-secondary-action" style={{ padding: '6px 12px', fontSize: '12px' }}>
                 View Job Cards Master <ArrowUpRight size={14} />
               </Link>
@@ -794,12 +724,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* COMPLETE WORKSHOP EMPLOYEES & DESIGNATIONS DIRECTORY (LIVE FROM DB) */}
           <div className="wms-panel-card" style={{ marginTop: '24px' }}>
             <div className="panel-card-header">
-              <div>
-                <h3>Workshop Personnel & Employee Designations ({employees.length} Staff)</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Live employee records from database. Managing Director can review staff designations, access roles, and register new HR accounts.
-                </p>
-              </div>
+              <h3>Workshop Personnel & Employee Designations ({employees.length} Staff)</h3>
 
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                 <Link
@@ -902,14 +827,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">Organizational Master</span>
-                <span className="stage-badge badge-active">{employees.length} Staff Registered</span>
-              </div>
               <h1>Employees Directory</h1>
-              <p>
-                Managing Director <strong>Ranjeet B. Patil</strong> • Master personnel registry covering reporting relationships, departmental assignments, and confidential payroll.
-              </p>
             </div>
 
             <div className="workspace-actions">
@@ -931,13 +849,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
 
               <button
                 type="button"
-                className="btn-secondary-action"
-                onClick={fetchData}
-              >
-                <RefreshCw size={15} /> Refresh
-              </button>
-              <button
-                type="button"
                 className="btn-primary-action"
                 onClick={() => {
                   setNewEmpForm({
@@ -957,25 +868,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 <Plus size={16} /> Add HR / Employee
               </button>
             </div>
-          </div>
-
-          {/* Quick Tab Switcher Pills */}
-          <div className="wms-tab-nav-bar">
-            <Link href="/panels/admin/dashboard" className="wms-tab-pill-btn">
-              <Activity size={15} /> System Overview
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=employees" className="wms-tab-pill-btn active">
-              <Users size={15} /> Employees Directory ({employees.length})
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=jobs" className="wms-tab-pill-btn">
-              <ClipboardList size={15} /> Job Cards Master ({jobCards.length})
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=finance" className="wms-tab-pill-btn">
-              <ReceiptIndianRupee size={15} /> Billing & Invoices
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=logs" className="wms-tab-pill-btn">
-              <ShieldAlert size={15} /> System Audit Logs
-            </Link>
           </div>
 
           {/* Employee KPI Metrics */}
@@ -1028,12 +920,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Employees Table */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Staff Directory & Registered Personnel</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Complete directory of authorized Tulja Motors workshop employees across all departments.
-                </p>
-              </div>
+              <h3>Staff Directory & Registered Personnel</h3>
 
               <div className="wms-filter-controls">
                 <input
@@ -1140,14 +1027,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">Repair Lifecycle Master</span>
-                <span className="stage-badge badge-active">{jobCards.length} Active Records</span>
-              </div>
               <h1>Job Cards Master</h1>
-              <p>
-                Managing Director <strong>Ranjeet B. Patil</strong> • Central registry for all accidental car repairs, denting, painting, mechanical overhauls, and insurance claim tracking.
-              </p>
             </div>
 
             <div className="workspace-actions">
@@ -1169,13 +1049,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
 
               <button
                 type="button"
-                className="btn-secondary-action"
-                onClick={fetchData}
-              >
-                <RefreshCw size={15} /> Refresh
-              </button>
-              <button
-                type="button"
                 className="btn-primary-action"
                 onClick={() =>
                   showCenterPopup(
@@ -1190,25 +1063,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             </div>
           </div>
 
-          {/* Quick Tab Switcher Pills */}
-          <div className="wms-tab-nav-bar">
-            <Link href="/panels/admin/dashboard" className="wms-tab-pill-btn">
-              <Activity size={15} /> System Overview
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=employees" className="wms-tab-pill-btn">
-              <Users size={15} /> Employees Directory
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=jobs" className="wms-tab-pill-btn active">
-              <ClipboardList size={15} /> Job Cards Master ({jobCards.length})
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=finance" className="wms-tab-pill-btn">
-              <ReceiptIndianRupee size={15} /> Billing & Invoices
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=logs" className="wms-tab-pill-btn">
-              <ShieldAlert size={15} /> System Audit Logs
-            </Link>
-          </div>
-
           {/* Job Cards KPI Metrics */}
           <div className="wms-stats-grid">
             <div className="wms-stat-card">
@@ -1218,7 +1072,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                   <Car size={20} />
                 </div>
               </div>
-              <div className="stat-card-value">{jobCards.length} Vehicles</div>
+              <div className="stat-card-value">{loading ? '...' : `${jobCards.length} Vehicles`}</div>
               <div className="stat-card-subtext">
                 <span className="stat-trend-up">100%</span> active floor capacity
               </div>
@@ -1255,7 +1109,9 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                   <ReceiptIndianRupee size={20} />
                 </div>
               </div>
-              <div className="stat-card-value">₹{stats?.totalRevenue?.toLocaleString('en-IN') || '84,252'}</div>
+              <div className="stat-card-value">
+                {loading ? '...' : `₹${(stats?.totalRevenue ?? 84252).toLocaleString('en-IN')}`}
+              </div>
               <div className="stat-card-subtext">
                 <span className="stat-trend-up">Approved</span> insurance claims
               </div>
@@ -1265,12 +1121,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* 13-Stage Visual Pipeline Bar */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Standardized 13-Stage Vehicle Repair Lifecycle</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Automotive SOP repair progress board tracked across all active floor bays.
-                </p>
-              </div>
+              <h3>Standardized 13-Stage Vehicle Repair Lifecycle</h3>
               <span className="stage-badge badge-info">ISO-Compliant SOP</span>
             </div>
             <div style={{ padding: '16px 20px', overflowX: 'auto' }}>
@@ -1308,12 +1159,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Job Cards Table */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Active Repair Job Cards</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Live tracking of vehicle intake, assigned supervisors, technicians, and repair progress.
-                </p>
-              </div>
+              <h3>Active Repair Job Cards</h3>
 
               <div className="wms-filter-controls">
                 <input
@@ -1442,14 +1288,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">Financial Governance</span>
-                <span className="stage-badge badge-active">18% GST Compliant</span>
-              </div>
               <h1>Billing & Invoices</h1>
-              <p>
-                Managing Director <strong>Ranjeet B. Patil</strong> • Executive financial accounts, GST tax invoices (CGST 9% + SGST 9%), payment collection receipts, and workshop expenses.
-              </p>
             </div>
 
             <div className="workspace-actions">
@@ -1471,13 +1310,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
 
               <button
                 type="button"
-                className="btn-secondary-action"
-                onClick={fetchData}
-              >
-                <RefreshCw size={15} /> Refresh
-              </button>
-              <button
-                type="button"
                 className="btn-primary-action"
                 onClick={() =>
                   showCenterPopup(
@@ -1492,25 +1324,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             </div>
           </div>
 
-          {/* Quick Tab Switcher Pills */}
-          <div className="wms-tab-nav-bar">
-            <Link href="/panels/admin/dashboard" className="wms-tab-pill-btn">
-              <Activity size={15} /> System Overview
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=employees" className="wms-tab-pill-btn">
-              <Users size={15} /> Employees Directory
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=jobs" className="wms-tab-pill-btn">
-              <ClipboardList size={15} /> Job Cards Master
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=finance" className="wms-tab-pill-btn active">
-              <ReceiptIndianRupee size={15} /> Billing & Invoices (₹{stats?.totalRevenue?.toLocaleString('en-IN') || '84,252'})
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=logs" className="wms-tab-pill-btn">
-              <ShieldAlert size={15} /> System Audit Logs
-            </Link>
-          </div>
-
           {/* Financial KPI Cards */}
           <div className="wms-stats-grid">
             <div className="wms-stat-card">
@@ -1521,7 +1334,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </div>
               </div>
               <div className="stat-card-value">
-                ₹{stats?.totalRevenue?.toLocaleString('en-IN') || '84,252'}
+                {loading ? '...' : `₹${(stats?.totalRevenue ?? 84252).toLocaleString('en-IN')}`}
               </div>
               <div className="stat-card-subtext">Taxable base: ₹71,400 + GST ₹12,852</div>
             </div>
@@ -1534,7 +1347,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </div>
               </div>
               <div className="stat-card-value">
-                ₹{stats?.totalCollected?.toLocaleString('en-IN') || '35,000'}
+                {loading ? '...' : `₹${(stats?.totalCollected ?? 35000).toLocaleString('en-IN')}`}
               </div>
               <div className="stat-card-subtext">Settled via GooglePay UPI & NEFT</div>
             </div>
@@ -1547,7 +1360,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </div>
               </div>
               <div className="stat-card-value">
-                ₹{stats?.pendingPayments?.toLocaleString('en-IN') || '49,252'}
+                {loading ? '...' : `₹${(stats?.pendingPayments ?? 49252).toLocaleString('en-IN')}`}
               </div>
               <div className="stat-card-subtext" style={{ color: '#8A181A' }}>
                 Pending from Insurance / Deductibles
@@ -1562,7 +1375,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </div>
               </div>
               <div className="stat-card-value">
-                ₹{stats?.totalExpenses?.toLocaleString('en-IN') || '61,200'}
+                {loading ? '...' : `₹${(stats?.totalExpenses ?? 61200).toLocaleString('en-IN')}`}
               </div>
               <div className="stat-card-subtext">Paints, OEM parts & overheads</div>
             </div>
@@ -1772,14 +1585,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Header */}
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-purple">Security & Compliance</span>
-                <span className="stage-badge badge-active">100% Audit Integrity</span>
-              </div>
               <h1>System Audit Logs</h1>
-              <p>
-                Managing Director <strong>Ranjeet B. Patil</strong> • Tamper-evident activity logs capturing user authentications, job card updates, stage transitions, and financial transactions.
-              </p>
             </div>
 
             <div className="workspace-actions">
@@ -1801,13 +1607,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
 
               <button
                 type="button"
-                className="btn-secondary-action"
-                onClick={fetchData}
-              >
-                <RefreshCw size={15} /> Refresh
-              </button>
-              <button
-                type="button"
                 className="btn-primary-action"
                 onClick={() =>
                   showCenterPopup(
@@ -1822,25 +1621,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             </div>
           </div>
 
-          {/* Quick Tab Switcher Pills */}
-          <div className="wms-tab-nav-bar">
-            <Link href="/panels/admin/dashboard" className="wms-tab-pill-btn">
-              <Activity size={15} /> System Overview
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=employees" className="wms-tab-pill-btn">
-              <Users size={15} /> Employees Directory
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=jobs" className="wms-tab-pill-btn">
-              <ClipboardList size={15} /> Job Cards Master
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=finance" className="wms-tab-pill-btn">
-              <ReceiptIndianRupee size={15} /> Billing & Invoices
-            </Link>
-            <Link href="/panels/admin/dashboard?tab=logs" className="wms-tab-pill-btn active">
-              <ShieldAlert size={15} /> System Audit Logs ({activityLogs.length})
-            </Link>
-          </div>
-
           {/* Security Summary Metrics */}
           <div className="wms-stats-grid">
             <div className="wms-stat-card">
@@ -1850,7 +1630,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                   <ShieldCheck size={20} />
                 </div>
               </div>
-              <div className="stat-card-value">{activityLogs.length} Records</div>
+              <div className="stat-card-value">{loading ? '...' : `${activityLogs.length} Records`}</div>
               <div className="stat-card-subtext">Continuous real-time capture</div>
             </div>
 
@@ -1891,12 +1671,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           {/* Logs Table */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>System Security & Activity Audit Trail</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Chronological log of verified operations across all workshop departments.
-                </p>
-              </div>
+              <h3>System Security & Activity Audit Trail</h3>
 
               <div className="wms-filter-controls">
                 <input
@@ -2063,9 +1838,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           <div className="workspace-header">
             <div className="workspace-title-box">
               <h1>{meta.title}</h1>
-              <p>
-                Welcome to Tulja Motors operational workspace. Real-time data connected to local backend database.
-              </p>
             </div>
 
             <div className="workspace-actions">
@@ -2083,14 +1855,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 title="Export Daily, Weekly or Monthly PDF Report"
               >
                 <Download size={15} /> Export PDF Report
-              </button>
-
-              <button
-                type="button"
-                className="btn-secondary-action"
-                onClick={fetchData}
-              >
-                <RefreshCw size={15} /> Refresh
               </button>
             </div>
           </div>
@@ -2204,7 +1968,11 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </div>
               </div>
               <div className="stat-card-value">
-                {role === 'spare-parts-manager' ? '₹3,84,500' : `${stats?.totalVehicles || 3} Registered`}
+                {role === 'spare-parts-manager'
+                  ? '₹3,84,500'
+                  : loading
+                  ? '...'
+                  : `${stats?.totalVehicles || 3} Registered`}
               </div>
               <div className="stat-card-subtext">
                 {role === 'spare-parts-manager' ? 'Current warehouse stock' : 'Verified customer vehicles'}
@@ -2218,12 +1986,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
               {/* Parts Inventory Master */}
               <div className="wms-panel-card">
                 <div className="panel-card-header">
-                  <div>
-                    <h3>Workshop Spare Parts & Consumables Catalog</h3>
-                    <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                      Real-time inventory levels, bin locations, and procurement thresholds.
-                    </p>
-                  </div>
+                  <h3>Workshop Spare Parts & Consumables Catalog</h3>
                   <button
                     type="button"
                     className="btn-primary-action"

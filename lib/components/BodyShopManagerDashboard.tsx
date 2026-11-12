@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
-  Activity,
   AlertOctagon,
   AlertTriangle,
   ArrowRight,
@@ -21,14 +20,12 @@ import {
   Loader2,
   Phone,
   Plus,
-  RefreshCw,
   RotateCcw,
   ShieldCheck,
   Trash2,
   UserCheck,
   UserPlus,
   Users,
-  Wrench,
   X,
 } from 'lucide-react';
 import type {
@@ -1303,78 +1300,6 @@ export default function BodyShopManagerDashboard({
     );
   };
 
-  // Shared 4-Tab Pill Navigation Bar matching DashboardLayout
-  const renderTabNavBar = () => (
-    <div className="wms-tab-nav-bar">
-      <Link
-        href="/panels/body-shop-manager/dashboard"
-        className={`wms-tab-pill-btn ${currentTab === 'overview' ? 'active' : ''}`}
-      >
-        <Activity size={15} /> Floor Operations ({activeWorkshopJobs.length} Active)
-      </Link>
-      <Link
-        href="/panels/body-shop-manager/dashboard?tab=jobs"
-        className={`wms-tab-pill-btn ${currentTab === 'jobs' ? 'active' : ''}`}
-      >
-        <Car size={15} /> Active Repair Jobs ({jobCards.length})
-      </Link>
-      <Link
-        href="/panels/body-shop-manager/dashboard?tab=technicians"
-        className={`wms-tab-pill-btn ${currentTab === 'technicians' ? 'active' : ''}`}
-      >
-        <Hammer size={15} /> Technician Allocation ({totalOpenTasks} Open)
-      </Link>
-      <Link
-        href="/panels/body-shop-manager/dashboard?tab=delays"
-        className={`wms-tab-pill-btn ${currentTab === 'delays' ? 'active' : ''}`}
-      >
-        <Clock size={15} /> Floor Delays &amp; Bottlenecks ({delayedJobsList.length})
-      </Link>
-    </div>
-  );
-
-  const renderCommandBanner = () => (
-    <div
-      style={{
-        background: '#eef7f6',
-        border: '1px solid #cce3e0',
-        borderRadius: '10px',
-        padding: '10px 16px',
-        marginBottom: '18px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '10px',
-        fontSize: '12px',
-        color: '#045F60',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-        <Wrench size={15} style={{ flexShrink: 0 }} />
-        <span>
-          <strong>Central Workshop Operations Command ({managerName}):</strong> Full cross-floor visibility across{' '}
-          <strong>{supervisors.length} Floor Supervisor(s)</strong>,{' '}
-          <strong>{technicians.length} Specialist Technicians</strong>, and all 13 repair bays.
-        </span>
-      </div>
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-        <span className="stage-badge badge-active">
-          WIP Pipeline: ₹{wipRevenueTotal.toLocaleString('en-IN')}
-        </span>
-        {delayedJobsList.length > 0 && (
-          <Link
-            href="/panels/body-shop-manager/dashboard?tab=delays"
-            className="stage-badge badge-danger"
-            style={{ textDecoration: 'none' }}
-          >
-            {delayedJobsList.length} Delayed / Attention
-          </Link>
-        )}
-      </div>
-    </div>
-  );
-
   return (
     <div>
       {/* ============================================================== */}
@@ -1384,14 +1309,7 @@ export default function BodyShopManagerDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-danger">Body Shop Floor Command</span>
-                <span className="stage-badge badge-active">{managerName}</span>
-              </div>
               <h1>Body Shop Floor Operations</h1>
-              <p>
-                Body Shop Manager <strong>{managerName}</strong> • Oversee daily workshop throughput, balance supervisor &amp; technician capacity, certify Final Approvals, and clear bottlenecks.
-              </p>
             </div>
 
             <div className="workspace-actions">
@@ -1403,9 +1321,6 @@ export default function BodyShopManagerDashboard({
               >
                 <Download size={15} /> Export PDF Report
               </button>
-              <button type="button" className="btn-secondary-action" onClick={onRefresh}>
-                <RefreshCw size={15} /> Refresh Floor
-              </button>
               <Link
                 href="/panels/body-shop-manager/dashboard?tab=delays"
                 className="btn-primary-action"
@@ -1415,9 +1330,6 @@ export default function BodyShopManagerDashboard({
               </Link>
             </div>
           </div>
-
-          {renderCommandBanner()}
-          {renderTabNavBar()}
 
           {/* 4 Body Shop Operations KPI Cards */}
           <div className="wms-stats-grid">
@@ -1480,135 +1392,10 @@ export default function BodyShopManagerDashboard({
             </div>
           </div>
 
-          {/* 4-Card Operational Responsibility Grid */}
-          <div className="wms-panel-card" style={{ marginBottom: '24px' }}>
-            <div className="panel-card-header">
-              <div>
-                <h3>Body Shop Manager Operational Command Pillars</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Coordinate supervisors, balance multi-trade bays, grant Final Approvals, and eliminate delivery slippage.
-                </p>
-              </div>
-              <span className="stage-badge badge-info">Central Floor Governance</span>
-            </div>
-
-            <div
-              className="wms-workflow-grid"
-              style={{
-                padding: '18px 20px',
-              }}
-            >
-              <Link
-                href="/panels/body-shop-manager/dashboard?tab=jobs"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#fafdfc',
-                  border: '1px solid #d9eae8',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-info">Bay Governance</span>
-                  <Car size={16} color="#045F60" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#141b1b' }}>Active Repair Tracking</strong>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Monitor all {jobCards.length} repair orders across 13 stages &amp; grant Final Approvals
-                </span>
-              </Link>
-
-              <Link
-                href="/panels/body-shop-manager/dashboard?tab=jobs"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#fafdfc',
-                  border: '1px solid #d9eae8',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-purple">Supervision</span>
-                  <UserCheck size={16} color="#6b21a8" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#141b1b' }}>Supervisor Load Balancing</strong>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Reassign vehicles between {supervisors.length} floor supervisor(s) &amp; set urgent priority
-                </span>
-              </Link>
-
-              <Link
-                href="/panels/body-shop-manager/dashboard?tab=technicians"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: '#fafdfc',
-                  border: '1px solid #d9eae8',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="stage-badge badge-warning">Crew Capacity</span>
-                  <Hammer size={16} color="#b45309" />
-                </div>
-                <strong style={{ fontSize: '14px', color: '#141b1b' }}>Technician Allocation</strong>
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
-                  Rebalance Denting, Paint, Mechanical &amp; Electrical workloads ({totalOpenTasks} open tasks)
-                </span>
-              </Link>
-
-              <Link
-                href="/panels/body-shop-manager/dashboard?tab=delays"
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  background: delayedJobsList.length > 0 ? '#fffafa' : '#f0fdfa',
-                  border: delayedJobsList.length > 0 ? '1px solid #8A181A' : '1px solid #045F60',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className={`stage-badge ${delayedJobsList.length > 0 ? 'badge-danger' : 'badge-active'}`}>
-                    SLA Desk
-                  </span>
-                  <Flame size={16} color={delayedJobsList.length > 0 ? '#8A181A' : '#045F60'} />
-                </div>
-                <strong style={{ fontSize: '14px', color: delayedJobsList.length > 0 ? '#8A181A' : '#045F60' }}>
-                  Floor Delays &amp; Bottlenecks
-                </strong>
-                <span style={{ fontSize: '12px', color: '#475569' }}>
-                  Escalate missing parts/surveyors &amp; resolve {delayedJobsList.length} blocked order(s)
-                </span>
-              </Link>
-            </div>
-          </div>
-
           {/* 13-Stage Workshop Throughput Strip */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>13-Stage Floor Bay Distribution (Live Throughput)</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Click any stage to view those vehicles inside Active Repair Jobs.
-                </p>
-              </div>
+              <h3>13-Stage Floor Bay Distribution</h3>
               <Link
                 href="/panels/body-shop-manager/dashboard?tab=jobs"
                 className="btn-secondary-action"
@@ -1818,12 +1605,7 @@ export default function BodyShopManagerDashboard({
           {/* Priority Floor & Final Management Approval Queue */}
           <div className="wms-panel-card" style={{ marginTop: '24px' }}>
             <div className="panel-card-header">
-              <div>
-                <h3>Manager Final Approval &amp; High-Priority Watchlist</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Vehicles at Quality Inspection / Final Approval or flagged Urgent for direct Body Shop Manager sign-off.
-                </p>
-              </div>
+              <h3>Manager Final Approval &amp; Watchlist</h3>
               <span className="stage-badge badge-warning">
                 {finalApprovalWatchlist.length} Priority / QC Jobs
               </span>
@@ -1958,20 +1740,10 @@ export default function BodyShopManagerDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-info">Master Floor Tracker</span>
-                <span className="stage-badge badge-active">{jobCards.length} Workshop Orders</span>
-              </div>
-              <h1>Active Repair Jobs &amp; Supervisor Coordination</h1>
-              <p>
-                Body Shop Manager <strong>{managerName}</strong> • Inspect every workshop repair order, transition stages, grant Final Approvals, and rebalance vehicles across supervisors.
-              </p>
+              <h1>Active Repair Jobs</h1>
             </div>
 
             <div className="workspace-actions">
-              <button type="button" className="btn-secondary-action" onClick={onRefresh}>
-                <RefreshCw size={15} /> Refresh Jobs
-              </button>
               <button
                 type="button"
                 className="btn-primary-action"
@@ -1981,9 +1753,6 @@ export default function BodyShopManagerDashboard({
               </button>
             </div>
           </div>
-
-          {renderCommandBanner()}
-          {renderTabNavBar()}
 
           {/* 4 Job Tracking KPI Cards */}
           <div className="wms-stats-grid">
@@ -2108,12 +1877,7 @@ export default function BodyShopManagerDashboard({
           {/* Complete Repair Jobs Operations Table */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>All Workshop Repair Jobs (Cross-Floor View)</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Review floor stage velocity, rebalance supervisors, inspect multi-tech progress, or hold/expedite delivery SLAs.
-                </p>
-              </div>
+              <h3>All Workshop Repair Jobs</h3>
               <span className="stage-badge badge-active">Saved Live to MongoDB</span>
             </div>
 
@@ -2313,22 +2077,10 @@ export default function BodyShopManagerDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-danger">Workshop Workforce Utilization</span>
-                <span className="stage-badge badge-active">
-                  {technicians.length} Active Technicians
-                </span>
-              </div>
-              <h1>Technician Allocation &amp; Trade Bay Balancing</h1>
-              <p>
-                Body Shop Manager <strong>{managerName}</strong> • Monitor real-time technician utilization across all 6 trade bays, prevent overload, and rebalance assignments across vehicles.
-              </p>
+              <h1>Technician Allocation</h1>
             </div>
 
             <div className="workspace-actions">
-              <button type="button" className="btn-secondary-action" onClick={onRefresh}>
-                <RefreshCw size={15} /> Refresh Matrix
-              </button>
               <button
                 type="button"
                 className="btn-primary-action"
@@ -2338,9 +2090,6 @@ export default function BodyShopManagerDashboard({
               </button>
             </div>
           </div>
-
-          {renderCommandBanner()}
-          {renderTabNavBar()}
 
           {/* 4 Crew KPI Cards */}
           <div className="wms-stats-grid">
@@ -2413,12 +2162,7 @@ export default function BodyShopManagerDashboard({
           {/* 6-Bay Departmental Capacity Strip (Clickable filter) */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Departmental Bay Load Distribution (Click Bay to Filter)</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Identify bay congestion across Denting, Paint Booth, Mechanical, Electrical, Assembly &amp; Detailing.
-                </p>
-              </div>
+              <h3>Departmental Bay Load</h3>
               {activeFilters.dept !== 'ALL' && (
                 <button
                   type="button"
@@ -2491,12 +2235,7 @@ export default function BodyShopManagerDashboard({
           {/* Technician Capacity Roster Cards */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Specialist Technicians Capacity &amp; Utilization</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Click any technician card to inspect or rebalance their vehicle tasks below.
-                </p>
-              </div>
+              <h3>Specialist Technicians Capacity</h3>
               {activeFilters.techId !== 'ALL' && (
                 <button
                   type="button"
@@ -2825,22 +2564,10 @@ export default function BodyShopManagerDashboard({
         <div>
           <div className="workspace-header">
             <div className="workspace-title-box">
-              <div className="wms-header-badges">
-                <span className="stage-badge badge-danger">SLA &amp; Bottleneck Control</span>
-                <span className="stage-badge badge-warning">
-                  {delayedJobsList.length} Delayed / Attention Required
-                </span>
-              </div>
-              <h1>Floor Delays &amp; Bottleneck Resolution</h1>
-              <p>
-                Body Shop Manager <strong>{managerName}</strong> • Spot overdue delivery promises, missing spare parts, surveyor holds, QC rework loops, and unallocated jobs — escalate or resolve in real time.
-              </p>
+              <h1>Floor Delays &amp; Bottlenecks</h1>
             </div>
 
             <div className="workspace-actions">
-              <button type="button" className="btn-secondary-action" onClick={onRefresh}>
-                <RefreshCw size={15} /> Scan Floor SLAs
-              </button>
               <button
                 type="button"
                 className="btn-primary-action"
@@ -2850,9 +2577,6 @@ export default function BodyShopManagerDashboard({
               </button>
             </div>
           </div>
-
-          {renderCommandBanner()}
-          {renderTabNavBar()}
 
           {/* 4 Bottleneck KPI Cards */}
           <div className="wms-stats-grid">
@@ -2964,12 +2688,7 @@ export default function BodyShopManagerDashboard({
           {/* Bottleneck Resolution Table */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <div>
-                <h3>Floor Delays, Blocked Bays &amp; Escalation Desk</h3>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Priority-sorted bottlenecks detected across delivery SLAs, parts holds, QC rework, and missing technician crews.
-                </p>
-              </div>
+              <h3>Floor Delays &amp; Escalation Desk</h3>
               <span className="stage-badge badge-info">SLA Date Check: {todayIso}</span>
             </div>
 
