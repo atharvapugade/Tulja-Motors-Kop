@@ -280,11 +280,82 @@ export interface MarketingLead {
 export interface ActivityLog {
   id: string;
   action: string;
-  entityType: 'User' | 'Employee' | 'JobCard' | 'Invoice' | 'Payment' | 'Inspection' | 'Task' | 'MarketingLead' | 'Attendance' | 'System';
+  entityType: 'User' | 'Employee' | 'JobCard' | 'Invoice' | 'Payment' | 'Inspection' | 'Task' | 'MarketingLead' | 'Attendance' | 'System' | 'SparePart' | 'PartRequisition' | 'PurchaseOrder';
   entityId: string;
   performedBy: string;
   userRole: UserRole;
   details: string;
   timestamp: string;
+}
+
+export type SparePartCategory =
+  | 'Denting & Body'
+  | 'Body Panels'
+  | 'Electrical & Lights'
+  | 'Paints & Consumables'
+  | 'Lubricants & Oils'
+  | 'Mechanical Bay'
+  | 'Body Glass'
+  | 'Fasteners & Clips'
+  | 'Other';
+
+export interface SparePart {
+  id: string;
+  partNumber: string;
+  name: string;
+  description?: string;
+  category: SparePartCategory;
+  compatibleModels: string;
+  stockQuantity: number;
+  minThreshold: number;
+  unitPrice: number;
+  locationBin: string;
+  supplierName: string;
+  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PartRequisition {
+  id: string;
+  jobCardId: string;
+  jobCardNumber: string;
+  vehicleRegistration: string;
+  vehicleModel: string;
+  partId: string;
+  partNumber: string;
+  partName: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  status: 'Requested' | 'Allocated' | 'Issued' | 'Pending Stock';
+  requestedBy: string;
+  requestedAt: string;
+  issuedAt?: string;
+  notes?: string;
+}
+
+export interface PurchaseOrderItem {
+  partId: string;
+  partNumber: string;
+  partName: string;
+  quantity: number;
+  unitCost: number;
+  totalCost: number;
+}
+
+export interface PurchaseOrder {
+  id: string;
+  poNumber: string;
+  supplierName: string;
+  supplierContact?: string;
+  orderDate: string;
+  expectedDeliveryDate: string;
+  items: PurchaseOrderItem[];
+  totalAmount: number;
+  status: 'Draft' | 'Placed' | 'Received' | 'Cancelled';
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 

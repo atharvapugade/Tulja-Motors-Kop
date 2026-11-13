@@ -133,6 +133,7 @@ export default function DashboardLayout({
           { name: 'Technician Allocation', href: `${base}?tab=technicians`, icon: Hammer },
           { name: 'Floor Delays & Bottlenecks', href: `${base}?tab=delays`, icon: Clock },
         ];
+      /*
       case 'hr':
         return [
           { name: 'HR Overview', href: base, icon: LayoutDashboard },
@@ -141,6 +142,7 @@ export default function DashboardLayout({
           { name: 'Digital Marketing & Leads', href: `${base}?tab=marketing`, icon: Megaphone },
           { name: 'Leave Records', href: `${base}?tab=leaves`, icon: Clock },
         ];
+      */
       case 'advisor':
         return [
           { name: 'Intake Desk', href: base, icon: LayoutDashboard },

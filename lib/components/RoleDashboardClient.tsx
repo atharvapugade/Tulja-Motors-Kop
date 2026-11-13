@@ -45,6 +45,7 @@ import ExportPdfModal from '@/lib/components/ExportPdfModal';
 import AdvisorDashboard from '@/lib/components/AdvisorDashboard';
 import SupervisorDashboard from '@/lib/components/SupervisorDashboard';
 import BodyShopManagerDashboard from '@/lib/components/BodyShopManagerDashboard';
+import SparePartsManagerDashboard from '@/lib/components/SparePartsManagerDashboard';
 import CenterPopupModal, { CenterPopupState } from '@/lib/components/CenterPopupModal';
 import { AdminReportPage } from '@/lib/utils/pdfGenerator';
 
@@ -56,7 +57,7 @@ const roleTitles: Record<string, { title: string; dept: string }> = {
   admin: { title: 'Super Admin Dashboard', dept: 'Executive & Governance' },
   director: { title: 'Director Analytics Portal', dept: 'Board of Directors' },
   'body-shop-manager': { title: 'Body Shop Floor Operations', dept: 'Workshop Floor' },
-  hr: { title: 'Human Resources Hub', dept: 'HR & Personnel' },
+  /* hr: { title: 'Human Resources Hub', dept: 'HR & Personnel' }, */
   advisor: { title: 'Service Advisor Intake Desk', dept: 'Customer Advisory' },
   supervisor: { title: 'Workshop Supervision Floor', dept: 'Floor Supervision' },
   accounts: { title: 'Accounts & Billing Ledger', dept: 'Accounts & Finance' },
@@ -141,9 +142,9 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
     email: '',
     password: '',
     phone: '',
-    role: 'hr',
-    department: 'Human Resources',
-    designation: 'Human Resources Specialist',
+    role: 'advisor',
+    department: 'Customer Advisory & Intake',
+    designation: 'Service Advisor',
     reportingManager: 'Ranjeet B. Patil (Owner / MD)',
     salary: '40000',
   });
@@ -260,9 +261,9 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
         email: '',
         password: '',
         phone: '',
-        role: 'hr',
-        department: 'Human Resources',
-        designation: 'Human Resources Specialist',
+        role: 'advisor',
+        department: 'Customer Advisory & Intake',
+        designation: 'Service Advisor',
         reportingManager: 'Ranjeet B. Patil (Owner / MD)',
         salary: '40000',
       });
@@ -1830,9 +1831,30 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
       )}
 
       {/* ============================================================== */}
-      {/* OTHER ROLES (HR, Accounts, Digital Marketing, etc.)            */}
+      {/* SPARE PARTS MANAGER DEDICATED WORKSPACE                        */}
       {/* ============================================================== */}
-      {role !== 'admin' && role !== 'advisor' && role !== 'supervisor' && role !== 'body-shop-manager' && (
+      {role === 'spare-parts-manager' && (
+        <SparePartsManagerDashboard
+          activeTab={activeTab}
+          jobCards={jobCards}
+          employees={employees}
+          loading={loading}
+          onRefresh={fetchData}
+          onNotify={(msg) => {
+            setFeedbackMsg(msg);
+            setTimeout(() => setFeedbackMsg(''), 6000);
+          }}
+        />
+      )}
+
+      {/* ============================================================== */}
+      {/* OTHER ROLES (Accounts, Digital Marketing, Director, Tech)      */}
+      {/* ============================================================== */}
+      {role !== 'admin' &&
+        role !== 'advisor' &&
+        role !== 'supervisor' &&
+        role !== 'body-shop-manager' &&
+        role !== 'spare-parts-manager' && (
         <div>
           {/* Role Header */}
           <div className="workspace-header">
@@ -1979,166 +2001,6 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
               </div>
             </div>
           </div>
-
-          {/* Spare Parts Manager View */}
-          {role === 'spare-parts-manager' && (
-            <div>
-              {/* Parts Inventory Master */}
-              <div className="wms-panel-card">
-                <div className="panel-card-header">
-                  <h3>Workshop Spare Parts & Consumables Catalog</h3>
-                  <button
-                    type="button"
-                    className="btn-primary-action"
-                    onClick={() =>
-                      showCenterPopup(
-                        'New Spare Part entry modal: Enter SKU, name, bin, and threshold.',
-                        'Spare Parts Catalog',
-                        'info'
-                      )
-                    }
-                  >
-                    <Plus size={15} /> Add New Part
-                  </button>
-                </div>
-                <div className="wms-table-responsive">
-                  <table className="wms-table">
-                    <thead>
-                      <tr>
-                        <th>Part Code</th>
-                        <th>Part Name & Description</th>
-                        <th>Compatible Model</th>
-                        <th>Category</th>
-                        <th>Stock Qty</th>
-                        <th>Min Level</th>
-                        <th>Unit Price</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[
-                        { code: 'TM-PRT-001', name: 'Front Bumper Assembly', model: 'Mahindra Thar CRDe', cat: 'Denting & Body', qty: 4, min: 2, price: 8400, status: 'In Stock' },
-                        { code: 'TM-PRT-002', name: 'LH Fender Panel Assembly', model: 'Hyundai Creta 1.5', cat: 'Body Panels', qty: 2, min: 1, price: 5600, status: 'In Stock' },
-                        { code: 'TM-PRT-003', name: 'Projector LED Headlamp RH', model: 'Kia Seltos GTX', cat: 'Electrical & Lights', qty: 1, min: 2, price: 14200, status: 'Low Stock' },
-                        { code: 'TM-PRT-004', name: 'Epoxy Primer 2K Grey (1L)', model: 'Universal', cat: 'Paints & Consumables', qty: 18, min: 5, price: 1850, status: 'In Stock' },
-                        { code: 'TM-PRT-005', name: 'High Gloss Polyurethane Clear (1L)', model: 'Universal', cat: 'Paints & Consumables', qty: 14, min: 4, price: 2100, status: 'In Stock' },
-                        { code: 'TM-PRT-006', name: 'Synthetic Engine Oil 5W-30 (4L)', model: 'Universal / Castrol', cat: 'Lubricants & Oils', qty: 8, min: 3, price: 3200, status: 'In Stock' },
-                        { code: 'TM-PRT-007', name: 'Ceramic Front Brake Pads Kit', model: 'Hyundai / Kia', cat: 'Mechanical Bay', qty: 6, min: 2, price: 2400, status: 'In Stock' },
-                        { code: 'TM-PRT-008', name: 'Laminated Windshield Glass', model: 'Mahindra Thar', cat: 'Body Glass', qty: 0, min: 1, price: 9800, status: 'Out of Stock' },
-                      ].map((part) => (
-                        <tr key={part.code}>
-                          <td><code>{part.code}</code></td>
-                          <td><strong>{part.name}</strong></td>
-                          <td><span className="stage-badge badge-neutral">{part.model}</span></td>
-                          <td>{part.cat}</td>
-                          <td><strong>{part.qty} pcs</strong></td>
-                          <td style={{ color: '#888' }}>{part.min} pcs</td>
-                          <td><strong>₹{part.price.toLocaleString('en-IN')}</strong></td>
-                          <td>
-                            <span
-                              className={`stage-badge ${
-                                part.status === 'In Stock'
-                                  ? 'badge-active'
-                                  : part.status === 'Low Stock'
-                                  ? 'badge-warning'
-                                  : 'badge-danger'
-                              }`}
-                            >
-                              {part.status}
-                            </span>
-                          </td>
-                          <td>
-                            <button
-                              type="button"
-                              className="btn-secondary-action"
-                              style={{ padding: '5px 10px', fontSize: '11px' }}
-                              onClick={() =>
-                                showCenterPopup(
-                                  `Issue requisition for ${part.name}`,
-                                  'Parts Requisition',
-                                  'info'
-                                )
-                              }
-                            >
-                              Issue Part
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Job Card Parts Requisition Queue */}
-              <div className="wms-panel-card">
-                <div className="panel-card-header">
-                  <h3>Floor Job Card Parts Allocation</h3>
-                  <span className="stage-badge badge-info">Active Floor Orders</span>
-                </div>
-                <div style={{ padding: '20px' }}>
-                  {jobCards.map((job) => (
-                    <div
-                      key={job.id}
-                      style={{
-                        background: '#fcfdfd',
-                        border: '1px solid #e0e9e8',
-                        borderRadius: '8px',
-                        padding: '16px 20px',
-                        marginBottom: '12px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                        gap: '12px',
-                      }}
-                    >
-                      <div>
-                        <strong style={{ fontSize: '15px', color: '#141b1b' }}>{job.vehicleModel}</strong>
-                        <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                          Job Card: <strong>{job.jobCardNumber}</strong> · Reg: <strong>{job.vehicleRegistration}</strong>
-                        </div>
-                        <div style={{ fontSize: '12px', color: '#045F60', fontWeight: '700', marginTop: '4px' }}>
-                          Allocated Parts: ₹{job.costEstimate?.spareParts?.toLocaleString('en-IN') || '0'} · Stage: {job.currentStage}
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        <button
-                          type="button"
-                          className="btn-secondary-action"
-                          style={{ padding: '6px 12px', fontSize: '12px' }}
-                          onClick={() =>
-                            showCenterPopup(
-                              `Viewing parts bill for Job Card ${job.jobCardNumber}`,
-                              'Bill of Materials',
-                              'info'
-                            )
-                          }
-                        >
-                          View Bill of Materials
-                        </button>
-                        <button
-                          type="button"
-                          className="btn-primary-action"
-                          style={{ padding: '6px 14px', fontSize: '12px' }}
-                          onClick={() =>
-                            showCenterPopup(
-                              `Parts issued & confirmed for ${job.vehicleRegistration}`,
-                              'Parts Issued',
-                              'info'
-                            )
-                          }
-                        >
-                          Confirm Issue
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Technician Specific View */}
           {role === 'technician' && (
@@ -2361,7 +2223,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                         });
                       }}
                     >
-                      <option value="hr">Human Resources (HR) - Access to /panels/hr</option>
+                      {/* <option value="hr">Human Resources (HR) - Access to /panels/hr</option> */}
                       <option value="body_shop_manager">Body Shop Manager - Access to /panels/body-shop-manager</option>
                       <option value="advisor">Service Advisor - Access to /panels/advisor</option>
                       <option value="supervisor">Workshop Supervisor - Access to /panels/supervisor</option>

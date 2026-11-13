@@ -11,6 +11,9 @@ import {
   AttendanceRecord,
   MarketingLead,
   ActivityLog,
+  SparePart,
+  PartRequisition,
+  PurchaseOrder,
 } from '../models/types';
 
 // ==============================================================================
@@ -443,6 +446,9 @@ const ActivityLogSchema = new Schema<ActivityLog>(
         'MarketingLead',
         'Attendance',
         'System',
+        'SparePart',
+        'PartRequisition',
+        'PurchaseOrder',
       ],
       required: true,
     },
@@ -458,4 +464,110 @@ const ActivityLogSchema = new Schema<ActivityLog>(
 export const ActivityLogModel: Model<ActivityLog> =
   (mongoose.models.ActivityLog as Model<ActivityLog>) ||
   mongoose.model<ActivityLog>('ActivityLog', ActivityLogSchema);
+
+// ==============================================================================
+// 12. SPARE PART SCHEMA & MODEL
+// ==============================================================================
+const SparePartSchema = new Schema<SparePart>(
+  {
+    id: { type: String, required: true, unique: true, index: true },
+    partNumber: { type: String, required: true, unique: true, index: true },
+    name: { type: String, required: true },
+    description: { type: String },
+    category: { type: String, required: true, index: true },
+    compatibleModels: { type: String, required: true },
+    stockQuantity: { type: Number, required: true, default: 0 },
+    minThreshold: { type: Number, required: true, default: 2 },
+    unitPrice: { type: Number, required: true, default: 0 },
+    locationBin: { type: String, default: 'Warehouse General' },
+    supplierName: { type: String, default: 'OEM Supplier' },
+    status: {
+      type: String,
+      enum: ['In Stock', 'Low Stock', 'Out of Stock'],
+      default: 'In Stock',
+      index: true,
+    },
+    createdAt: { type: String, default: () => new Date().toISOString() },
+    updatedAt: { type: String, default: () => new Date().toISOString() },
+  },
+  { collection: 'spareparts', timestamps: false }
+);
+
+export const SparePartModel: Model<SparePart> =
+  (mongoose.models.SparePart as Model<SparePart>) ||
+  mongoose.model<SparePart>('SparePart', SparePartSchema);
+
+// ==============================================================================
+// 13. PART REQUISITION SCHEMA & MODEL
+// ==============================================================================
+const PartRequisitionSchema = new Schema<PartRequisition>(
+  {
+    id: { type: String, required: true, unique: true, index: true },
+    jobCardId: { type: String, required: true, index: true },
+    jobCardNumber: { type: String, required: true },
+    vehicleRegistration: { type: String, required: true },
+    vehicleModel: { type: String, required: true },
+    partId: { type: String, required: true },
+    partNumber: { type: String, required: true },
+    partName: { type: String, required: true },
+    quantity: { type: Number, required: true, default: 1 },
+    unitPrice: { type: Number, required: true, default: 0 },
+    totalPrice: { type: Number, required: true, default: 0 },
+    status: {
+      type: String,
+      enum: ['Requested', 'Allocated', 'Issued', 'Pending Stock'],
+      default: 'Requested',
+      index: true,
+    },
+    requestedBy: { type: String, required: true },
+    requestedAt: { type: String, default: () => new Date().toISOString() },
+    issuedAt: { type: String },
+    notes: { type: String },
+  },
+  { collection: 'partrequisitions', timestamps: false }
+);
+
+export const PartRequisitionModel: Model<PartRequisition> =
+  (mongoose.models.PartRequisition as Model<PartRequisition>) ||
+  mongoose.model<PartRequisition>('PartRequisition', PartRequisitionSchema);
+
+// ==============================================================================
+// 14. PURCHASE ORDER SCHEMA & MODEL
+// ==============================================================================
+const PurchaseOrderSchema = new Schema<PurchaseOrder>(
+  {
+    id: { type: String, required: true, unique: true, index: true },
+    poNumber: { type: String, required: true, unique: true, index: true },
+    supplierName: { type: String, required: true },
+    supplierContact: { type: String },
+    orderDate: { type: String, required: true },
+    expectedDeliveryDate: { type: String, required: true },
+    items: [
+      {
+        partId: { type: String, required: true },
+        partNumber: { type: String, required: true },
+        partName: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        unitCost: { type: Number, required: true },
+        totalCost: { type: Number, required: true },
+      },
+    ],
+    totalAmount: { type: Number, required: true, default: 0 },
+    status: {
+      type: String,
+      enum: ['Draft', 'Placed', 'Received', 'Cancelled'],
+      default: 'Placed',
+      index: true,
+    },
+    notes: { type: String },
+    createdAt: { type: String, default: () => new Date().toISOString() },
+    updatedAt: { type: String, default: () => new Date().toISOString() },
+  },
+  { collection: 'purchaseorders', timestamps: false }
+);
+
+export const PurchaseOrderModel: Model<PurchaseOrder> =
+  (mongoose.models.PurchaseOrder as Model<PurchaseOrder>) ||
+  mongoose.model<PurchaseOrder>('PurchaseOrder', PurchaseOrderSchema);
+
 

@@ -1,4 +1,5 @@
 import { Suspense, use } from 'react';
+import { notFound } from 'next/navigation';
 import RoleDashboardClient from '@/lib/components/RoleDashboardClient';
 
 interface PageProps {
@@ -7,6 +8,9 @@ interface PageProps {
 
 function RoleDashboardContainer({ params }: PageProps) {
   const { role } = use(params);
+  if (role === 'hr') {
+    notFound();
+  }
   return <RoleDashboardClient role={role} />;
 }
 

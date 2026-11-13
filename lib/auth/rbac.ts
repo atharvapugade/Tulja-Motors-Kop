@@ -46,6 +46,7 @@ export const ROLE_CONFIGS: Record<string, RoleConfig> = {
     accentBg: '#fbebed',
     allowedRoles: ['body_shop_manager', 'super_admin'],
   },
+  /*
   hr: {
     slug: 'hr',
     role: 'hr',
@@ -57,6 +58,7 @@ export const ROLE_CONFIGS: Record<string, RoleConfig> = {
     accentBg: '#e8f3f1',
     allowedRoles: ['hr', 'super_admin'],
   },
+  */
   advisor: {
     slug: 'advisor',
     role: 'advisor',
@@ -138,8 +140,10 @@ export function getSlugByUserRole(role: UserRole): string {
       return 'director';
     case 'body_shop_manager':
       return 'body-shop-manager';
+    /*
     case 'hr':
       return 'hr';
+    */
     case 'advisor':
       return 'advisor';
     case 'supervisor':

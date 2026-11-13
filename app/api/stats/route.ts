@@ -17,6 +17,9 @@ export async function GET() {
       attendance,
       leads,
       activityLogs,
+      spareParts,
+      partRequisitions,
+      purchaseOrders,
     ] = await Promise.all([
       db.getUsers(),
       db.getEmployees(),
@@ -29,6 +32,9 @@ export async function GET() {
       db.getAttendance(),
       db.getLeads(),
       db.getActivityLogs(),
+      db.getSpareParts(),
+      db.getPartRequisitions(),
+      db.getPurchaseOrders(),
     ]);
 
     const activeJobCards = jobCards.filter((j: JobCard) => j.jobStatus === 'Active');
@@ -52,6 +58,12 @@ export async function GET() {
     // Active leads
     const activeLeads = leads.filter((l: MarketingLead) => l.status !== 'Converted to Job' && l.status !== 'Lost').length;
 
+    // Spare parts stats
+    const totalParts = spareParts.length;
+    const inventoryValuation = spareParts.reduce((acc, p) => acc + (p.stockQuantity || 0) * (p.unitPrice || 0), 0);
+    const lowStockParts = spareParts.filter((p) => (p.stockQuantity || 0) <= (p.minThreshold || 2)).length;
+    const pendingRequisitions = partRequisitions.filter((r) => r.status === 'Requested' || r.status === 'Pending Stock').length;
+
     return NextResponse.json({
       success: true,
       stats: {
@@ -71,6 +83,10 @@ export async function GET() {
         absentToday,
         activeLeads,
         stageCounts,
+        totalParts,
+        inventoryValuation,
+        lowStockParts,
+        pendingRequisitions,
       },
       recentJobCards: jobCards.slice(0, 5),
       recentActivityLogs: activityLogs.slice(0, 8),
@@ -81,6 +97,9 @@ export async function GET() {
       allExpenses: expenses,
       allAttendance: attendance,
       allLeads: leads,
+      allSpareParts: spareParts,
+      allPartRequisitions: partRequisitions,
+      allPurchaseOrders: purchaseOrders,
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Failed to fetch dashboard stats';

@@ -37,6 +37,7 @@ const roleMeta: Record<
     accentBg: '#fbebed',
     defaultEmail: 'bodyshop@tuljamotors.com',
   },
+  /*
   hr: {
     roleTitle: 'Human Resources (HR)',
     departmentName: 'HR & Personnel Records',
@@ -45,6 +46,7 @@ const roleMeta: Record<
     accentBg: '#e8f3f1',
     defaultEmail: 'hr@tuljamotors.com',
   },
+  */
   advisor: {
     roleTitle: 'Service Advisor Desk',
     departmentName: 'Customer Advisory & Intake',

@@ -13,6 +13,9 @@ import {
   AttendanceRecord,
   MarketingLead,
   ActivityLog,
+  SparePart,
+  PartRequisition,
+  PurchaseOrder,
 } from '../models/types';
 import {
   initialUsers,
@@ -26,6 +29,9 @@ import {
   initialAttendance,
   initialMarketingLeads,
   initialActivityLogs,
+  initialSpareParts,
+  initialPartRequisitions,
+  initialPurchaseOrders,
 } from './seed-data';
 import { connectToDatabase } from './connect';
 import {
@@ -40,6 +46,9 @@ import {
   AttendanceModel,
   MarketingLeadModel,
   ActivityLogModel,
+  SparePartModel,
+  PartRequisitionModel,
+  PurchaseOrderModel,
 } from './models';
 
 interface DatabaseState {
@@ -54,6 +63,9 @@ interface DatabaseState {
   attendance: AttendanceRecord[];
   leads: MarketingLead[];
   activityLogs: ActivityLog[];
+  spareParts: SparePart[];
+  partRequisitions: PartRequisition[];
+  purchaseOrders: PurchaseOrder[];
 }
 
 const DATA_DIR = process.env.VERCEL
@@ -84,6 +96,22 @@ function loadDatabase(): DatabaseState {
       const content = fs.readFileSync(DB_FILE, 'utf-8');
       if (content && content.trim().length > 0) {
         memoryDb = JSON.parse(content) as DatabaseState;
+        let modified = false;
+        if (!memoryDb.spareParts || memoryDb.spareParts.length === 0) {
+          memoryDb.spareParts = [...initialSpareParts];
+          modified = true;
+        }
+        if (!memoryDb.partRequisitions || memoryDb.partRequisitions.length === 0) {
+          memoryDb.partRequisitions = [...initialPartRequisitions];
+          modified = true;
+        }
+        if (!memoryDb.purchaseOrders || memoryDb.purchaseOrders.length === 0) {
+          memoryDb.purchaseOrders = [...initialPurchaseOrders];
+          modified = true;
+        }
+        if (modified) {
+          saveDatabase(memoryDb);
+        }
         return memoryDb;
       }
     }
@@ -104,6 +132,9 @@ function loadDatabase(): DatabaseState {
     attendance: [...initialAttendance],
     leads: [...initialMarketingLeads],
     activityLogs: [...initialActivityLogs],
+    spareParts: [...initialSpareParts],
+    partRequisitions: [...initialPartRequisitions],
+    purchaseOrders: [...initialPurchaseOrders],
   };
 
   saveDatabase(memoryDb);
@@ -759,6 +790,9 @@ export const db = {
           AttendanceModel.deleteMany({}),
           MarketingLeadModel.deleteMany({}),
           ActivityLogModel.deleteMany({}),
+          SparePartModel.deleteMany({}),
+          PartRequisitionModel.deleteMany({}),
+          PurchaseOrderModel.deleteMany({}),
         ]);
         await Promise.all([
           UserModel.insertMany(initialUsers),
@@ -772,6 +806,9 @@ export const db = {
           AttendanceModel.insertMany(initialAttendance),
           MarketingLeadModel.insertMany(initialMarketingLeads),
           ActivityLogModel.insertMany(initialActivityLogs),
+          SparePartModel.insertMany(initialSpareParts),
+          PartRequisitionModel.insertMany(initialPartRequisitions),
+          PurchaseOrderModel.insertMany(initialPurchaseOrders),
         ]);
       }
     } catch (err) {
@@ -790,7 +827,277 @@ export const db = {
       attendance: [...initialAttendance],
       leads: [...initialMarketingLeads],
       activityLogs: [...initialActivityLogs],
+      spareParts: [...initialSpareParts],
+      partRequisitions: [...initialPartRequisitions],
+      purchaseOrders: [...initialPurchaseOrders],
     };
     saveDatabase(memoryDb);
+  },
+
+  // ==========================================
+  // SPARE PARTS & INVENTORY
+  // ==========================================
+  getSpareParts: async (): Promise<SparePart[]> => {
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        const parts = await SparePartModel.find({}).sort({ partNumber: 1 }).lean();
+        if (parts && parts.length > 0) {
+          return parts.map((p) => cleanMongoDoc<SparePart>(p));
+        }
+      }
+    } catch (err) {
+      console.warn('Error reading spare parts from MongoDB:', err);
+    }
+    return loadDatabase().spareParts || [];
+  },
+
+  getSparePartById: async (id: string): Promise<SparePart | undefined> => {
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        const part = await SparePartModel.findOne({ $or: [{ id }, { partNumber: id }] }).lean();
+        if (part) {
+          return cleanMongoDoc<SparePart>(part);
+        }
+      }
+    } catch (err) {
+      console.warn('Error reading spare part by id from MongoDB:', err);
+    }
+    const parts = loadDatabase().spareParts || [];
+    return parts.find((p) => p.id === id || p.partNumber === id);
+  },
+
+  createSparePart: async (part: Omit<SparePart, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }): Promise<SparePart> => {
+    const timestamp = new Date().toISOString();
+    const newPart: SparePart = {
+      ...part,
+      id: part.id || `prt_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        await SparePartModel.create(newPart);
+      }
+    } catch (err) {
+      console.warn('Error creating spare part in MongoDB:', err);
+    }
+    const state = loadDatabase();
+    if (!state.spareParts) state.spareParts = [];
+    state.spareParts.unshift(newPart);
+    saveDatabase(state);
+    return newPart;
+  },
+
+  updateSparePart: async (id: string, updates: Partial<SparePart>): Promise<SparePart | null> => {
+    let mongoUpdated: SparePart | null = null;
+    const timestamp = new Date().toISOString();
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        const updated = await SparePartModel.findOneAndUpdate(
+          { $or: [{ id }, { partNumber: id }] },
+          { ...updates, updatedAt: timestamp },
+          { new: true }
+        ).lean();
+        if (updated) {
+          mongoUpdated = cleanMongoDoc<SparePart>(updated);
+        }
+      }
+    } catch (err) {
+      console.warn('Error updating spare part in MongoDB:', err);
+    }
+    const state = loadDatabase();
+    if (!state.spareParts) state.spareParts = [];
+    const idx = state.spareParts.findIndex((p) => p.id === id || p.partNumber === id);
+    if (idx !== -1) {
+      const current = state.spareParts[idx];
+      const newStock = updates.stockQuantity !== undefined ? updates.stockQuantity : current.stockQuantity;
+      const minThresh = updates.minThreshold !== undefined ? updates.minThreshold : current.minThreshold;
+      let status: SparePart['status'] = 'In Stock';
+      if (newStock <= 0) {
+        status = 'Out of Stock';
+      } else if (newStock <= minThresh) {
+        status = 'Low Stock';
+      }
+      state.spareParts[idx] = {
+        ...current,
+        ...updates,
+        status: updates.status || status,
+        updatedAt: timestamp,
+      };
+      saveDatabase(state);
+    }
+    return mongoUpdated || (idx !== -1 ? state.spareParts[idx] : null);
+  },
+
+  deleteSparePart: async (id: string): Promise<boolean> => {
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        await SparePartModel.deleteOne({ $or: [{ id }, { partNumber: id }] });
+      }
+    } catch (err) {
+      console.warn('Error deleting spare part in MongoDB:', err);
+    }
+    const state = loadDatabase();
+    if (!state.spareParts) return false;
+    const initialLen = state.spareParts.length;
+    state.spareParts = state.spareParts.filter((p) => p.id !== id && p.partNumber !== id);
+    saveDatabase(state);
+    return state.spareParts.length < initialLen;
+  },
+
+  adjustSparePartStock: async (id: string, delta: number): Promise<SparePart | null> => {
+    const state = loadDatabase();
+    if (!state.spareParts) state.spareParts = [];
+    const part = state.spareParts.find((p) => p.id === id || p.partNumber === id);
+    if (!part) return null;
+    const newQuantity = Math.max(0, part.stockQuantity + delta);
+    let newStatus: SparePart['status'] = 'In Stock';
+    if (newQuantity <= 0) {
+      newStatus = 'Out of Stock';
+    } else if (newQuantity <= part.minThreshold) {
+      newStatus = 'Low Stock';
+    }
+    return await db.updateSparePart(id, { stockQuantity: newQuantity, status: newStatus });
+  },
+
+  // ==========================================
+  // PART REQUISITIONS
+  // ==========================================
+  getPartRequisitions: async (): Promise<PartRequisition[]> => {
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        const reqs = await PartRequisitionModel.find({}).sort({ requestedAt: -1 }).lean();
+        if (reqs && reqs.length > 0) {
+          return reqs.map((r) => cleanMongoDoc<PartRequisition>(r));
+        }
+      }
+    } catch (err) {
+      console.warn('Error reading part requisitions from MongoDB:', err);
+    }
+    return loadDatabase().partRequisitions || [];
+  },
+
+  createPartRequisition: async (req: Omit<PartRequisition, 'id' | 'requestedAt'> & { id?: string }): Promise<PartRequisition> => {
+    const timestamp = new Date().toISOString();
+    const newReq: PartRequisition = {
+      ...req,
+      id: req.id || `req_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+      requestedAt: timestamp,
+    };
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        await PartRequisitionModel.create(newReq);
+      }
+    } catch (err) {
+      console.warn('Error creating part requisition in MongoDB:', err);
+    }
+    const state = loadDatabase();
+    if (!state.partRequisitions) state.partRequisitions = [];
+    state.partRequisitions.unshift(newReq);
+    saveDatabase(state);
+    return newReq;
+  },
+
+  updatePartRequisition: async (id: string, updates: Partial<PartRequisition>): Promise<PartRequisition | null> => {
+    let mongoUpdated: PartRequisition | null = null;
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        const updated = await PartRequisitionModel.findOneAndUpdate(
+          { id },
+          updates,
+          { new: true }
+        ).lean();
+        if (updated) {
+          mongoUpdated = cleanMongoDoc<PartRequisition>(updated);
+        }
+      }
+    } catch (err) {
+      console.warn('Error updating part requisition in MongoDB:', err);
+    }
+    const state = loadDatabase();
+    if (!state.partRequisitions) state.partRequisitions = [];
+    const idx = state.partRequisitions.findIndex((r) => r.id === id);
+    if (idx !== -1) {
+      state.partRequisitions[idx] = { ...state.partRequisitions[idx], ...updates };
+      saveDatabase(state);
+    }
+    return mongoUpdated || (idx !== -1 ? state.partRequisitions[idx] : null);
+  },
+
+  // ==========================================
+  // PURCHASE ORDERS
+  // ==========================================
+  getPurchaseOrders: async (): Promise<PurchaseOrder[]> => {
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        const pos = await PurchaseOrderModel.find({}).sort({ orderDate: -1 }).lean();
+        if (pos && pos.length > 0) {
+          return pos.map((p) => cleanMongoDoc<PurchaseOrder>(p));
+        }
+      }
+    } catch (err) {
+      console.warn('Error reading purchase orders from MongoDB:', err);
+    }
+    return loadDatabase().purchaseOrders || [];
+  },
+
+  createPurchaseOrder: async (po: Omit<PurchaseOrder, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }): Promise<PurchaseOrder> => {
+    const timestamp = new Date().toISOString();
+    const newPo: PurchaseOrder = {
+      ...po,
+      id: po.id || `po_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        await PurchaseOrderModel.create(newPo);
+      }
+    } catch (err) {
+      console.warn('Error creating purchase order in MongoDB:', err);
+    }
+    const state = loadDatabase();
+    if (!state.purchaseOrders) state.purchaseOrders = [];
+    state.purchaseOrders.unshift(newPo);
+    saveDatabase(state);
+    return newPo;
+  },
+
+  updatePurchaseOrder: async (id: string, updates: Partial<PurchaseOrder>): Promise<PurchaseOrder | null> => {
+    let mongoUpdated: PurchaseOrder | null = null;
+    const timestamp = new Date().toISOString();
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        const updated = await PurchaseOrderModel.findOneAndUpdate(
+          { $or: [{ id }, { poNumber: id }] },
+          { ...updates, updatedAt: timestamp },
+          { new: true }
+        ).lean();
+        if (updated) {
+          mongoUpdated = cleanMongoDoc<PurchaseOrder>(updated);
+        }
+      }
+    } catch (err) {
+      console.warn('Error updating purchase order in MongoDB:', err);
+    }
+    const state = loadDatabase();
+    if (!state.purchaseOrders) state.purchaseOrders = [];
+    const idx = state.purchaseOrders.findIndex((p) => p.id === id || p.poNumber === id);
+    if (idx !== -1) {
+      state.purchaseOrders[idx] = { ...state.purchaseOrders[idx], ...updates, updatedAt: timestamp };
+      saveDatabase(state);
+    }
+    return mongoUpdated || (idx !== -1 ? state.purchaseOrders[idx] : null);
   },
 };
