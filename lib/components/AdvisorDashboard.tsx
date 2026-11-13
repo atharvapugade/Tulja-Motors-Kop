@@ -1132,7 +1132,7 @@ export default function AdvisorDashboard({
                 className="btn-primary-action"
                 onClick={() => openCreateJobCard()}
               >
-                <Plus size={16} /> Create Detailed Job Card
+                <Plus size={16} /> New Job Card
               </button>
             </div>
           </div>
@@ -1210,7 +1210,7 @@ export default function AdvisorDashboard({
                   style={{ justifyContent: 'center', padding: '12px' }}
                   onClick={openCreateCustomer}
                 >
-                  <Users size={16} /> Register Customer
+                  <Users size={16} /> Add Customer
                 </button>
                 <button
                   type="button"
@@ -1218,7 +1218,7 @@ export default function AdvisorDashboard({
                   style={{ justifyContent: 'center', padding: '12px' }}
                   onClick={() => openCreateVehicle()}
                 >
-                  <Car size={16} /> Log Vehicle Intake
+                  <Car size={16} /> Add Vehicle
                 </button>
                 <Link
                   href="/panels/advisor/dashboard?tab=supervisors"
@@ -1231,7 +1231,7 @@ export default function AdvisorDashboard({
                     color: '#045F60',
                   }}
                 >
-                  <Send size={16} /> Handover Desk
+                  <Send size={16} /> Handovers
                 </Link>
               </div>
             </div>
@@ -1424,7 +1424,7 @@ export default function AdvisorDashboard({
 
             <div className="workspace-actions">
               <button type="button" className="btn-primary-action" onClick={openCreateCustomer}>
-                <Plus size={16} /> Register Customer
+                <Plus size={16} /> Add Customer
               </button>
             </div>
           </div>
@@ -1503,7 +1503,7 @@ export default function AdvisorDashboard({
                 style={{ padding: '6px 12px', fontSize: '12px' }}
                 onClick={openCreateCustomer}
               >
-                <Plus size={14} /> Add Client
+                <Plus size={14} /> Add Customer
               </button>
             </div>
             <div className="wms-table-responsive">
@@ -1623,7 +1623,7 @@ export default function AdvisorDashboard({
                 className="btn-primary-action"
                 onClick={() => openCreateVehicle()}
               >
-                <Plus size={16} /> Register Vehicle
+                <Plus size={16} /> Add Vehicle
               </button>
             </div>
           </div>
@@ -1718,7 +1718,7 @@ export default function AdvisorDashboard({
                 style={{ padding: '6px 14px', fontSize: '12px' }}
                 onClick={() => openCreateVehicle()}
               >
-                <Plus size={14} /> Log New Vehicle
+                <Plus size={14} /> Add Vehicle
               </button>
             </div>
             <div className="wms-table-responsive">
@@ -1793,7 +1793,7 @@ export default function AdvisorDashboard({
                               style={{ padding: '5px 10px', fontSize: '11px' }}
                               onClick={() => openCreateJobCard(veh.customerId, veh.id)}
                             >
-                              <Plus size={12} /> Create Job Card
+                              <Plus size={12} /> New Job
                             </button>
                           </div>
                         </td>
@@ -1823,7 +1823,7 @@ export default function AdvisorDashboard({
                 className="btn-primary-action"
                 onClick={() => openCreateJobCard()}
               >
-                <Plus size={16} /> Create Detailed Job Card
+                <Plus size={16} /> New Job Card
               </button>
             </div>
           </div>
@@ -2073,7 +2073,7 @@ export default function AdvisorDashboard({
                 className="btn-primary-action"
                 onClick={() => openCreateJobCard()}
               >
-                <Plus size={16} /> Create New Job Card
+                <Plus size={16} /> New Job Card
               </button>
             </div>
           </div>
@@ -2262,7 +2262,7 @@ export default function AdvisorDashboard({
                               style={{ padding: '6px 12px', fontSize: '12px' }}
                               onClick={() => openHandoverModal(job)}
                             >
-                              <Send size={13} /> Handover to Supervisor <ArrowRight size={13} />
+                              <Send size={13} /> Handover <ArrowRight size={13} />
                             </button>
                           </div>
                         </td>
@@ -2700,7 +2700,7 @@ export default function AdvisorDashboard({
                     </>
                   ) : (
                     <>
-                      <Check size={15} /> {editingVehicleId ? 'Update Vehicle' : 'Register Vehicle'}
+                      <Check size={15} /> {editingVehicleId ? 'Update Vehicle' : 'Save Vehicle'}
                     </>
                   )}
                 </button>
@@ -3771,7 +3771,7 @@ export default function AdvisorDashboard({
                     ) : (
                       <>
                         <Check size={15} />{' '}
-                        {jobModalMode === 'create' ? 'Create & Save Job Card' : 'Update Job Card'}
+                        {jobModalMode === 'create' ? 'Save Job Card' : 'Update Job Card'}
                       </>
                     )}
                   </button>
@@ -3932,7 +3932,7 @@ export default function AdvisorDashboard({
                   openEditJobCard(j);
                 }}
               >
-                <Pencil size={14} /> Edit Job Card
+                <Pencil size={14} /> Edit
               </button>
               {!isJobHandedOver(viewingJob) && (
                 <button
@@ -3944,7 +3944,7 @@ export default function AdvisorDashboard({
                     openHandoverModal(j);
                   }}
                 >
-                  <Send size={14} /> Handover to Supervisor →
+                  <Send size={14} /> Handover →
                 </button>
               )}
               <button

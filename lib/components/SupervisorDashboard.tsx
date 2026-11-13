@@ -1264,7 +1264,7 @@ export default function SupervisorDashboard({
                 className="btn-primary-action"
                 style={{ textDecoration: 'none' }}
               >
-                <Hammer size={15} /> Allocate Technicians
+                <Hammer size={15} /> Assign Staff
               </Link>
             </div>
           </div>
@@ -1517,7 +1517,7 @@ export default function SupervisorDashboard({
                                 style={{ padding: '5px 9px', fontSize: '11px' }}
                                 onClick={() => setDossierJob(job)}
                               >
-                                <Eye size={13} /> Dossier
+                                <Eye size={13} /> View
                               </button>
                               <button
                                 type="button"
@@ -1525,7 +1525,7 @@ export default function SupervisorDashboard({
                                 style={{ padding: '5px 10px', fontSize: '11px' }}
                                 onClick={() => openAllocateModal(job)}
                               >
-                                <Users size={13} /> Assign Techs
+                                <Users size={13} /> Assign
                               </button>
                               <button
                                 type="button"
@@ -1533,7 +1533,7 @@ export default function SupervisorDashboard({
                                 style={{ padding: '5px 9px', fontSize: '11px' }}
                                 onClick={() => openStageModal(job)}
                               >
-                                <ArrowRight size={13} /> Stage
+                                <ArrowRight size={13} /> Move Stage
                               </button>
                               {(job.currentStage === 'Reassembly' ||
                                 job.currentStage === 'Quality Inspection' ||
@@ -1549,7 +1549,7 @@ export default function SupervisorDashboard({
                                   }}
                                   onClick={() => openQcModal(job)}
                                 >
-                                  <ClipboardCheck size={13} /> Inspect QC
+                                  <ClipboardCheck size={13} /> QC Check
                                 </button>
                               )}
                             </div>
@@ -2014,7 +2014,7 @@ export default function SupervisorDashboard({
                                   style={{ padding: '5px 10px', fontSize: '11px' }}
                                   onClick={() => handleQuickAdvanceStage(job)}
                                 >
-                                  Advance →
+                                  Next Stage →
                                 </button>
                               )}
                               <button
@@ -2023,7 +2023,7 @@ export default function SupervisorDashboard({
                                 style={{ padding: '5px 10px', fontSize: '11px' }}
                                 onClick={() => openStageModal(job)}
                               >
-                                <Pencil size={12} /> Set Stage
+                                <Pencil size={12} /> Change Stage
                               </button>
                               <button
                                 type="button"
@@ -2031,7 +2031,7 @@ export default function SupervisorDashboard({
                                 style={{ padding: '5px 9px', fontSize: '11px' }}
                                 onClick={() => setDossierJob(job)}
                               >
-                                <Eye size={12} /> Dossier
+                                <Eye size={12} /> View
                               </button>
                             </div>
                           </td>
@@ -2062,7 +2062,7 @@ export default function SupervisorDashboard({
                 className="btn-primary-action"
                 onClick={() => setShowAddTechModal(true)}
               >
-                <UserPlus size={15} /> Register Technician
+                <UserPlus size={15} /> Add Staff
               </button>
             </div>
           </div>
@@ -2676,7 +2676,7 @@ export default function SupervisorDashboard({
                                 onClick={() => openQcModal(job)}
                               >
                                 <ClipboardCheck size={13} />{' '}
-                                {qcSt === 'Pending' ? 'Run 5-Point QC' : 'Review / Update QC'}
+                                {qcSt === 'Pending' ? 'Start QC' : 'Edit QC'}
                               </button>
                               <button
                                 type="button"
@@ -2684,7 +2684,7 @@ export default function SupervisorDashboard({
                                 style={{ padding: '5px 9px', fontSize: '11px' }}
                                 onClick={() => setDossierJob(job)}
                               >
-                                <Eye size={13} /> Dossier
+                                <Eye size={13} /> View
                               </button>
                             </div>
                           </td>
@@ -3013,7 +3013,7 @@ export default function SupervisorDashboard({
                   openAllocateModal(j);
                 }}
               >
-                <Users size={14} /> Allocate Multiple Technicians
+                <Users size={14} /> Assign Staff
               </button>
               <button
                 type="button"
@@ -3024,7 +3024,7 @@ export default function SupervisorDashboard({
                   openStageModal(j);
                 }}
               >
-                <ArrowRight size={14} /> Update Repair Stage
+                <ArrowRight size={14} /> Move Stage
               </button>
               <button
                 type="button"

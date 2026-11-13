@@ -1319,14 +1319,14 @@ export default function BodyShopManagerDashboard({
                 style={{ borderColor: '#045F60', color: '#045F60', fontWeight: '700' }}
                 onClick={onOpenExportPdf}
               >
-                <Download size={15} /> Export PDF Report
+                <Download size={15} /> Export PDF
               </button>
               <Link
                 href="/panels/body-shop-manager/dashboard?tab=delays"
                 className="btn-primary-action"
                 style={{ textDecoration: 'none' }}
               >
-                <AlertOctagon size={15} /> Resolve Bottlenecks ({delayedJobsList.length})
+                <AlertOctagon size={15} /> Issues ({delayedJobsList.length})
               </Link>
             </div>
           </div>
@@ -1710,7 +1710,7 @@ export default function BodyShopManagerDashboard({
                                 style={{ padding: '5px 9px', fontSize: '11px' }}
                                 onClick={() => openDelayModal(job)}
                               >
-                                <Clock size={12} /> Delay/Hold
+                                <Clock size={12} /> Hold
                               </button>
                               <button
                                 type="button"
@@ -1718,7 +1718,7 @@ export default function BodyShopManagerDashboard({
                                 style={{ padding: '5px 9px', fontSize: '11px' }}
                                 onClick={() => setDossierJob(job)}
                               >
-                                <Eye size={12} /> Dossier
+                                <Eye size={12} /> View
                               </button>
                             </div>
                           </td>
@@ -2026,7 +2026,7 @@ export default function BodyShopManagerDashboard({
                                 style={{ padding: '5px 8px', fontSize: '11px' }}
                                 onClick={() => setDossierJob(job)}
                               >
-                                <Eye size={12} /> Dossier
+                                <Eye size={12} /> View
                               </button>
                               <button
                                 type="button"
@@ -2034,7 +2034,7 @@ export default function BodyShopManagerDashboard({
                                 style={{ padding: '5px 9px', fontSize: '11px' }}
                                 onClick={() => openStageModal(job)}
                               >
-                                <ArrowRight size={12} /> Stage
+                                <ArrowRight size={12} /> Move Stage
                               </button>
                               <button
                                 type="button"
@@ -2042,7 +2042,7 @@ export default function BodyShopManagerDashboard({
                                 style={{ padding: '5px 8px', fontSize: '11px' }}
                                 onClick={() => openReassignModal(job)}
                               >
-                                <UserCheck size={12} /> Supervisor
+                                <UserCheck size={12} /> Assign
                               </button>
                               <button
                                 type="button"
@@ -2055,7 +2055,7 @@ export default function BodyShopManagerDashboard({
                                 }}
                                 onClick={() => openDelayModal(job)}
                               >
-                                <Clock size={12} /> Delay
+                                <Clock size={12} /> Hold
                               </button>
                             </div>
                           </td>
@@ -2807,7 +2807,7 @@ export default function BodyShopManagerDashboard({
                                 onClick={() => openDelayModal(job)}
                               >
                                 <AlertOctagon size={12} />{' '}
-                                {isManualDelay ? 'Edit Hold / SLA' : 'Flag Delay'}
+                                {isManualDelay ? 'Edit Delay' : 'Add Delay'}
                               </button>
                               {(isManualDelay || assess.isOverdue) && (
                                 <button
@@ -3078,7 +3078,7 @@ export default function BodyShopManagerDashboard({
                   openReassignModal(j);
                 }}
               >
-                <UserCheck size={14} /> Reassign Supervisor
+                <UserCheck size={14} /> Reassign
               </button>
               <button
                 type="button"
@@ -3089,7 +3089,7 @@ export default function BodyShopManagerDashboard({
                   openAllocateModal(j);
                 }}
               >
-                <Hammer size={14} /> Rebalance Crew
+                <Hammer size={14} /> Assign Staff
               </button>
               <button
                 type="button"

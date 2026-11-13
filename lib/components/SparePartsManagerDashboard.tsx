@@ -571,7 +571,7 @@ export default function SparePartsManagerDashboard({
                 style={{ borderColor: '#D97706', color: '#D97706', fontWeight: '700' }}
                 onClick={() => handleOpenPoModal()}
               >
-                <Truck size={15} /> + Create Purchase Order
+                <Truck size={15} /> New Order
               </button>
 
               <button
@@ -580,7 +580,7 @@ export default function SparePartsManagerDashboard({
                 style={{ background: '#D97706', borderColor: '#D97706' }}
                 onClick={handleOpenAddPart}
               >
-                <Plus size={16} /> New Part Entry
+                <Plus size={16} /> Add Part
               </button>
             </div>
           </div>
@@ -734,7 +734,7 @@ export default function SparePartsManagerDashboard({
                   className="btn-secondary-action"
                   style={{ fontSize: '11px', padding: '5px 10px' }}
                 >
-                  Requisitions Board →
+                  Requisitions →
                 </Link>
               </div>
               <div style={{ padding: '14px' }}>
@@ -779,7 +779,7 @@ export default function SparePartsManagerDashboard({
                             style={{ padding: '5px 10px', fontSize: '11.5px' }}
                             onClick={() => handleOpenIssueModal(job.id)}
                           >
-                            Issue Parts
+                            Issue Part
                           </button>
                         </div>
                       </div>
@@ -809,7 +809,7 @@ export default function SparePartsManagerDashboard({
                 style={{ background: '#D97706', borderColor: '#D97706' }}
                 onClick={handleOpenAddPart}
               >
-                <Plus size={16} /> Register New Part
+                <Plus size={16} /> Add Part
               </button>
             </div>
           </div>
@@ -1055,7 +1055,7 @@ export default function SparePartsManagerDashboard({
                 style={{ background: '#D97706', borderColor: '#D97706' }}
                 onClick={() => handleOpenIssueModal()}
               >
-                <Plus size={16} /> Issue Parts to Job Card
+                <Plus size={16} /> Issue Part
               </button>
             </div>
           </div>
@@ -1179,7 +1179,7 @@ export default function SparePartsManagerDashboard({
                             style={{ padding: '5px 10px', fontSize: '11.5px', background: '#D97706', borderColor: '#D97706' }}
                             onClick={() => handleOpenIssueModal(job.id)}
                           >
-                            + Issue Parts
+                            Issue Part
                           </button>
                         </td>
                       </tr>
@@ -1294,7 +1294,7 @@ export default function SparePartsManagerDashboard({
                 style={{ background: '#D97706', borderColor: '#D97706' }}
                 onClick={() => handleOpenPoModal()}
               >
-                <Plus size={16} /> + New Purchase Order
+                <Plus size={16} /> New Order
               </button>
             </div>
           </div>
@@ -1468,7 +1468,7 @@ export default function SparePartsManagerDashboard({
                               style={{ padding: '5px 10px', fontSize: '11.5px', background: '#045F60', borderColor: '#045F60' }}
                               onClick={() => handleReceivePo(po)}
                             >
-                              <Check size={12} /> Receive & Restock
+                              <Check size={12} /> Receive Order
                             </button>
                           ) : (
                             <span style={{ fontSize: '11.5px', color: '#067a46', fontWeight: '700' }}>

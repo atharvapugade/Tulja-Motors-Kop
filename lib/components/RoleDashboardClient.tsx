@@ -378,7 +378,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 }}
                 title="Export Daily, Weekly or Monthly PDF Report"
               >
-                <Download size={15} /> Export PDF Report
+                <Download size={15} /> Export PDF
               </button>
 
               <button
@@ -391,16 +391,16 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                     email: '',
                     password: '',
                     phone: '',
-                    role: 'hr',
-                    department: 'Human Resources',
-                    designation: 'Human Resources Specialist',
+                    role: 'technician',
+                    department: 'Floor Operations',
+                    designation: 'Senior Technician',
                     reportingManager: 'Ranjeet B. Patil (Owner / MD)',
-                    salary: '40000',
+                    salary: '35000',
                   });
                   setShowAddEmpModal(true);
                 }}
               >
-                <Plus size={15} /> Add HR / Employee
+                <Plus size={15} /> Add Staff
               </button>
             </div>
           </div>
@@ -599,7 +599,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             <div className="panel-card-header">
               <h3>13-Stage Vehicle Repair Workflow Distribution</h3>
               <Link href="/panels/admin/dashboard?tab=jobs" className="btn-secondary-action" style={{ padding: '6px 12px', fontSize: '12px' }}>
-                View Job Cards Master <ArrowUpRight size={14} />
+                All Job Cards <ArrowUpRight size={14} />
               </Link>
             </div>
 
@@ -733,7 +733,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                   className="btn-secondary-action"
                   style={{ padding: '7px 14px', fontSize: '12px' }}
                 >
-                  <Users size={14} /> Full Personnel Directory
+                  <Users size={14} /> All Staff
                 </Link>
 
                 <button
@@ -746,16 +746,16 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                       email: '',
                       password: '',
                       phone: '',
-                      role: 'hr',
-                      department: 'Human Resources',
-                      designation: 'Human Resources Specialist',
+                      role: 'technician',
+                      department: 'Floor Operations',
+                      designation: 'Senior Technician',
                       reportingManager: 'Ranjeet B. Patil (Owner / MD)',
-                      salary: '40000',
+                      salary: '35000',
                     });
                     setShowAddEmpModal(true);
                   }}
                 >
-                  <Plus size={14} /> Add HR / Employee
+                  <Plus size={14} /> Add Staff
                 </button>
               </div>
             </div>
@@ -845,7 +845,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 }}
                 title="Export Daily, Weekly or Monthly PDF Report"
               >
-                <Download size={15} /> Export PDF Report
+                <Download size={15} /> Export PDF
               </button>
 
               <button
@@ -857,16 +857,16 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                     email: '',
                     password: '',
                     phone: '',
-                    role: 'hr',
-                    department: 'Human Resources',
-                    designation: 'Human Resources Specialist',
+                    role: 'technician',
+                    department: 'Floor Operations',
+                    designation: 'Senior Technician',
                     reportingManager: 'Ranjeet B. Patil (Owner / MD)',
-                    salary: '40000',
+                    salary: '35000',
                   });
                   setShowAddEmpModal(true);
                 }}
               >
-                <Plus size={16} /> Add HR / Employee
+                <Plus size={16} /> Add Staff
               </button>
             </div>
           </div>
@@ -1045,7 +1045,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 }}
                 title="Export Daily, Weekly or Monthly PDF Report"
               >
-                <Download size={15} /> Export PDF Report
+                <Download size={15} /> Export PDF
               </button>
 
               <button
@@ -1259,7 +1259,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                               onClick={() => advanceStage(job.id, job.currentStage)}
                               title="Advance to next repair stage"
                             >
-                              Advance →
+                              Next Stage →
                             </button>
                             <button
                               type="button"
@@ -1306,7 +1306,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 }}
                 title="Export Daily, Weekly or Monthly PDF Report"
               >
-                <Download size={15} /> Export PDF Report
+                <Download size={15} /> Export PDF
               </button>
 
               <button
@@ -1320,7 +1320,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                   )
                 }
               >
-                <Plus size={16} /> New Tax Invoice
+                <Plus size={16} /> New Invoice
               </button>
             </div>
           </div>
@@ -1603,7 +1603,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 }}
                 title="Export Daily, Weekly or Monthly PDF Report"
               >
-                <Download size={15} /> Export PDF Report
+                <Download size={15} /> Export PDF
               </button>
 
               <button
@@ -1617,7 +1617,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                   )
                 }
               >
-                <Download size={15} /> Export Audit Log
+                <Download size={15} /> Export Log
               </button>
             </div>
           </div>
@@ -1876,7 +1876,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 }}
                 title="Export Daily, Weekly or Monthly PDF Report"
               >
-                <Download size={15} /> Export PDF Report
+                <Download size={15} /> Export PDF
               </button>
             </div>
           </div>
@@ -2100,7 +2100,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                             style={{ padding: '5px 10px', fontSize: '12px' }}
                             onClick={() => advanceStage(job.id, job.currentStage)}
                           >
-                            Advance Stage →
+                            Next Stage →
                           </button>
                         </td>
                       </tr>
@@ -2348,7 +2348,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                     </>
                   ) : (
                     <>
-                      <Check size={16} /> Save & Provision Account
+                      <Check size={16} /> Save Staff
                     </>
                   )}
                 </button>

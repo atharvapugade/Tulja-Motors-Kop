@@ -113,77 +113,77 @@ export default function DashboardLayout({
     switch (roleSlug) {
       case 'admin':
         return [
-          { name: 'System Overview', href: base, icon: LayoutDashboard },
-          { name: 'Employees Directory', href: `${base}?tab=employees`, icon: Users },
-          { name: 'Job Cards Master', href: `${base}?tab=jobs`, icon: ClipboardList },
-          { name: 'Billing & Invoices', href: `${base}?tab=finance`, icon: ReceiptIndianRupee },
-          { name: 'System Audit Logs', href: `${base}?tab=logs`, icon: ShieldAlert },
+          { name: 'Overview', href: base, icon: LayoutDashboard },
+          { name: 'Employees', href: `${base}?tab=employees`, icon: Users },
+          { name: 'Job Cards', href: `${base}?tab=jobs`, icon: ClipboardList },
+          { name: 'Billing', href: `${base}?tab=finance`, icon: ReceiptIndianRupee },
+          { name: 'Audit Logs', href: `${base}?tab=logs`, icon: ShieldAlert },
         ];
       case 'director':
         return [
-          { name: 'Executive Overview', href: base, icon: LayoutDashboard },
-          { name: 'Workshop Throughput', href: `${base}?tab=throughput`, icon: Car },
-          { name: 'Financial Health', href: `${base}?tab=financials`, icon: ReceiptIndianRupee },
-          { name: 'Department KPI', href: `${base}?tab=kpis`, icon: Building2 },
+          { name: 'Overview', href: base, icon: LayoutDashboard },
+          { name: 'Throughput', href: `${base}?tab=throughput`, icon: Car },
+          { name: 'Financials', href: `${base}?tab=financials`, icon: ReceiptIndianRupee },
+          { name: 'KPIs', href: `${base}?tab=kpis`, icon: Building2 },
         ];
       case 'body-shop-manager':
         return [
-          { name: 'Floor Operations', href: base, icon: LayoutDashboard },
-          { name: 'Active Repair Jobs', href: `${base}?tab=jobs`, icon: Car },
-          { name: 'Technician Allocation', href: `${base}?tab=technicians`, icon: Hammer },
-          { name: 'Floor Delays & Bottlenecks', href: `${base}?tab=delays`, icon: Clock },
+          { name: 'Overview', href: base, icon: LayoutDashboard },
+          { name: 'Active Jobs', href: `${base}?tab=jobs`, icon: Car },
+          { name: 'Technicians', href: `${base}?tab=technicians`, icon: Hammer },
+          { name: 'Delays & Issues', href: `${base}?tab=delays`, icon: Clock },
         ];
       /*
       case 'hr':
         return [
-          { name: 'HR Overview', href: base, icon: LayoutDashboard },
-          { name: 'Staff Directory', href: `${base}?tab=staff`, icon: Users },
-          { name: 'Attendance Roster', href: `${base}?tab=attendance`, icon: UserCheck },
-          { name: 'Digital Marketing & Leads', href: `${base}?tab=marketing`, icon: Megaphone },
-          { name: 'Leave Records', href: `${base}?tab=leaves`, icon: Clock },
+          { name: 'Overview', href: base, icon: LayoutDashboard },
+          { name: 'Staff', href: `${base}?tab=staff`, icon: Users },
+          { name: 'Attendance', href: `${base}?tab=attendance`, icon: UserCheck },
+          { name: 'Marketing', href: `${base}?tab=marketing`, icon: Megaphone },
+          { name: 'Leaves', href: `${base}?tab=leaves`, icon: Clock },
         ];
       */
       case 'advisor':
         return [
-          { name: 'Intake Desk', href: base, icon: LayoutDashboard },
-          { name: 'Customer Records', href: `${base}?tab=customers`, icon: Users },
-          { name: 'Vehicle Intake', href: `${base}?tab=vehicles`, icon: Car },
-          { name: 'Job Cards & Estimates', href: `${base}?tab=jobs`, icon: FileText },
-          { name: 'Supervisor Coordination', href: `${base}?tab=supervisors`, icon: ClipboardList },
+          { name: 'Overview', href: base, icon: LayoutDashboard },
+          { name: 'Customers', href: `${base}?tab=customers`, icon: Users },
+          { name: 'Vehicles', href: `${base}?tab=vehicles`, icon: Car },
+          { name: 'Job Cards', href: `${base}?tab=jobs`, icon: FileText },
+          { name: 'Handovers', href: `${base}?tab=supervisors`, icon: ClipboardList },
         ];
       case 'supervisor':
         return [
-          { name: 'Floor Supervision', href: base, icon: LayoutDashboard },
-          { name: '13-Stage Repair Board', href: `${base}?tab=stages`, icon: ClipboardList },
-          { name: 'Technicians Team Allocation', href: `${base}?tab=tasks`, icon: Hammer },
-          { name: 'Quality Inspection', href: `${base}?tab=quality`, icon: CheckCircle2 },
+          { name: 'Overview', href: base, icon: LayoutDashboard },
+          { name: 'Repair Board', href: `${base}?tab=stages`, icon: ClipboardList },
+          { name: 'Technicians', href: `${base}?tab=tasks`, icon: Hammer },
+          { name: 'Quality Check', href: `${base}?tab=quality`, icon: CheckCircle2 },
         ];
       case 'accounts':
         return [
-          { name: 'Accounts Overview', href: base, icon: LayoutDashboard },
-          { name: 'Invoices & Billing', href: `${base}?tab=invoices`, icon: ReceiptIndianRupee },
-          { name: 'Payments Collection', href: `${base}?tab=payments`, icon: CheckCircle2 },
-          { name: 'Workshop Expenses', href: `${base}?tab=expenses`, icon: FileText },
+          { name: 'Overview', href: base, icon: LayoutDashboard },
+          { name: 'Invoices', href: `${base}?tab=invoices`, icon: ReceiptIndianRupee },
+          { name: 'Payments', href: `${base}?tab=payments`, icon: CheckCircle2 },
+          { name: 'Expenses', href: `${base}?tab=expenses`, icon: FileText },
         ];
       case 'digital-marketing':
         return [
-          { name: 'Marketing Funnel', href: base, icon: LayoutDashboard },
-          { name: 'Customer Leads', href: `${base}?tab=leads`, icon: Megaphone },
-          { name: 'Enquiry Pipeline', href: `${base}?tab=enquiries`, icon: Users },
-          { name: 'Follow-up Schedule', href: `${base}?tab=followups`, icon: Clock },
+          { name: 'Overview', href: base, icon: LayoutDashboard },
+          { name: 'Leads', href: `${base}?tab=leads`, icon: Megaphone },
+          { name: 'Enquiries', href: `${base}?tab=enquiries`, icon: Users },
+          { name: 'Follow-ups', href: `${base}?tab=followups`, icon: Clock },
         ];
       case 'spare-parts-manager':
         return [
-          { name: 'Inventory Overview', href: base, icon: LayoutDashboard },
-          { name: 'Spare Parts Catalog', href: `${base}?tab=parts`, icon: Package },
-          { name: 'Job Requisitions', href: `${base}?tab=requisitions`, icon: ClipboardList },
-          { name: 'Purchase Orders', href: `${base}?tab=orders`, icon: ReceiptIndianRupee },
+          { name: 'Overview', href: base, icon: LayoutDashboard },
+          { name: 'Parts Catalog', href: `${base}?tab=parts`, icon: Package },
+          { name: 'Requisitions', href: `${base}?tab=requisitions`, icon: ClipboardList },
+          { name: 'Orders', href: `${base}?tab=orders`, icon: ReceiptIndianRupee },
         ];
       case 'technician':
         return [
-          { name: 'My Active Repairs', href: base, icon: Hammer },
-          { name: 'Today\'s Task Checklist', href: `${base}?tab=tasks`, icon: ClipboardList },
-          { name: 'Work Progress Notes', href: `${base}?tab=notes`, icon: FileText },
+          { name: 'My Jobs', href: base, icon: Hammer },
+          { name: 'Tasks', href: `${base}?tab=tasks`, icon: ClipboardList },
+          { name: 'Notes', href: `${base}?tab=notes`, icon: FileText },
         ];
       default:
         return [{ name: 'Overview', href: base, icon: LayoutDashboard }];
