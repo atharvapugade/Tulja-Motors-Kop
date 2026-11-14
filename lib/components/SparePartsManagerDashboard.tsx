@@ -1491,25 +1491,26 @@ export default function SparePartsManagerDashboard({
       {/* ============================================================== */}
       {showPartModal && (
         <div className="wms-modal-backdrop" onClick={() => setShowPartModal(false)}>
-          <div className="wms-modal" style={{ maxWidth: '580px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="wms-modal-header">
+          <div className="wms-modal-card" style={{ maxWidth: '580px', background: '#ffffff', backgroundColor: '#ffffff' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
               <div>
-                <h2>{editingPartId ? 'Edit Spare Part' : 'Add New Spare Part to Catalog'}</h2>
+                <h3>{editingPartId ? 'Edit Spare Part' : 'Add New Spare Part to Catalog'}</h3>
                 <div style={{ fontSize: '12px', color: '#64748b' }}>
                   Manage item SKU, compatible vehicles, inventory threshold, and pricing.
                 </div>
               </div>
               <button
                 type="button"
-                className="wms-modal-close-btn"
+                className="modal-close-btn"
                 onClick={() => setShowPartModal(false)}
+                aria-label="Close"
               >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleSavePart}>
-              <div className="wms-modal-body" style={{ maxHeight: 'calc(80vh - 140px)', overflowY: 'auto' }}>
+              <div className="modal-body" style={{ maxHeight: 'calc(80vh - 140px)', overflowY: 'auto' }}>
                 <div className="wms-form-grid-2">
                   <div>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
@@ -1666,7 +1667,7 @@ export default function SparePartsManagerDashboard({
                 </div>
               </div>
 
-              <div className="wms-modal-footer">
+              <div className="modal-footer">
                 <button
                   type="button"
                   className="btn-secondary-action"
@@ -1701,25 +1702,26 @@ export default function SparePartsManagerDashboard({
       {/* ============================================================== */}
       {showStockModal && selectedPartForStock && (
         <div className="wms-modal-backdrop" onClick={() => setShowStockModal(false)}>
-          <div className="wms-modal" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="wms-modal-header">
+          <div className="wms-modal-card" style={{ maxWidth: '440px', background: '#ffffff', backgroundColor: '#ffffff' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
               <div>
-                <h2>Adjust Warehouse Stock</h2>
+                <h3>Adjust Warehouse Stock</h3>
                 <div style={{ fontSize: '12px', color: '#64748b' }}>
                   {selectedPartForStock.name} ({selectedPartForStock.partNumber})
                 </div>
               </div>
               <button
                 type="button"
-                className="wms-modal-close-btn"
+                className="modal-close-btn"
                 onClick={() => setShowStockModal(false)}
+                aria-label="Close"
               >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleSaveStockAdjust}>
-              <div className="wms-modal-body">
+              <div className="modal-body">
                 <div
                   style={{
                     background: '#f8fafc',
@@ -1772,7 +1774,7 @@ export default function SparePartsManagerDashboard({
                 </div>
               </div>
 
-              <div className="wms-modal-footer">
+              <div className="modal-footer">
                 <button
                   type="button"
                   className="btn-secondary-action"
@@ -1799,25 +1801,26 @@ export default function SparePartsManagerDashboard({
       {/* ============================================================== */}
       {showIssueModal && (
         <div className="wms-modal-backdrop" onClick={() => setShowIssueModal(false)}>
-          <div className="wms-modal" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="wms-modal-header">
+          <div className="wms-modal-card" style={{ maxWidth: '520px', background: '#ffffff', backgroundColor: '#ffffff' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
               <div>
-                <h2>Issue Spare Parts to Repair Floor</h2>
+                <h3>Issue Spare Parts to Repair Floor</h3>
                 <div style={{ fontSize: '12px', color: '#64748b' }}>
                   Direct allocation to an active repair job card.
                 </div>
               </div>
               <button
                 type="button"
-                className="wms-modal-close-btn"
+                className="modal-close-btn"
                 onClick={() => setShowIssueModal(false)}
+                aria-label="Close"
               >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleConfirmIssue}>
-              <div className="wms-modal-body">
+              <div className="modal-body">
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
                     Select Target Active Job Card *
@@ -1898,7 +1901,7 @@ export default function SparePartsManagerDashboard({
                 </div>
               </div>
 
-              <div className="wms-modal-footer">
+              <div className="modal-footer">
                 <button
                   type="button"
                   className="btn-secondary-action"
@@ -1925,25 +1928,26 @@ export default function SparePartsManagerDashboard({
       {/* ============================================================== */}
       {showPoModal && (
         <div className="wms-modal-backdrop" onClick={() => setShowPoModal(false)}>
-          <div className="wms-modal" style={{ maxWidth: '600px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="wms-modal-header">
+          <div className="wms-modal-card" style={{ maxWidth: '600px', background: '#ffffff', backgroundColor: '#ffffff' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
               <div>
-                <h2>Create Supplier Purchase Order</h2>
+                <h3>Create Supplier Purchase Order</h3>
                 <div style={{ fontSize: '12px', color: '#64748b' }}>
                   Restock warehouse inventory from OEM distributors.
                 </div>
               </div>
               <button
                 type="button"
-                className="wms-modal-close-btn"
+                className="modal-close-btn"
                 onClick={() => setShowPoModal(false)}
+                aria-label="Close"
               >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleCreatePo}>
-              <div className="wms-modal-body" style={{ maxHeight: 'calc(80vh - 140px)', overflowY: 'auto' }}>
+              <div className="modal-body" style={{ maxHeight: 'calc(80vh - 140px)', overflowY: 'auto' }}>
                 <div className="wms-form-grid-2">
                   <div>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
@@ -2122,7 +2126,7 @@ export default function SparePartsManagerDashboard({
                 </div>
               </div>
 
-              <div className="wms-modal-footer">
+              <div className="modal-footer">
                 <button
                   type="button"
                   className="btn-secondary-action"

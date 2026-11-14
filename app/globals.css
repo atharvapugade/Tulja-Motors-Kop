@@ -4630,27 +4630,34 @@ body:not(.is-loading) .site-header {
   padding: 20px;
 }
 
-.wms-modal-card {
+.wms-modal-card,
+.wms-modal {
   width: 100%;
   max-width: 650px;
   max-height: 90vh;
-  background: white;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
   border-radius: var(--wms-radius-lg);
-  box-shadow: var(--wms-shadow-lg);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22), var(--wms-shadow-lg);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
+  z-index: 201;
 }
 
-.wms-modal-card > form {
+.wms-modal-card > form,
+.wms-modal > form {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
+  background: #ffffff;
 }
 
-.modal-header {
+.modal-header,
+.wms-modal-header {
   padding: 20px 24px;
   border-bottom: 1px solid var(--wms-border);
   display: flex;
@@ -4658,31 +4665,51 @@ body:not(.is-loading) .site-header {
   justify-content: space-between;
   gap: 12px;
   flex-shrink: 0;
+  background: #ffffff;
 }
 
-.modal-header h3 {
+.modal-header h2,
+.modal-header h3,
+.wms-modal-header h2,
+.wms-modal-header h3 {
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
   font-weight: 700;
+  margin: 0;
 }
 
-.modal-close-btn {
+.modal-close-btn,
+.wms-modal-close-btn {
   background: none;
   border: none;
   cursor: pointer;
   color: var(--wms-text-muted);
   padding: 6px;
   flex-shrink: 0;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.modal-body {
+.modal-close-btn:hover,
+.wms-modal-close-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.modal-body,
+.wms-modal-body {
   padding: 24px;
   overflow-y: auto;
   flex: 1 1 auto;
   min-height: 0;
+  background: #ffffff;
 }
 
-.modal-footer {
+.modal-footer,
+.wms-modal-footer {
   padding: 16px 24px;
   border-top: 1px solid var(--wms-border);
   display: flex;
@@ -5208,31 +5235,44 @@ body:not(.is-loading) .site-header {
   .wms-root .wms-modal-backdrop {
     padding: 10px;
   }
-  .wms-root .wms-modal-card {
+  .wms-root .wms-modal-card,
+  .wms-root .wms-modal {
     max-height: 92dvh;
     border-radius: 12px;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
   }
-  .wms-root .modal-header {
+  .wms-root .modal-header,
+  .wms-root .wms-modal-header {
     padding: 14px 16px;
     align-items: flex-start;
     gap: 10px;
+    background: #ffffff;
   }
-  .wms-root .modal-header h3 {
+  .wms-root .modal-header h2,
+  .wms-root .modal-header h3,
+  .wms-root .wms-modal-header h2,
+  .wms-root .wms-modal-header h3 {
     font-size: 16px;
     line-height: 1.3;
     word-break: break-word;
+    margin: 0;
   }
   .wms-root .wms-stepper-bar {
     padding: 10px 14px;
   }
-  .wms-root .modal-body {
+  .wms-root .modal-body,
+  .wms-root .wms-modal-body {
     padding: 14px 16px !important;
     max-height: none !important;
+    background: #ffffff;
   }
-  .wms-root .modal-footer {
+  .wms-root .modal-footer,
+  .wms-root .wms-modal-footer {
     padding: 12px 16px;
     flex-wrap: wrap;
     gap: 8px;
+    background: #fafdfc;
   }
   .wms-root .wms-modal-footer-split {
     flex-direction: column;
