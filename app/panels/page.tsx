@@ -11,11 +11,11 @@ import {
   ArrowLeft,
   KeyRound,
   Lock,
+  Hammer,
   /*
   TrendingUp,
   ReceiptIndianRupee,
   Megaphone,
-  Hammer,
   */
 } from 'lucide-react';
 
@@ -94,6 +94,18 @@ const departments = [
     demoUser: 'parts@tuljamotors.com',
   },
 
+  // 7. Workshop Floor Technician
+  {
+    slug: 'technician',
+    name: 'Technician Workspace',
+    badge: 'Mobile-Optimized Floor',
+    description: 'Assigned vehicle repair tasks, start/complete execution status, floor observations, and damage inspection references.',
+    icon: Hammer,
+    color: '#8A181A',
+    bg: '#fbebed',
+    demoUser: 'technician@tuljamotors.com',
+  },
+
   /*
   // OTHER PANELS (COMMENTED OUT AS PER OPERATIONAL REORGANIZATION)
   {
@@ -125,16 +137,6 @@ const departments = [
     color: '#045F60',
     bg: '#e8f3f1',
     demoUser: 'marketing@tuljamotors.com',
-  },
-  {
-    slug: 'technician',
-    name: 'Technician Workspace',
-    badge: 'Mobile-Optimized Floor',
-    description: 'Assigned repair tasks, work progress notes, repair photo uploads, parts requests, and completion sign-off.',
-    icon: Hammer,
-    color: '#8A181A',
-    bg: '#fbebed',
-    demoUser: 'technician@tuljamotors.com',
   },
   */
 ];

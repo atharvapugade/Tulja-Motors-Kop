@@ -10,6 +10,7 @@ import {
   Check,
   CheckCircle2,
   Clock,
+  CreditCard,
   Download,
   Eye,
   FileText,
@@ -18,8 +19,10 @@ import {
   Hammer,
   Layers,
   Loader2,
+  Pencil,
   Phone,
   Plus,
+  ReceiptIndianRupee,
   RotateCcw,
   ShieldCheck,
   Trash2,
@@ -32,19 +35,23 @@ import type {
   ActivityLog,
   BottleneckInfo,
   Employee,
+  Invoice,
   JobCard,
+  Payment,
   RepairStage,
   RepairTask,
   UserRole,
   Vehicle,
 } from '@/lib/models/types';
 import CenterPopupModal, { CenterPopupState } from '@/lib/components/CenterPopupModal';
+import { generateInvoicePdf, generateAdminReportPdf } from '@/lib/utils/pdfGenerator';
 
 interface BodyShopManagerDashboardProps {
   activeTab: string;
   jobCards: JobCard[];
   employees: Employee[];
   activityLogs: ActivityLog[];
+  invoices?: Invoice[];
   loading: boolean;
   onRefresh: () => Promise<void> | void;
   onNotify: (msg: string) => void;
@@ -281,19 +288,75 @@ export default function BodyShopManagerDashboard({
   jobCards,
   employees,
   activityLogs,
+  invoices: initialInvoicesProp,
   loading,
   onRefresh,
   onNotify,
   onOpenExportPdf,
 }: BodyShopManagerDashboardProps) {
   const currentTab =
-    activeTab === 'jobs' || activeTab === 'technicians' || activeTab === 'delays'
+    activeTab === 'jobs' || activeTab === 'technicians' || activeTab === 'delays' || activeTab === 'billing' || activeTab === 'finance'
       ? activeTab
       : 'overview';
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [managerName, setManagerName] = useState('Vikram Deshmukh');
   const [managerRole, setManagerRole] = useState<UserRole>('body_shop_manager');
+
+  // Invoices & Live Billing States
+  const [invoicesList, setInvoicesList] = useState<Invoice[]>(initialInvoicesProp || []);
+  const [loadingInvoices, setLoadingInvoices] = useState(false);
+  const [billingSearch, setBillingSearch] = useState('');
+  const [billingStatusFilter, setBillingStatusFilter] = useState('ALL');
+
+  // Billing Modals State
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
+  const [paymentInvoice, setPaymentInvoice] = useState<Invoice | null>(null);
+  const [showGenerateModal, setShowGenerateModal] = useState(false);
+  const [generateTargetJobId, setGenerateTargetJobId] = useState('');
+  const [submittingBilling, setSubmittingBilling] = useState(false);
+  const [downloadingPdfInvId, setDownloadingPdfInvId] = useState<string | null>(null);
+
+  // Billing Form States
+  const [payForm, setPayForm] = useState({
+    amount: '',
+    method: 'UPI',
+    reference: '',
+  });
+
+  const [editInvoiceForm, setEditInvoiceForm] = useState({
+    labourCharges: '0',
+    partsCharges: '0',
+    paintCharges: '0',
+    otherCharges: '0',
+    discount: '0',
+    status: 'Sent' as Invoice['status'],
+  });
+
+  const fetchInvoices = useCallback(async () => {
+    try {
+      setLoadingInvoices(true);
+      const res = await fetch('/api/invoices');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.invoices)) {
+        setInvoicesList(data.invoices);
+      }
+    } catch (err) {
+      console.error('Failed to load invoices:', err);
+    } finally {
+      setLoadingInvoices(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchInvoices();
+  }, [fetchInvoices]);
+
+  useEffect(() => {
+    if (initialInvoicesProp && initialInvoicesProp.length > 0) {
+      setInvoicesList(initialInvoicesProp);
+    }
+  }, [initialInvoicesProp]);
 
   useEffect(() => {
     let active = true;
@@ -511,6 +574,212 @@ export default function BodyShopManagerDashboard({
         .sort((a, b) => a.name.localeCompare(b.name)),
     [employees]
   );
+
+  // Billing Metrics & KPIs
+  const billingMetrics = useMemo(() => {
+    const totalBilled = invoicesList.reduce((acc, inv) => acc + (inv.grandTotal || 0), 0);
+    const totalPaid = invoicesList.reduce((acc, inv) => acc + (inv.amountPaid || 0), 0);
+    const totalBalance = invoicesList.reduce((acc, inv) => acc + (inv.balanceDue || 0), 0);
+    const paidCount = invoicesList.filter((inv) => inv.status === 'Paid').length;
+    const partialCount = invoicesList.filter((inv) => inv.status === 'Partially Paid').length;
+    const pendingCount = invoicesList.filter((inv) => inv.status !== 'Paid').length;
+
+    return {
+      totalBilled,
+      totalPaid,
+      totalBalance,
+      paidCount,
+      partialCount,
+      pendingCount,
+      totalInvoices: invoicesList.length,
+    };
+  }, [invoicesList]);
+
+  // Filtered Invoices
+  const filteredInvoices = useMemo(() => {
+    return invoicesList.filter((inv) => {
+      const q = billingSearch.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        inv.invoiceNumber.toLowerCase().includes(q) ||
+        inv.jobCardNumber.toLowerCase().includes(q) ||
+        inv.customerName.toLowerCase().includes(q) ||
+        inv.vehicleRegistration.toLowerCase().includes(q);
+
+      const matchStatus = billingStatusFilter === 'ALL' || inv.status === billingStatusFilter;
+      return matchSearch && matchStatus;
+    });
+  }, [invoicesList, billingSearch, billingStatusFilter]);
+
+  // Active/Completed Job Cards without an official Tax Invoice yet
+  const jobsAwaitingInvoice = useMemo(() => {
+    const invoicedJobCardNumbers = new Set(invoicesList.map((i) => i.jobCardNumber));
+    const invoicedJobCardIds = new Set(invoicesList.map((i) => i.jobCardId));
+    return jobCards.filter((j) => {
+      const notInvoiced = !invoicedJobCardNumbers.has(j.jobCardNumber) && !invoicedJobCardIds.has(j.id);
+      const hasEstimate = (j.costEstimate?.total || 0) > 0;
+      return notInvoiced && hasEstimate;
+    });
+  }, [jobCards, invoicesList]);
+
+  // Download Formatted Tax Invoice PDF
+  const handleDownloadInvoicePdf = (inv: Invoice) => {
+    try {
+      setDownloadingPdfInvId(inv.id);
+      const matchedJob = jobCards.find(
+        (j) => j.id === inv.jobCardId || j.jobCardNumber === inv.jobCardNumber
+      );
+      const fileName = generateInvoicePdf(inv, matchedJob);
+      onNotify(`Official Tax Invoice PDF downloaded: ${fileName}`);
+    } catch (err) {
+      console.error('Failed to generate invoice PDF:', err);
+      showCenterPopup(
+        'Failed to generate invoice PDF: ' + (err instanceof Error ? err.message : String(err)),
+        'PDF Generation Error',
+        'error'
+      );
+    } finally {
+      setDownloadingPdfInvId(null);
+    }
+  };
+
+  // Export Monthly Billing Ledger PDF
+  const handleExportBillingLedgerPdf = () => {
+    try {
+      const fileName = generateAdminReportPdf({
+        page: 'finance',
+        period: 'monthly',
+        data: {
+          invoices: invoicesList,
+          jobCards,
+        },
+      });
+      onNotify(`Monthly Financial Ledger PDF downloaded: ${fileName}`);
+    } catch (err) {
+      console.error('Failed to export financial ledger:', err);
+      showCenterPopup('Failed to export financial ledger PDF.', 'PDF Error', 'error');
+    }
+  };
+
+  const handleOpenEditInvoice = (inv: Invoice) => {
+    setEditingInvoice(inv);
+    setEditInvoiceForm({
+      labourCharges: String(inv.labourCharges || 0),
+      partsCharges: String(inv.partsCharges || 0),
+      paintCharges: String(inv.paintCharges || 0),
+      otherCharges: String(inv.otherCharges || 0),
+      discount: String(inv.discount || 0),
+      status: inv.status,
+    });
+  };
+
+  const handleSaveEditInvoice = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingInvoice) return;
+    setSubmittingBilling(true);
+    try {
+      const res = await fetch('/api/invoices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_invoice',
+          invoiceId: editingInvoice.id,
+          labourCharges: Number(editInvoiceForm.labourCharges) || 0,
+          partsCharges: Number(editInvoiceForm.partsCharges) || 0,
+          paintCharges: Number(editInvoiceForm.paintCharges) || 0,
+          otherCharges: Number(editInvoiceForm.otherCharges) || 0,
+          discount: Number(editInvoiceForm.discount) || 0,
+          status: editInvoiceForm.status,
+          updatedBy: `${managerName} (Body Shop Manager)`,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEditingInvoice(null);
+        await Promise.all([fetchInvoices(), onRefresh()]);
+        onNotify(data.message || 'Invoice updated successfully!');
+      } else {
+        showCenterPopup(data.message || 'Failed to update invoice.', 'Error', 'error');
+      }
+    } catch {
+      showCenterPopup('Network error while updating invoice.', 'Error', 'error');
+    } finally {
+      setSubmittingBilling(false);
+    }
+  };
+
+  const handleOpenRecordPayment = (inv: Invoice) => {
+    setPaymentInvoice(inv);
+    setPayForm({
+      amount: String(inv.balanceDue || inv.grandTotal || 0),
+      method: 'UPI',
+      reference: `PAY-${Date.now().toString().slice(-6)}`,
+    });
+  };
+
+  const handleConfirmRecordPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!paymentInvoice) return;
+    setSubmittingBilling(true);
+    try {
+      const res = await fetch('/api/invoices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'record_payment',
+          invoiceId: paymentInvoice.id,
+          amount: Number(payForm.amount) || 0,
+          paymentMethod: payForm.method,
+          reference: payForm.reference.trim(),
+          receivedBy: `${managerName} (Body Shop Manager)`,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPaymentInvoice(null);
+        await Promise.all([fetchInvoices(), onRefresh()]);
+        onNotify(data.message || 'Payment recorded successfully!');
+      } else {
+        showCenterPopup(data.message || 'Failed to record payment.', 'Error', 'error');
+      }
+    } catch {
+      showCenterPopup('Network error while recording payment.', 'Error', 'error');
+    } finally {
+      setSubmittingBilling(false);
+    }
+  };
+
+  const handleConfirmGenerateInvoice = async (jobCardId: string) => {
+    setSubmittingBilling(true);
+    try {
+      const res = await fetch('/api/invoices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'generate_from_job',
+          jobCardId,
+          generatedBy: `${managerName} (Body Shop Manager)`,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowGenerateModal(false);
+        await Promise.all([fetchInvoices(), onRefresh()]);
+        onNotify(data.message || 'Tax Invoice generated successfully!');
+        showCenterPopup(
+          `Tax Invoice ${data.invoice?.invoiceNumber} generated! You can now download the PDF invoice or record customer payments.`,
+          'Invoice Created',
+          'info'
+        );
+      } else {
+        showCenterPopup(data.message || 'Failed to generate invoice.', 'Error', 'error');
+      }
+    } catch {
+      showCenterPopup('Network error while generating invoice.', 'Error', 'error');
+    } finally {
+      setSubmittingBilling(false);
+    }
+  };
 
   // Helpers
   const getActorLabel = () => {
@@ -2846,6 +3115,395 @@ export default function BodyShopManagerDashboard({
       )}
 
       {/* ============================================================== */}
+      {/* TAB 5: BILLING & TAX INVOICES (?tab=billing | ?tab=finance)   */}
+      {/* ============================================================== */}
+      {(currentTab === 'billing' || currentTab === 'finance') && (
+        <div>
+          <div className="workspace-header">
+            <div className="workspace-title-box">
+              <h1>Body Shop Billing &amp; Tax Invoices</h1>
+              <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#64748b' }}>
+                Manage customer billing, live repair charges, GST invoices &amp; payment collections
+              </p>
+            </div>
+
+            <div className="workspace-actions">
+              <button
+                type="button"
+                className="btn-secondary-action"
+                style={{ borderColor: '#045F60', color: '#045F60', fontWeight: '700' }}
+                onClick={handleExportBillingLedgerPdf}
+              >
+                <Download size={15} /> Export Ledger (PDF)
+              </button>
+              <button
+                type="button"
+                className="btn-primary-action"
+                style={{ background: '#045F60' }}
+                onClick={() => setShowGenerateModal(true)}
+              >
+                <Plus size={15} /> Generate Tax Invoice
+              </button>
+            </div>
+          </div>
+
+          {/* 4 Financial & Billing KPI Cards */}
+          <div className="wms-stats-grid">
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Total Invoices</span>
+                <div className="stat-icon-wrapper" style={{ background: '#e6f2f2', color: '#045F60' }}>
+                  <FileText size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">
+                {loadingInvoices ? '...' : billingMetrics.totalInvoices}
+              </div>
+              <div className="stat-card-subtext">
+                {billingMetrics.paidCount} Fully Paid · {billingMetrics.partialCount} Partial
+              </div>
+            </div>
+
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Total Gross Billed</span>
+                <div className="stat-icon-wrapper" style={{ background: '#e6f7ef', color: '#067a46' }}>
+                  <ReceiptIndianRupee size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">
+                {loadingInvoices ? '...' : `₹${billingMetrics.totalBilled.toLocaleString('en-IN')}`}
+              </div>
+              <div className="stat-card-subtext">
+                Incl. 18% GST (CGST 9% + SGST 9%)
+              </div>
+            </div>
+
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Collections Received</span>
+                <div className="stat-icon-wrapper" style={{ background: '#fff8e6', color: '#b45309' }}>
+                  <CreditCard size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">
+                {loadingInvoices ? '...' : `₹${billingMetrics.totalPaid.toLocaleString('en-IN')}`}
+              </div>
+              <div className="stat-card-subtext">
+                Confirmed realized customer payments
+              </div>
+            </div>
+
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Outstanding Receivables</span>
+                <div className="stat-icon-wrapper" style={{ background: '#fbebed', color: '#8A181A' }}>
+                  <AlertTriangle size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value" style={{ color: '#8A181A' }}>
+                {loadingInvoices ? '...' : `₹${billingMetrics.totalBalance.toLocaleString('en-IN')}`}
+              </div>
+              <div className="stat-card-subtext">
+                Across {billingMetrics.pendingCount} pending / partial invoices
+              </div>
+            </div>
+          </div>
+
+          {/* Master Invoices Table Card */}
+          <div className="wms-table-container" style={{ marginTop: '20px' }}>
+            <div className="table-controls">
+              <div className="search-box">
+                <input
+                  type="text"
+                  className="table-search-input"
+                  placeholder="Search invoice #, job card #, customer, registration..."
+                  value={billingSearch}
+                  onChange={(e) => setBillingSearch(e.target.value)}
+                />
+              </div>
+
+              <div className="filter-group">
+                <select
+                  className="table-filter-select"
+                  value={billingStatusFilter}
+                  onChange={(e) => setBillingStatusFilter(e.target.value)}
+                >
+                  <option value="ALL">All Payment Statuses</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Partially Paid">Partially Paid</option>
+                  <option value="Sent">Sent</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Overdue">Overdue</option>
+                </select>
+
+                <button
+                  type="button"
+                  className="btn-secondary-action"
+                  onClick={() => fetchInvoices()}
+                  title="Refresh Invoices"
+                >
+                  <RotateCcw size={14} className={loadingInvoices ? 'animate-spin' : ''} />
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            <div className="table-responsive">
+              <table className="wms-table">
+                <thead>
+                  <tr>
+                    <th>Invoice &amp; Date</th>
+                    <th>Job Card &amp; Customer</th>
+                    <th>Vehicle</th>
+                    <th>Charges Breakdown</th>
+                    <th>GST (18%)</th>
+                    <th>Grand Total</th>
+                    <th>Paid / Due</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredInvoices.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} style={{ textAlign: 'center', padding: '40px 16px', color: '#64748b' }}>
+                        {loadingInvoices
+                          ? 'Loading invoice records...'
+                          : 'No tax invoices match your search filters.'}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredInvoices.map((inv) => {
+                      const isFullyPaid = inv.status === 'Paid';
+                      const isPartial = inv.status === 'Partially Paid';
+                      const badgeClass = isFullyPaid
+                        ? 'badge-active'
+                        : isPartial
+                        ? 'badge-warning'
+                        : inv.status === 'Overdue'
+                        ? 'badge-danger'
+                        : 'badge-neutral';
+
+                      return (
+                        <tr key={inv.id}>
+                          <td>
+                            <strong style={{ color: '#045F60', fontSize: '13px' }}>
+                              {inv.invoiceNumber}
+                            </strong>
+                            <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                              {inv.issueDate ? new Date(inv.issueDate).toLocaleDateString('en-IN') : 'N/A'}
+                            </div>
+                          </td>
+                          <td>
+                            <strong>{inv.jobCardNumber}</strong>
+                            <div style={{ fontSize: '12px', color: '#475569' }}>
+                              {inv.customerName}
+                            </div>
+                          </td>
+                          <td>
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                padding: '2px 8px',
+                                background: '#f1f5f9',
+                                borderRadius: '4px',
+                                fontWeight: '700',
+                                fontSize: '12px',
+                                letterSpacing: '0.5px',
+                              }}
+                            >
+                              {inv.vehicleRegistration}
+                            </span>
+                          </td>
+                          <td>
+                            <div style={{ fontSize: '12px', color: '#334155' }}>
+                              <div>Labour: ₹{(inv.labourCharges || 0).toLocaleString('en-IN')}</div>
+                              <div style={{ fontSize: '11px', color: '#64748b' }}>
+                                Parts: ₹{(inv.partsCharges || 0).toLocaleString('en-IN')} · Paint: ₹{(inv.paintCharges || 0).toLocaleString('en-IN')}
+                              </div>
+                              {inv.discount > 0 && (
+                                <div style={{ fontSize: '11px', color: '#16a34a' }}>
+                                  Discount: -₹{inv.discount.toLocaleString('en-IN')}
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ fontSize: '12px', fontWeight: '600' }}>
+                              ₹{(inv.gstAmount || 0).toLocaleString('en-IN')}
+                            </div>
+                            <div style={{ fontSize: '10px', color: '#64748b' }}>
+                              Taxable: ₹{(inv.taxableAmount || 0).toLocaleString('en-IN')}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ fontSize: '14px', fontWeight: '800', color: '#045F60' }}>
+                              ₹{(inv.grandTotal || 0).toLocaleString('en-IN')}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ fontSize: '12px', fontWeight: '600', color: '#16a34a' }}>
+                              ₹{(inv.amountPaid || 0).toLocaleString('en-IN')}
+                            </div>
+                            {inv.balanceDue > 0 ? (
+                              <div style={{ fontSize: '11px', fontWeight: '700', color: '#dc2626' }}>
+                                Due: ₹{inv.balanceDue.toLocaleString('en-IN')}
+                              </div>
+                            ) : (
+                              <div style={{ fontSize: '11px', color: '#16a34a' }}>Cleared</div>
+                            )}
+                          </td>
+                          <td>
+                            <span className={`stage-badge ${badgeClass}`}>
+                              {inv.status}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                              <button
+                                type="button"
+                                className="btn-secondary-action"
+                                style={{
+                                  fontSize: '11px',
+                                  padding: '4px 8px',
+                                  color: '#045F60',
+                                  borderColor: '#045F60',
+                                }}
+                                onClick={() => handleDownloadInvoicePdf(inv)}
+                                disabled={downloadingPdfInvId === inv.id}
+                                title="Download Official Tax Invoice PDF"
+                              >
+                                {downloadingPdfInvId === inv.id ? (
+                                  <Loader2 size={12} className="animate-spin" />
+                                ) : (
+                                  <Download size={12} />
+                                )}
+                                PDF
+                              </button>
+
+                              {!isFullyPaid && (
+                                <button
+                                  type="button"
+                                  className="btn-primary-action"
+                                  style={{
+                                    fontSize: '11px',
+                                    padding: '4px 8px',
+                                    background: '#045F60',
+                                  }}
+                                  onClick={() => handleOpenRecordPayment(inv)}
+                                  title="Record Customer Payment"
+                                >
+                                  <CreditCard size={12} /> Pay
+                                </button>
+                              )}
+
+                              <button
+                                type="button"
+                                className="btn-secondary-action"
+                                style={{ fontSize: '11px', padding: '4px 8px' }}
+                                onClick={() => handleOpenEditInvoice(inv)}
+                                title="Edit Charges / Status"
+                              >
+                                <Pencil size={12} /> Edit
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Active Job Cards Awaiting Official Invoicing */}
+          {jobsAwaitingInvoice.length > 0 && (
+            <div className="wms-table-container" style={{ marginTop: '24px' }}>
+              <div style={{ padding: '16px 20px', borderBottom: '1px solid #e2eeec' }}>
+                <h3 style={{ margin: 0, fontSize: '15px', color: '#141b1b' }}>
+                  Active Job Cards Ready for Billing ({jobsAwaitingInvoice.length})
+                </h3>
+                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#64748b' }}>
+                  Vehicles with estimates recorded by Service Advisors &amp; Floor Supervisors awaiting formal Tax Invoice creation
+                </p>
+              </div>
+
+              <div className="table-responsive">
+                <table className="wms-table">
+                  <thead>
+                    <tr>
+                      <th>Job Card #</th>
+                      <th>Customer &amp; Phone</th>
+                      <th>Vehicle</th>
+                      <th>Current Stage</th>
+                      <th>Advisor Estimate</th>
+                      <th>Estimate Breakdown</th>
+                      <th style={{ textAlign: 'right' }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {jobsAwaitingInvoice.map((job) => (
+                      <tr key={job.id}>
+                        <td>
+                          <strong style={{ color: '#045F60' }}>{job.jobCardNumber}</strong>
+                        </td>
+                        <td>
+                          <strong>{job.customerName}</strong>
+                          <div style={{ fontSize: '11px', color: '#64748b' }}>
+                            {job.customerPhone || 'No contact'}
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              padding: '2px 8px',
+                              background: '#f1f5f9',
+                              borderRadius: '4px',
+                              fontWeight: '700',
+                              fontSize: '12px',
+                            }}
+                          >
+                            {job.vehicleRegistration}
+                          </span>
+                          <div style={{ fontSize: '11px', color: '#64748b' }}>{job.vehicleModel}</div>
+                        </td>
+                        <td>
+                          <span className="stage-badge badge-warning">{job.currentStage}</span>
+                        </td>
+                        <td>
+                          <strong style={{ fontSize: '14px', color: '#045F60' }}>
+                            ₹{(job.costEstimate?.total || 0).toLocaleString('en-IN')}
+                          </strong>
+                        </td>
+                        <td style={{ fontSize: '11px', color: '#475569' }}>
+                          <div>Labour: ₹{(job.costEstimate?.labour || 0).toLocaleString('en-IN')}</div>
+                          <div>Parts: ₹{(job.costEstimate?.spareParts || 0).toLocaleString('en-IN')} · Paint: ₹{(job.costEstimate?.painting || 0).toLocaleString('en-IN')}</div>
+                        </td>
+                        <td style={{ textAlign: 'right' }}>
+                          <button
+                            type="button"
+                            className="btn-primary-action"
+                            style={{ fontSize: '11px', padding: '5px 10px', background: '#045F60' }}
+                            onClick={() => handleConfirmGenerateInvoice(job.id)}
+                            disabled={submittingBilling}
+                          >
+                            <Plus size={12} /> Generate Invoice
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ============================================================== */}
       {/* MODAL A: COMPLETE JOB CARD DOSSIER                             */}
       {/* ============================================================== */}
       {dossierJob && (
@@ -4038,6 +4696,500 @@ export default function BodyShopManagerDashboard({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* MODAL: EDIT INVOICE CHARGES & STATUS                           */}
+      {/* ============================================================== */}
+      {editingInvoice && (
+        <div className="wms-modal-backdrop" onClick={() => setEditingInvoice(null)}>
+          <div
+            className="wms-modal-card"
+            style={{ maxWidth: '620px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div>
+                <span className="stage-badge badge-info">{editingInvoice.invoiceNumber}</span>
+                <h3 style={{ marginTop: '4px' }}>Edit Tax Invoice Charges</h3>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setEditingInvoice(null)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditInvoice}>
+              <div className="modal-body" style={{ maxHeight: '72vh', overflowY: 'auto' }}>
+                <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '8px', border: '1px solid #e2eeec', marginBottom: '16px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: '#045F60' }}>
+                    {editingInvoice.customerName} · {editingInvoice.vehicleRegistration}
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                    Job Card: {editingInvoice.jobCardNumber} · Original Total: ₹{editingInvoice.grandTotal.toLocaleString('en-IN')}
+                  </div>
+                </div>
+
+                <div className="wms-form-grid-2" style={{ gap: '14px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Labour Charges (₹)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editInvoiceForm.labourCharges}
+                      onChange={(e) =>
+                        setEditInvoiceForm((prev) => ({ ...prev, labourCharges: e.target.value }))
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Spare Parts Charges (₹)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editInvoiceForm.partsCharges}
+                      onChange={(e) =>
+                        setEditInvoiceForm((prev) => ({ ...prev, partsCharges: e.target.value }))
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Painting &amp; Consumables (₹)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editInvoiceForm.paintCharges}
+                      onChange={(e) =>
+                        setEditInvoiceForm((prev) => ({ ...prev, paintCharges: e.target.value }))
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Other / Misc Charges (₹)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editInvoiceForm.otherCharges}
+                      onChange={(e) =>
+                        setEditInvoiceForm((prev) => ({ ...prev, otherCharges: e.target.value }))
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Special Discount (₹)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editInvoiceForm.discount}
+                      onChange={(e) =>
+                        setEditInvoiceForm((prev) => ({ ...prev, discount: e.target.value }))
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Invoice Status
+                    </label>
+                    <select
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editInvoiceForm.status}
+                      onChange={(e) =>
+                        setEditInvoiceForm((prev) => ({
+                          ...prev,
+                          status: e.target.value as Invoice['status'],
+                        }))
+                      }
+                    >
+                      <option value="Draft">Draft</option>
+                      <option value="Sent">Sent</option>
+                      <option value="Partially Paid">Partially Paid</option>
+                      <option value="Paid">Paid</option>
+                      <option value="Overdue">Overdue</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Live Recalculation Summary Box */}
+                {(() => {
+                  const l = Number(editInvoiceForm.labourCharges) || 0;
+                  const p = Number(editInvoiceForm.partsCharges) || 0;
+                  const pt = Number(editInvoiceForm.paintCharges) || 0;
+                  const o = Number(editInvoiceForm.otherCharges) || 0;
+                  const d = Number(editInvoiceForm.discount) || 0;
+                  const taxable = Math.max(0, l + p + pt + o - d);
+                  const gst = Math.round(taxable * 0.18);
+                  const grandTotal = taxable + gst;
+                  const balance = Math.max(0, grandTotal - (editingInvoice.amountPaid || 0));
+
+                  return (
+                    <div
+                      style={{
+                        marginTop: '16px',
+                        padding: '12px 16px',
+                        background: '#e6f2f2',
+                        borderRadius: '8px',
+                        border: '1px solid #b3d7d7',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '10px',
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontSize: '11px', color: '#045F60', fontWeight: '600' }}>
+                          Taxable: ₹{taxable.toLocaleString('en-IN')} + GST (18%): ₹{gst.toLocaleString('en-IN')}
+                        </div>
+                        <div style={{ fontSize: '18px', fontWeight: '800', color: '#045F60' }}>
+                          Grand Total: ₹{grandTotal.toLocaleString('en-IN')}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '11px', color: '#64748b' }}>
+                          Already Paid: ₹{(editingInvoice.amountPaid || 0).toLocaleString('en-IN')}
+                        </div>
+                        <div style={{ fontSize: '13px', fontWeight: '700', color: balance > 0 ? '#dc2626' : '#16a34a' }}>
+                          Balance Due: ₹{balance.toLocaleString('en-IN')}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn-secondary-action"
+                  disabled={submittingBilling}
+                  onClick={() => setEditingInvoice(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-primary-action"
+                  style={{ background: '#045F60' }}
+                  disabled={submittingBilling}
+                >
+                  {submittingBilling ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" /> Saving...
+                    </>
+                  ) : (
+                    'Save Invoice Changes'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* MODAL: RECORD CUSTOMER PAYMENT                                 */}
+      {/* ============================================================== */}
+      {paymentInvoice && (
+        <div className="wms-modal-backdrop" onClick={() => setPaymentInvoice(null)}>
+          <div
+            className="wms-modal-card"
+            style={{ maxWidth: '520px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div>
+                <span className="stage-badge badge-active">Payment Collection</span>
+                <h3 style={{ marginTop: '4px' }}>Record Payment: {paymentInvoice.invoiceNumber}</h3>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setPaymentInvoice(null)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleConfirmRecordPayment}>
+              <div className="modal-body" style={{ maxHeight: '72vh', overflowY: 'auto' }}>
+                <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '8px', border: '1px solid #e2eeec', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontWeight: '700', fontSize: '13px' }}>{paymentInvoice.customerName}</div>
+                      <div style={{ fontSize: '11px', color: '#64748b' }}>
+                        {paymentInvoice.vehicleRegistration} · Job Card: {paymentInvoice.jobCardNumber}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '11px', color: '#64748b' }}>Balance Due</div>
+                      <div style={{ fontSize: '16px', fontWeight: '800', color: '#dc2626' }}>
+                        ₹{(paymentInvoice.balanceDue || 0).toLocaleString('en-IN')}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Payment Amount (₹) *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max={paymentInvoice.balanceDue > 0 ? paymentInvoice.balanceDue : undefined}
+                      className="table-search-input"
+                      style={{ width: '100%', fontSize: '16px', fontWeight: '700', color: '#045F60' }}
+                      value={payForm.amount}
+                      onChange={(e) => setPayForm((prev) => ({ ...prev, amount: e.target.value }))}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Payment Method *
+                    </label>
+                    <select
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={payForm.method}
+                      onChange={(e) => setPayForm((prev) => ({ ...prev, method: e.target.value }))}
+                    >
+                      <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
+                      <option value="Cash">Cash at Reception Counter</option>
+                      <option value="Credit Card">Credit Card (POS Terminal)</option>
+                      <option value="Debit Card">Debit Card</option>
+                      <option value="Bank Transfer">Bank Transfer / NEFT / RTGS</option>
+                      <option value="Cheque">Cheque</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Transaction Ref / Cheque # / UPI UTR
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      placeholder="e.g. UPI-9283742918 or CHQ-002145"
+                      value={payForm.reference}
+                      onChange={(e) => setPayForm((prev) => ({ ...prev, reference: e.target.value }))}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn-secondary-action"
+                  disabled={submittingBilling}
+                  onClick={() => setPaymentInvoice(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-primary-action"
+                  style={{ background: '#045F60' }}
+                  disabled={submittingBilling}
+                >
+                  {submittingBilling ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" /> Recording...
+                    </>
+                  ) : (
+                    <>
+                      <Check size={15} /> Confirm Payment Receipt
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* MODAL: GENERATE TAX INVOICE FROM JOB CARD                      */}
+      {/* ============================================================== */}
+      {showGenerateModal && (
+        <div className="wms-modal-backdrop" onClick={() => setShowGenerateModal(false)}>
+          <div
+            className="wms-modal-card"
+            style={{ maxWidth: '640px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div>
+                <span className="stage-badge badge-purple">New GST Tax Invoice</span>
+                <h3 style={{ marginTop: '4px' }}>Generate Official Invoice from Job Card</h3>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setShowGenerateModal(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="modal-body" style={{ maxHeight: '72vh', overflowY: 'auto' }}>
+              <p style={{ fontSize: '13px', color: '#475569', marginBottom: '16px' }}>
+                Select an active or completed repair order to generate an official Tulja Motors Tax Invoice. The invoice is populated with live charges (Labour, Spare Parts, Painting &amp; 18% GST).
+              </p>
+
+              {jobsAwaitingInvoice.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '24px 16px', background: '#f8fafc', borderRadius: '8px', color: '#64748b' }}>
+                  All job cards with recorded estimates have already been invoiced.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+                      Select Vehicle / Job Card *
+                    </label>
+                    <select
+                      className="table-search-input"
+                      style={{ width: '100%', fontSize: '13px' }}
+                      value={generateTargetJobId}
+                      onChange={(e) => setGenerateTargetJobId(e.target.value)}
+                    >
+                      <option value="">-- Choose a Vehicle Job Card --</option>
+                      {jobsAwaitingInvoice.map((j) => (
+                        <option key={j.id} value={j.id}>
+                          {j.jobCardNumber} — {j.vehicleRegistration} ({j.customerName}) — Est: ₹{(j.costEstimate?.total || 0).toLocaleString('en-IN')} [{j.currentStage}]
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {(() => {
+                    const sel = jobsAwaitingInvoice.find((j) => j.id === generateTargetJobId);
+                    if (!sel) return null;
+                    return (
+                      <div
+                        style={{
+                          background: '#f8fafc',
+                          padding: '14px 16px',
+                          borderRadius: '8px',
+                          border: '1px solid #e2eeec',
+                        }}
+                      >
+                        <div style={{ fontWeight: '700', fontSize: '14px', color: '#045F60' }}>
+                          {sel.vehicleRegistration} · {sel.vehicleModel}
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#475569', marginTop: '2px' }}>
+                          Customer: <strong>{sel.customerName}</strong> ({sel.customerPhone || 'N/A'}) · Supervisor: {sel.assignedSupervisorName}
+                        </div>
+
+                        <div
+                          className="wms-form-grid-3"
+                          style={{
+                            marginTop: '12px',
+                            gap: '8px',
+                            fontSize: '12px',
+                          }}
+                        >
+                          <div style={{ background: '#ffffff', padding: '8px 10px', borderRadius: '6px', border: '1px solid #e2eeec' }}>
+                            <div style={{ fontSize: '10px', color: '#64748b' }}>Labour</div>
+                            <div style={{ fontWeight: '700' }}>₹{(sel.costEstimate?.labour || 0).toLocaleString('en-IN')}</div>
+                          </div>
+                          <div style={{ background: '#ffffff', padding: '8px 10px', borderRadius: '6px', border: '1px solid #e2eeec' }}>
+                            <div style={{ fontSize: '10px', color: '#64748b' }}>Spare Parts</div>
+                            <div style={{ fontWeight: '700' }}>₹{(sel.costEstimate?.spareParts || 0).toLocaleString('en-IN')}</div>
+                          </div>
+                          <div style={{ background: '#ffffff', padding: '8px 10px', borderRadius: '6px', border: '1px solid #e2eeec' }}>
+                            <div style={{ fontSize: '10px', color: '#64748b' }}>Paint &amp; Body</div>
+                            <div style={{ fontWeight: '700' }}>₹{(sel.costEstimate?.painting || 0).toLocaleString('en-IN')}</div>
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            marginTop: '10px',
+                            paddingTop: '10px',
+                            borderTop: '1px dashed #cbd5e1',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <span style={{ fontSize: '12px', color: '#64748b' }}>Taxable + 18% GST</span>
+                          <span style={{ fontSize: '16px', fontWeight: '800', color: '#045F60' }}>
+                            Grand Total: ₹{(sel.costEstimate?.total || 0).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn-secondary-action"
+                disabled={submittingBilling}
+                onClick={() => setShowGenerateModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary-action"
+                style={{ background: '#045F60' }}
+                disabled={submittingBilling || !generateTargetJobId}
+                onClick={() => handleConfirmGenerateInvoice(generateTargetJobId)}
+              >
+                {submittingBilling ? (
+                  <>
+                    <Loader2 size={15} className="animate-spin" /> Generating...
+                  </>
+                ) : (
+                  <>
+                    <Plus size={15} /> Create Tax Invoice
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

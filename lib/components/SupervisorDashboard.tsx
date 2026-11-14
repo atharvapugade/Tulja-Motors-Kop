@@ -16,6 +16,7 @@ import {
   Layers,
   Loader2,
   Lock,
+  Package,
   Pencil,
   Phone,
   Plus,
@@ -36,6 +37,7 @@ import type {
   QualityInspectionReport,
   RepairStage,
   RepairTask,
+  SparePart,
   UserRole,
   Vehicle,
 } from '@/lib/models/types';
@@ -314,6 +316,83 @@ export default function SupervisorDashboard({
   const [qcReworkStage, setQcReworkStage] = useState<RepairStage>('Denting & Bodywork');
   const [qcPassStage, setQcPassStage] = useState<RepairStage>('Final Approval');
   const [savingQc, setSavingQc] = useState(false);
+
+  // Spare Parts Requisition Modal
+  const [reqPartJob, setReqPartJob] = useState<JobCard | null>(null);
+  const [catalogParts, setCatalogParts] = useState<SparePart[]>([]);
+  const [selectedReqPartId, setSelectedReqPartId] = useState('');
+  const [reqQuantity, setReqQuantity] = useState(1);
+  const [reqNotes, setReqNotes] = useState('');
+  const [submittingPartReq, setSubmittingPartReq] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/spare-parts');
+        const data = await res.json();
+        if (active && data.success && Array.isArray(data.parts)) {
+          setCatalogParts(data.parts);
+          if (data.parts.length > 0) {
+            setSelectedReqPartId((prev) => prev || data.parts[0].id);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load spare parts catalog for supervisor:', err);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const openRequestPartModal = (job: JobCard) => {
+    setReqPartJob(job);
+    setReqQuantity(1);
+    setReqNotes('');
+    if (catalogParts.length > 0) {
+      setSelectedReqPartId(catalogParts[0].id);
+    }
+  };
+
+  const handleConfirmPartRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reqPartJob || !selectedReqPartId) return;
+    setSubmittingPartReq(true);
+    try {
+      const res = await fetch('/api/spare-parts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'request_part',
+          jobCardId: reqPartJob.id,
+          partId: selectedReqPartId,
+          quantity: reqQuantity,
+          notes: reqNotes.trim(),
+          requestedBy: authUser ? `${authUser.name} (Workshop Supervisor)` : 'Workshop Supervisor',
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        showCenterPopup(data.message || 'Failed to submit spare part requisition.', 'Request Error', 'error');
+        return;
+      }
+      const targetPart = catalogParts.find((p) => p.id === selectedReqPartId);
+      const targetJobNo = reqPartJob.jobCardNumber;
+      setReqPartJob(null);
+      showCenterPopup(
+        `Requisition submitted successfully! Requested ${reqQuantity}x "${targetPart?.name || 'Part'}" for Job Card ${targetJobNo}. It is now in the Spare Parts Manager's approval queue.`,
+        'Requisition Sent',
+        'info'
+      );
+      onNotify(`Requisition submitted for ${targetJobNo}. Awaiting Spare Parts Manager approval.`);
+      await handleFullRefresh();
+    } catch (err: unknown) {
+      showCenterPopup('Error submitting part request: ' + (err instanceof Error ? err.message : String(err)), 'Error', 'error');
+    } finally {
+      setSubmittingPartReq(false);
+    }
+  };
 
   // Centered Alert Popup (Zero native browser alerts)
   const [popupAlert, setPopupAlert] = useState<{
@@ -1521,6 +1600,20 @@ export default function SupervisorDashboard({
                               </button>
                               <button
                                 type="button"
+                                className="btn-secondary-action"
+                                style={{
+                                  padding: '5px 9px',
+                                  fontSize: '11px',
+                                  borderColor: '#D97706',
+                                  color: '#B45309',
+                                }}
+                                onClick={() => openRequestPartModal(job)}
+                                title="Request spare parts from warehouse"
+                              >
+                                <Package size={13} /> Request Parts
+                              </button>
+                              <button
+                                type="button"
                                 className="btn-primary-action"
                                 style={{ padding: '5px 10px', fontSize: '11px' }}
                                 onClick={() => openAllocateModal(job)}
@@ -2024,6 +2117,20 @@ export default function SupervisorDashboard({
                                 onClick={() => openStageModal(job)}
                               >
                                 <Pencil size={12} /> Change Stage
+                              </button>
+                              <button
+                                type="button"
+                                className="btn-secondary-action"
+                                style={{
+                                  padding: '5px 9px',
+                                  fontSize: '11px',
+                                  borderColor: '#D97706',
+                                  color: '#B45309',
+                                }}
+                                onClick={() => openRequestPartModal(job)}
+                                title="Request spare parts from warehouse"
+                              >
+                                <Package size={12} /> Request Parts
                               </button>
                               <button
                                 type="button"
@@ -3018,6 +3125,18 @@ export default function SupervisorDashboard({
               <button
                 type="button"
                 className="btn-secondary-action"
+                style={{ borderColor: '#D97706', color: '#B45309' }}
+                onClick={() => {
+                  const j = dossierJob;
+                  setDossierJob(null);
+                  openRequestPartModal(j);
+                }}
+              >
+                <Package size={14} /> Request Parts
+              </button>
+              <button
+                type="button"
+                className="btn-secondary-action"
                 onClick={() => {
                   const j = dossierJob;
                   setDossierJob(null);
@@ -3996,7 +4115,166 @@ export default function SupervisorDashboard({
       )}
 
       {/* ============================================================== */}
-      {/* MODAL F: CENTERED VALIDATION / ALERT POPUP CARD (OK BUTTON)    */}
+      {/* MODAL F: SPARE PARTS REQUISITION MODAL                         */}
+      {/* ============================================================== */}
+      {reqPartJob && (
+        <div
+          className="wms-modal-backdrop"
+          onClick={() => !submittingPartReq && setReqPartJob(null)}
+        >
+          <div
+            className="wms-modal-card"
+            style={{ maxWidth: '580px', backgroundColor: '#ffffff', background: '#ffffff' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div>
+                <div className="wms-header-badges">
+                  <span className="stage-badge badge-warning">Floor Requisition</span>
+                  <span className="stage-badge badge-info">{reqPartJob.jobCardNumber}</span>
+                </div>
+                <h3 style={{ margin: '6px 0 2px', fontSize: '18px', fontWeight: '800', color: '#141b1b' }}>
+                  Request Spare Parts from Warehouse
+                </h3>
+                <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>
+                  {reqPartJob.vehicleRegistration} • {reqPartJob.vehicleModel}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                disabled={submittingPartReq}
+                onClick={() => setReqPartJob(null)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleConfirmPartRequest}>
+              <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#1e293b' }}>
+                    Select Spare Part from Catalog *
+                  </label>
+                  {catalogParts.length === 0 ? (
+                    <div style={{ fontSize: '12px', color: '#ef4444', padding: '8px 0' }}>
+                      No spare parts catalog loaded. Please ensure parts are registered in the inventory.
+                    </div>
+                  ) : (
+                    <select
+                      className="wms-select-input"
+                      style={{ width: '100%' }}
+                      value={selectedReqPartId}
+                      onChange={(e) => setSelectedReqPartId(e.target.value)}
+                      required
+                    >
+                      {catalogParts.map((part) => (
+                        <option key={part.id} value={part.id}>
+                          [{part.partNumber}] {part.name} — Current Warehouse Stock: {part.stockQuantity} pcs (₹{part.unitPrice})
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+
+                <div className="wms-form-grid-2">
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#1e293b' }}>
+                      Required Quantity (pcs) *
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={100}
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={reqQuantity}
+                      onChange={(e) => setReqQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#1e293b' }}>
+                      Current Stage
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%', background: '#f8fafc', color: '#64748b' }}
+                      value={reqPartJob.currentStage}
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#1e293b' }}>
+                    Reason / Floor Requisition Notes
+                  </label>
+                  <textarea
+                    rows={3}
+                    className="table-search-input"
+                    style={{ width: '100%', resize: 'vertical' }}
+                    placeholder="Specify part requirement, damage notes, or urgency for the Spare Parts Manager..."
+                    value={reqNotes}
+                    onChange={(e) => setReqNotes(e.target.value)}
+                  />
+                </div>
+
+                <div
+                  style={{
+                    background: '#f0fdfa',
+                    border: '1px solid #99f6e4',
+                    borderRadius: '8px',
+                    padding: '10px 12px',
+                    fontSize: '12px',
+                    color: '#0f766e',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <Package size={16} style={{ flexShrink: 0 }} />
+                  <span>
+                    This request will appear live in the <strong>Spare Parts Manager&apos;s</strong> approval queue for issuance.
+                  </span>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn-secondary-action"
+                  disabled={submittingPartReq}
+                  onClick={() => setReqPartJob(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-primary-action"
+                  disabled={submittingPartReq || catalogParts.length === 0}
+                  style={{ background: '#D97706', borderColor: '#D97706' }}
+                >
+                  {submittingPartReq ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" /> Submitting Request...
+                    </>
+                  ) : (
+                    <>
+                      <Package size={15} /> Send Part Request
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* MODAL G: CENTERED VALIDATION / ALERT POPUP CARD (OK BUTTON)    */}
       {/* ============================================================== */}
       {popupAlert && (
         <div

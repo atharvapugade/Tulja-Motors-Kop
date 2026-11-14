@@ -132,6 +132,7 @@ export default function DashboardLayout({
           { name: 'Active Jobs', href: `${base}?tab=jobs`, icon: Car },
           { name: 'Technicians', href: `${base}?tab=technicians`, icon: Hammer },
           { name: 'Delays & Issues', href: `${base}?tab=delays`, icon: Clock },
+          { name: 'Billing & Invoices', href: `${base}?tab=billing`, icon: ReceiptIndianRupee },
         ];
       /*
       case 'hr':

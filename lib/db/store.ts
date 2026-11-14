@@ -598,6 +598,32 @@ export const db = {
     return inv;
   },
 
+  updateInvoice: async (id: string, updates: Partial<Invoice>): Promise<Invoice | null> => {
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        const updated = await InvoiceModel.findOneAndUpdate(
+          { $or: [{ id }, { invoiceNumber: id }] },
+          { ...updates },
+          { new: true }
+        ).lean();
+        if (updated) {
+          return cleanMongoDoc<Invoice>(updated);
+        }
+      }
+    } catch (err) {
+      console.warn('Error updating invoice in MongoDB:', err);
+    }
+    const state = loadDatabase();
+    const idx = state.invoices.findIndex((i) => i.id === id || i.invoiceNumber === id);
+    if (idx !== -1) {
+      state.invoices[idx] = { ...state.invoices[idx], ...updates };
+      saveDatabase(state);
+      return state.invoices[idx];
+    }
+    return null;
+  },
+
   // ==========================================
   // PAYMENTS
   // ==========================================

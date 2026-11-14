@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { TULJA_MOTORS_LOGO_BASE64 } from './logoBase64';
+import type { Invoice, JobCard } from '@/lib/models/types';
 
 export type ReportPeriod = 'daily' | 'weekly' | 'monthly';
 export type AdminReportPage = 'overview' | 'employees' | 'jobs' | 'finance' | 'logs';
@@ -436,6 +437,337 @@ export function generateAdminReportPdf(options: GeneratePdfOptions): string {
   const fileDate = now.toISOString().split('T')[0];
   const fileName = `TuljaMotors_${pageTitleMap[page].replace(/[^a-zA-Z0-9]/g, '_')}_${period.toUpperCase()}_${fileDate}.pdf`;
 
+  doc.save(fileName);
+  return fileName;
+}
+
+export function generateInvoicePdf(invoice: Invoice, jobCard?: JobCard): string {
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const pageWidth = 210;
+  const marginX = 14;
+
+  // 1. BRAND ACCENT BARS
+  doc.setFillColor(4, 95, 96); // #045F60
+  doc.rect(0, 0, pageWidth, 4, 'F');
+  doc.setFillColor(247, 194, 31); // #F7C21F
+  doc.rect(0, 4, pageWidth, 1.2, 'F');
+
+  // 2. HEADER: LOGO & COMPANY INFO
+  const headerTopY = 9;
+  try {
+    doc.addImage(TULJA_MOTORS_LOGO_BASE64, 'PNG', marginX, headerTopY, 34, 12);
+  } catch (err) {
+    console.warn('Could not render logo in PDF, drawing text badge instead.', err);
+    doc.setFillColor(4, 95, 96);
+    doc.rect(marginX, headerTopY, 34, 12, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.text('TULJA MOTORS', marginX + 3, headerTopY + 7);
+  }
+
+  const companyX = marginX + 38;
+  doc.setTextColor(4, 95, 96);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.text('TULJA MOTORS MULTIBRAND CAR WORKSHOP', companyX, headerTopY + 4);
+
+  doc.setTextColor(71, 85, 105);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.text('Plot No. 12, Workshop Zone, Shiroli MIDC, Kolhapur, Maharashtra - 416122', companyX, headerTopY + 8);
+  doc.text('Phone: +91 94220 12345 / 0231-2654321  |  Email: service@tuljamotors.com', companyX, headerTopY + 11.5);
+  doc.text('GSTIN: 27AABCT1234F1Z5  |  State Code: 27 (Maharashtra)', companyX, headerTopY + 15);
+
+  // 3. TAX INVOICE BADGE & INVOICE META (RIGHT SIDE)
+  const metaRightX = pageWidth - marginX;
+  doc.setFillColor(4, 95, 96);
+  doc.roundedRect(metaRightX - 48, headerTopY, 48, 6.5, 1, 1, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.text('TAX INVOICE', metaRightX - 24, headerTopY + 4.5, { align: 'center' });
+
+  doc.setTextColor(30, 41, 59);
+  doc.setFontSize(7.8);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`Invoice No: ${invoice.invoiceNumber}`, metaRightX - 48, headerTopY + 11);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Issue Date: ${invoice.issueDate}`, metaRightX - 48, headerTopY + 14.5);
+  doc.text(`Due Date: ${invoice.dueDate || invoice.issueDate}`, metaRightX - 48, headerTopY + 18);
+  doc.text(`Job Card: ${invoice.jobCardNumber}`, metaRightX - 48, headerTopY + 21.5);
+
+  // Status Badge
+  const stColor = invoice.status === 'Paid' ? [6, 122, 70] : invoice.status === 'Partially Paid' ? [217, 119, 6] : [138, 24, 26];
+  doc.setFillColor(stColor[0], stColor[1], stColor[2]);
+  doc.roundedRect(metaRightX - 48, headerTopY + 23, 48, 5, 1, 1, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.text(`STATUS: ${(invoice.status || 'Draft').toUpperCase()}`, metaRightX - 24, headerTopY + 26.5, { align: 'center' });
+
+  // Divider line
+  const dividerY = 38;
+  doc.setDrawColor(226, 238, 236);
+  doc.setLineWidth(0.5);
+  doc.line(marginX, dividerY, pageWidth - marginX, dividerY);
+
+  // 4. TWO-COLUMN BOXES: "BILL TO" & "VEHICLE DETAILS"
+  const boxTopY = dividerY + 3;
+  const colWidth = (pageWidth - marginX * 2 - 6) / 2;
+  const boxHeight = 26;
+
+  // Box 1: Customer Details
+  doc.setFillColor(250, 253, 252);
+  doc.setDrawColor(200, 225, 220);
+  doc.roundedRect(marginX, boxTopY, colWidth, boxHeight, 1.5, 1.5, 'FD');
+
+  doc.setFillColor(4, 95, 96);
+  doc.roundedRect(marginX, boxTopY, colWidth, 5.5, 1, 1, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.text('BILLED TO (CUSTOMER DETAILS)', marginX + 4, boxTopY + 3.8);
+
+  doc.setTextColor(30, 41, 59);
+  doc.setFontSize(8.5);
+  doc.setFont('helvetica', 'bold');
+  doc.text(invoice.customerName || 'Valued Customer', marginX + 4, boxTopY + 9.5);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.text(`Phone: ${jobCard?.customerPhone || 'On Workshop Record'}`, marginX + 4, boxTopY + 14);
+  doc.text('State: Maharashtra (State Code: 27)', marginX + 4, boxTopY + 18);
+  doc.text('Place of Supply: Kolhapur, Maharashtra', marginX + 4, boxTopY + 22);
+
+  // Box 2: Vehicle & Workshop Repair Details
+  const box2X = marginX + colWidth + 6;
+  doc.setFillColor(250, 253, 252);
+  doc.roundedRect(box2X, boxTopY, colWidth, boxHeight, 1.5, 1.5, 'FD');
+
+  doc.setFillColor(4, 95, 96);
+  doc.roundedRect(box2X, boxTopY, colWidth, 5.5, 1, 1, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.text('VEHICLE & WORKSHOP REPAIR DETAILS', box2X + 4, boxTopY + 3.8);
+
+  doc.setTextColor(30, 41, 59);
+  doc.setFontSize(8.5);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`Vehicle Reg: ${invoice.vehicleRegistration}`, box2X + 4, boxTopY + 9.5);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.text(`Model: ${jobCard?.vehicleModel || 'Multibrand Vehicle'}`, box2X + 4, boxTopY + 14);
+  doc.text(`Supervisor: ${jobCard?.assignedSupervisorName || 'Workshop Floor Team'}`, box2X + 4, boxTopY + 18);
+  doc.text(`Advisor / Intake: ${jobCard?.advisorName || 'Service Advisor'}`, box2X + 4, boxTopY + 22);
+
+  // 5. ITEMIZED TABLE USING autoTable
+  const tableStartY = boxTopY + boxHeight + 4;
+  const tableHead = [['#', 'Item / Service Description', 'HSN/SAC', 'Taxable Rate (Rs.)', 'Qty', 'Amount (Rs.)']];
+  const tableBody: any[][] = [];
+
+  let rowIdx = 1;
+  if ((invoice.labourCharges || 0) > 0) {
+    tableBody.push([
+      String(rowIdx++),
+      'Bodyshop Repair, Denting, Mechanical & Labour Operations',
+      '998714',
+      `Rs. ${(invoice.labourCharges || 0).toLocaleString('en-IN')}`,
+      '1 Lot',
+      `Rs. ${(invoice.labourCharges || 0).toLocaleString('en-IN')}`,
+    ]);
+  }
+  if ((invoice.partsCharges || 0) > 0) {
+    tableBody.push([
+      String(rowIdx++),
+      'OEM Spare Parts, Body Panels & Replacement Components',
+      '8708',
+      `Rs. ${(invoice.partsCharges || 0).toLocaleString('en-IN')}`,
+      '1 Lot',
+      `Rs. ${(invoice.partsCharges || 0).toLocaleString('en-IN')}`,
+    ]);
+  }
+  if ((invoice.paintCharges || 0) > 0) {
+    tableBody.push([
+      String(rowIdx++),
+      'Automotive Refinish, Clearcoat & Dust-Free Booth Painting',
+      '998714',
+      `Rs. ${(invoice.paintCharges || 0).toLocaleString('en-IN')}`,
+      '1 Lot',
+      `Rs. ${(invoice.paintCharges || 0).toLocaleString('en-IN')}`,
+    ]);
+  }
+  if ((invoice.otherCharges || 0) > 0) {
+    tableBody.push([
+      String(rowIdx++),
+      'Workshop Consumables, Detailing & Environmental Sanitation',
+      '998714',
+      `Rs. ${(invoice.otherCharges || 0).toLocaleString('en-IN')}`,
+      '1 Lot',
+      `Rs. ${(invoice.otherCharges || 0).toLocaleString('en-IN')}`,
+    ]);
+  }
+  if ((invoice.discount || 0) > 0) {
+    tableBody.push([
+      String(rowIdx++),
+      'Special Workshop Customer / Loyalty Discount',
+      '—',
+      `- Rs. ${(invoice.discount || 0).toLocaleString('en-IN')}`,
+      '1 Lot',
+      `- Rs. ${(invoice.discount || 0).toLocaleString('en-IN')}`,
+    ]);
+  }
+
+  if (tableBody.length === 0) {
+    tableBody.push([
+      '1',
+      'General Vehicle Bodywork & Inspection Services',
+      '998714',
+      `Rs. ${(invoice.taxableAmount || invoice.grandTotal || 0).toLocaleString('en-IN')}`,
+      '1 Lot',
+      `Rs. ${(invoice.taxableAmount || invoice.grandTotal || 0).toLocaleString('en-IN')}`,
+    ]);
+  }
+
+  autoTable(doc, {
+    startY: tableStartY,
+    margin: { left: marginX, right: marginX },
+    head: tableHead,
+    body: tableBody,
+    theme: 'grid',
+    styles: {
+      font: 'helvetica',
+      fontSize: 8,
+      cellPadding: 2.8,
+      textColor: [30, 41, 59],
+    },
+    headStyles: {
+      fillColor: [4, 95, 96],
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+      halign: 'left',
+    },
+    columnStyles: {
+      0: { cellWidth: 10, halign: 'center' },
+      1: { cellWidth: 88 },
+      2: { cellWidth: 22, halign: 'center' },
+      3: { cellWidth: 26, halign: 'right' },
+      4: { cellWidth: 14, halign: 'center' },
+      5: { cellWidth: 26, halign: 'right' },
+    },
+  });
+
+  const finalY = (doc as any).lastAutoTable?.finalY || tableStartY + 35;
+
+  // 6. TOTALS & TAX BREAKDOWN BLOCK (RIGHT ALIGNED)
+  const totalsBoxX = pageWidth - marginX - 78;
+  const totalsBoxY = finalY + 4;
+  const halfGst = Math.round((invoice.gstAmount || 0) / 2);
+
+  doc.setFillColor(250, 253, 252);
+  doc.setDrawColor(200, 225, 220);
+  doc.roundedRect(totalsBoxX, totalsBoxY, 78, 48, 1.5, 1.5, 'FD');
+
+  const totalLines = [
+    { label: 'Subtotal (Taxable Value):', val: `Rs. ${(invoice.taxableAmount || 0).toLocaleString('en-IN')}` },
+    { label: 'CGST (9%):', val: `Rs. ${halfGst.toLocaleString('en-IN')}` },
+    { label: 'SGST (9%):', val: `Rs. ${halfGst.toLocaleString('en-IN')}` },
+    { label: 'Total GST (18%):', val: `Rs. ${(invoice.gstAmount || 0).toLocaleString('en-IN')}` },
+  ];
+
+  let tY = totalsBoxY + 5;
+  doc.setFontSize(8);
+  totalLines.forEach((l) => {
+    doc.setTextColor(71, 85, 105);
+    doc.setFont('helvetica', 'normal');
+    doc.text(l.label, totalsBoxX + 4, tY);
+    doc.setTextColor(30, 41, 59);
+    doc.setFont('helvetica', 'bold');
+    doc.text(l.val, totalsBoxX + 74, tY, { align: 'right' });
+    tY += 4.8;
+  });
+
+  // Grand Total Highlight
+  doc.setFillColor(4, 95, 96);
+  doc.rect(totalsBoxX, tY - 1, 78, 7.5, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(8.8);
+  doc.setFont('helvetica', 'bold');
+  doc.text('GRAND TOTAL (INR):', totalsBoxX + 4, tY + 4);
+  doc.text(`Rs. ${(invoice.grandTotal || 0).toLocaleString('en-IN')}`, totalsBoxX + 74, tY + 4, { align: 'right' });
+
+  tY += 11;
+  doc.setTextColor(6, 122, 70);
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Amount Received / Paid:', totalsBoxX + 4, tY);
+  doc.text(`Rs. ${(invoice.amountPaid || 0).toLocaleString('en-IN')}`, totalsBoxX + 74, tY, { align: 'right' });
+
+  tY += 5;
+  const isBal = (invoice.balanceDue || 0) > 0;
+  doc.setTextColor(isBal ? 185 : 6, isBal ? 28 : 122, isBal ? 28 : 70);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Net Balance Due:', totalsBoxX + 4, tY);
+  doc.text(`Rs. ${(invoice.balanceDue || 0).toLocaleString('en-IN')}`, totalsBoxX + 74, tY, { align: 'right' });
+
+  // 7. BANK DETAILS & TERMS (LEFT OF TOTALS)
+  const bankX = marginX;
+  const bankY = totalsBoxY;
+  const bankWidth = totalsBoxX - marginX - 6;
+
+  doc.setFillColor(255, 255, 255);
+  doc.setDrawColor(226, 238, 236);
+  doc.roundedRect(bankX, bankY, bankWidth, 48, 1.5, 1.5, 'FD');
+
+  doc.setTextColor(4, 95, 96);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.8);
+  doc.text('PAYMENT & BANK DETAILS', bankX + 4, bankY + 4.5);
+
+  doc.setTextColor(71, 85, 105);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.2);
+  doc.text('Bank Name: Bank of Maharashtra  |  Branch: Shiroli MIDC, Kolhapur', bankX + 4, bankY + 9.5);
+  doc.text('Account Name: Tulja Motors Workshop Management System', bankX + 4, bankY + 13.5);
+  doc.text('Account No: 601234567890123  |  IFSC Code: MAHB0000123', bankX + 4, bankY + 17.5);
+  doc.text('UPI ID: tuljamotors@okaxis (GPay, PhonePe, Paytm, BHIM)', bankX + 4, bankY + 21.5);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(4, 95, 96);
+  doc.text('WARRANTY & CONDITIONS:', bankX + 4, bankY + 28);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(100, 116, 139);
+  doc.setFontSize(6.8);
+  doc.text('1. 6 months paint warranty against peeling, blister or colour fade.', bankX + 4, bankY + 32);
+  doc.text('2. OEM spare parts warranty covered under respective manufacturer terms.', bankX + 4, bankY + 36);
+  doc.text('3. Disputes subject to Kolhapur jurisdiction.', bankX + 4, bankY + 40);
+
+  // 8. SIGNATURE BLOCK
+  const signY = totalsBoxY + 54;
+  doc.setTextColor(71, 85, 105);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.text('Customer Signature & Acknowledgment', marginX + 4, signY + 12);
+  doc.line(marginX + 4, signY + 9, marginX + 50, signY + 9);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(4, 95, 96);
+  doc.text('For TULJA MOTORS KOLHAPUR', pageWidth - marginX - 52, signY);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(71, 85, 105);
+  doc.text('Authorized Workshop Signatory', pageWidth - marginX - 52, signY + 12);
+  doc.line(pageWidth - marginX - 52, signY + 9, pageWidth - marginX - 4, signY + 9);
+
+  // Bottom footer accent
+  doc.setFillColor(4, 95, 96);
+  doc.rect(0, 292, pageWidth, 5, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(7);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Tulja Motors Workshop Management System · Official Tax Invoice · Kolhapur, Maharashtra', pageWidth / 2, 295.5, { align: 'center' });
+
+  const safeReg = (invoice.vehicleRegistration || 'Vehicle').replace(/[^a-zA-Z0-9]/g, '_');
+  const fileName = `TuljaMotors_Invoice_${invoice.invoiceNumber}_${safeReg}.pdf`;
   doc.save(fileName);
   return fileName;
 }

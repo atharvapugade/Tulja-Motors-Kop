@@ -46,6 +46,7 @@ import AdvisorDashboard from '@/lib/components/AdvisorDashboard';
 import SupervisorDashboard from '@/lib/components/SupervisorDashboard';
 import BodyShopManagerDashboard from '@/lib/components/BodyShopManagerDashboard';
 import SparePartsManagerDashboard from '@/lib/components/SparePartsManagerDashboard';
+import TechnicianDashboard from '@/lib/components/TechnicianDashboard';
 import CenterPopupModal, { CenterPopupState } from '@/lib/components/CenterPopupModal';
 import { AdminReportPage } from '@/lib/utils/pdfGenerator';
 
@@ -1814,6 +1815,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           jobCards={jobCards}
           employees={employees}
           activityLogs={activityLogs}
+          invoices={invoices}
           loading={loading}
           onRefresh={fetchData}
           onNotify={(msg) => {
@@ -1848,13 +1850,31 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
       )}
 
       {/* ============================================================== */}
-      {/* OTHER ROLES (Accounts, Digital Marketing, Director, Tech)      */}
+      {/* WORKSHOP FLOOR TECHNICIAN DEDICATED WORKSPACE                  */}
+      {/* ============================================================== */}
+      {role === 'technician' && (
+        <TechnicianDashboard
+          activeTab={activeTab}
+          jobCards={jobCards}
+          employees={employees}
+          loading={loading}
+          onRefresh={fetchData}
+          onNotify={(msg) => {
+            setFeedbackMsg(msg);
+            setTimeout(() => setFeedbackMsg(''), 6000);
+          }}
+        />
+      )}
+
+      {/* ============================================================== */}
+      {/* OTHER ROLES (Accounts, Digital Marketing, Director)            */}
       {/* ============================================================== */}
       {role !== 'admin' &&
         role !== 'advisor' &&
         role !== 'supervisor' &&
         role !== 'body-shop-manager' &&
-        role !== 'spare-parts-manager' && (
+        role !== 'spare-parts-manager' &&
+        role !== 'technician' && (
         <div>
           {/* Role Header */}
           <div className="workspace-header">

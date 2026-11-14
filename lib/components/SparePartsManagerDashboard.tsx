@@ -132,6 +132,7 @@ export default function SparePartsManagerDashboard({
   const [issueQty, setIssueQty] = useState(1);
   const [issueNotes, setIssueNotes] = useState('');
   const [submittingIssue, setSubmittingIssue] = useState(false);
+  const [approvingReqId, setApprovingReqId] = useState<string | null>(null);
 
   const [showPoModal, setShowPoModal] = useState(false);
   const [poSupplierName, setPoSupplierName] = useState('Bosch India Kolhapur');
@@ -452,6 +453,58 @@ export default function SparePartsManagerDashboard({
       showCenterPopup('Failed to issue parts.', 'Error', 'error');
     } finally {
       setSubmittingIssue(false);
+    }
+  };
+
+  const handleApproveAndIssue = async (req: PartRequisition) => {
+    const part = parts.find((p) => p.id === req.partId || p.partNumber === req.partNumber);
+    if (part && part.stockQuantity < req.quantity) {
+      showCenterPopup(
+        `Insufficient stock! Warehouse only has ${part.stockQuantity} pcs of "${part.name}", but the floor requested ${req.quantity} pcs. Please create a Purchase Order to restock.`,
+        'Low Stock Warning',
+        'warning',
+        {
+          confirmLabel: 'Order Stock (Create PO)',
+          onConfirm: () => handleOpenPoModal(part),
+        }
+      );
+      return;
+    }
+
+    setApprovingReqId(req.id);
+    try {
+      const res = await fetch('/api/spare-parts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'approve_and_issue',
+          requisitionId: req.id,
+          issuedBy: 'Sachin K. Mane (Spare Parts Manager)',
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await Promise.all([fetchPartsData(), onRefresh()]);
+        onNotify(data.message || `Requisition approved! ${req.quantity}x ${req.partName} issued to floor.`);
+      } else {
+        if (data.needsRestock && data.part) {
+          showCenterPopup(
+            data.message || 'Insufficient stock to approve this requisition.',
+            'Stock Shortage',
+            'warning',
+            {
+              confirmLabel: 'Order Stock',
+              onConfirm: () => handleOpenPoModal(data.part),
+            }
+          );
+        } else {
+          showCenterPopup(data.message || 'Failed to approve requisition.', 'Error', 'error');
+        }
+      }
+    } catch {
+      showCenterPopup('Failed to approve requisition due to network or server error.', 'Error', 'error');
+    } finally {
+      setApprovingReqId(null);
     }
   };
 
@@ -1117,6 +1170,171 @@ export default function SparePartsManagerDashboard({
             </div>
           </div>
 
+          {/* Incoming Floor Requisitions (Supervisor Approval Queue) */}
+          <div className="wms-panel-card" style={{ marginBottom: '24px' }}>
+            <div className="panel-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+              <div>
+                <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Package size={18} style={{ color: '#D97706' }} />
+                  Incoming Floor Requisitions (Supervisor Approval Queue)
+                </h3>
+                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#64748b' }}>
+                  Live parts requested by workshop floor supervisors for active repairs
+                </p>
+              </div>
+              <div>
+                <span className={`stage-badge ${pendingRequisitions.length > 0 ? 'badge-warning' : 'badge-active'}`}>
+                  {pendingRequisitions.length} Pending Approval
+                </span>
+              </div>
+            </div>
+
+            {pendingRequisitions.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '32px 16px', color: '#64748b' }}>
+                <CheckCircle2 size={36} style={{ color: '#059669', margin: '0 auto 8px' }} />
+                <div style={{ fontWeight: '600', color: '#1e293b' }}>No Pending Floor Requisitions</div>
+                <div style={{ fontSize: '12px', marginTop: '4px' }}>All parts requested by workshop floor supervisors have been processed and issued.</div>
+              </div>
+            ) : (
+              <div className="wms-table-responsive">
+                <table className="wms-table">
+                  <thead>
+                    <tr>
+                      <th>Job Card &amp; Vehicle</th>
+                      <th>Requested Part</th>
+                      <th>Qty</th>
+                      <th>Warehouse Stock</th>
+                      <th>Supervisor Notes</th>
+                      <th>Requested By</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pendingRequisitions.map((req) => {
+                      const matchedPart = parts.find((p) => p.id === req.partId || p.partNumber === req.partNumber);
+                      const currentStock = matchedPart ? matchedPart.stockQuantity : 0;
+                      const hasSufficientStock = currentStock >= req.quantity;
+
+                      return (
+                        <tr key={req.id}>
+                          <td>
+                            <strong>{req.jobCardNumber}</strong>
+                            <div style={{ color: '#045F60', fontWeight: '600', fontSize: '12px' }}>
+                              {req.vehicleRegistration}
+                            </div>
+                            <div style={{ fontSize: '11px', color: '#64748b' }}>
+                              {req.vehicleModel}
+                            </div>
+                          </td>
+                          <td>
+                            <strong>{req.partName}</strong>
+                            <div style={{ fontSize: '11px', color: '#64748b' }}>
+                              SKU: <code>{req.partNumber}</code> · ₹{req.unitPrice}
+                            </div>
+                          </td>
+                          <td>
+                            <strong style={{ fontSize: '13px' }}>{req.quantity} pcs</strong>
+                            <div style={{ fontSize: '11px', color: '#045F60' }}>
+                              Total: ₹{req.totalPrice.toLocaleString('en-IN')}
+                            </div>
+                          </td>
+                          <td>
+                            {matchedPart ? (
+                              hasSufficientStock ? (
+                                <span className="stage-badge badge-active" title="Available in warehouse">
+                                  {currentStock} in stock
+                                </span>
+                              ) : (
+                                <span className="stage-badge badge-danger" title="Warehouse stock is less than requested">
+                                  Only {currentStock} in stock
+                                </span>
+                              )
+                            ) : (
+                              <span className="stage-badge badge-neutral">Part Not Found</span>
+                            )}
+                          </td>
+                          <td style={{ maxWidth: '220px', fontSize: '12px', color: '#334155' }}>
+                            {req.notes || '—'}
+                          </td>
+                          <td>
+                            <div style={{ fontSize: '12px', fontWeight: '500' }}>{req.requestedBy}</div>
+                            <div style={{ fontSize: '11px', color: '#64748b' }}>
+                              {new Date(req.requestedAt).toLocaleDateString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                              {hasSufficientStock ? (
+                                <button
+                                  type="button"
+                                  className="btn-primary-action"
+                                  style={{
+                                    padding: '5px 10px',
+                                    fontSize: '11px',
+                                    background: '#067a46',
+                                    borderColor: '#067a46',
+                                  }}
+                                  disabled={approvingReqId === req.id}
+                                  onClick={() => handleApproveAndIssue(req)}
+                                  title="Deduct stock & issue to job card"
+                                >
+                                  {approvingReqId === req.id ? (
+                                    <>
+                                      <Loader2 size={12} className="animate-spin" /> Issuing...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <CheckCircle2 size={12} /> Approve &amp; Issue
+                                    </>
+                                  )}
+                                </button>
+                              ) : (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="btn-secondary-action"
+                                    style={{
+                                      padding: '5px 9px',
+                                      fontSize: '11px',
+                                      borderColor: '#D97706',
+                                      color: '#B45309',
+                                    }}
+                                    onClick={() => handleOpenPoModal(matchedPart)}
+                                    title="Create Purchase Order for this part"
+                                  >
+                                    <Truck size={12} /> Order Stock
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn-secondary-action"
+                                    style={{
+                                      padding: '5px 8px',
+                                      fontSize: '11px',
+                                    }}
+                                    disabled={approvingReqId === req.id}
+                                    onClick={() => handleApproveAndIssue(req)}
+                                    title="Attempt issue or mark pending"
+                                  >
+                                    Check &amp; Issue
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
           {/* Active Job Cards Table */}
           <div className="wms-panel-card" style={{ marginBottom: '24px' }}>
             <div className="panel-card-header">
@@ -1201,6 +1419,7 @@ export default function SparePartsManagerDashboard({
                   onChange={(e) => setReqStatusFilter(e.target.value)}
                 >
                   <option value="ALL">All Statuses</option>
+                  <option value="Requested">Requested (Floor)</option>
                   <option value="Issued">Issued</option>
                   <option value="Allocated">Allocated</option>
                   <option value="Pending Stock">Pending Stock</option>
@@ -1214,19 +1433,20 @@ export default function SparePartsManagerDashboard({
                   <tr>
                     <th>Job Card</th>
                     <th>Vehicle</th>
-                    <th>Part Code & Name</th>
+                    <th>Part Code &amp; Name</th>
                     <th>Qty</th>
                     <th>Unit Cost</th>
                     <th>Total Value</th>
                     <th>Status</th>
                     <th>Requested By</th>
                     <th>Issued At</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredRequisitions.length === 0 ? (
                     <tr>
-                      <td colSpan={9} style={{ textAlign: 'center', padding: '24px', color: '#64748b' }}>
+                      <td colSpan={10} style={{ textAlign: 'center', padding: '24px', color: '#64748b' }}>
                         No parts requisitions recorded.
                       </td>
                     </tr>
@@ -1257,6 +1477,8 @@ export default function SparePartsManagerDashboard({
                                 ? 'badge-active'
                                 : req.status === 'Allocated'
                                 ? 'badge-info'
+                                : req.status === 'Requested'
+                                ? 'badge-warning'
                                 : 'badge-danger'
                             }`}
                           >
@@ -1266,6 +1488,27 @@ export default function SparePartsManagerDashboard({
                         <td style={{ fontSize: '12px' }}>{req.requestedBy}</td>
                         <td style={{ fontSize: '11px', color: '#64748b' }}>
                           {req.issuedAt ? new Date(req.issuedAt).toLocaleDateString('en-IN') : 'Pending'}
+                        </td>
+                        <td>
+                          {req.status === 'Requested' || req.status === 'Pending Stock' ? (
+                            <button
+                              type="button"
+                              className="btn-primary-action"
+                              style={{
+                                padding: '4px 8px',
+                                fontSize: '11px',
+                                background: '#067a46',
+                                borderColor: '#067a46',
+                              }}
+                              disabled={approvingReqId === req.id}
+                              onClick={() => handleApproveAndIssue(req)}
+                              title="Approve and issue part to floor"
+                            >
+                              {approvingReqId === req.id ? 'Issuing...' : 'Approve & Issue'}
+                            </button>
+                          ) : (
+                            <span style={{ fontSize: '11px', color: '#64748b' }}>Fulfilled</span>
+                          )}
                         </td>
                       </tr>
                     ))
@@ -2025,11 +2268,8 @@ export default function SparePartsManagerDashboard({
                     {poItems.map((item, idx) => (
                       <div
                         key={idx}
+                        className="wms-po-item-row"
                         style={{
-                          display: 'grid',
-                          gridTemplateColumns: '2fr 1fr 1fr auto',
-                          gap: '8px',
-                          alignItems: 'center',
                           background: '#f8fafc',
                           padding: '8px 10px',
                           borderRadius: '6px',

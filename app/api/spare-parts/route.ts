@@ -276,6 +276,134 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // 5b. SUPERVISOR FLOOR PART REQUISITION REQUEST
+    if (action === 'request_part') {
+      const { jobCardId, partId, quantity, notes, requestedBy } = body;
+      if (!jobCardId || !partId) {
+        return NextResponse.json({ success: false, message: 'Job Card and Spare Part are required.' }, { status: 400 });
+      }
+
+      const qty = Math.max(1, Number(quantity) || 1);
+      const part = await db.getSparePartById(partId);
+      if (!part) {
+        return NextResponse.json({ success: false, message: 'Selected spare part not found in catalog.' }, { status: 404 });
+      }
+
+      const allJobs = await db.getJobCards();
+      const job = allJobs.find((j) => j.id === jobCardId || j.jobCardNumber === jobCardId);
+      if (!job) {
+        return NextResponse.json({ success: false, message: 'Selected job card not found.' }, { status: 404 });
+      }
+
+      const lineTotal = (part.unitPrice || 0) * qty;
+      const requisition = await db.createPartRequisition({
+        jobCardId: job.id,
+        jobCardNumber: job.jobCardNumber,
+        vehicleRegistration: job.vehicleRegistration,
+        vehicleModel: job.vehicleModel,
+        partId: part.id,
+        partNumber: part.partNumber,
+        partName: part.name,
+        quantity: qty,
+        unitPrice: part.unitPrice || 0,
+        totalPrice: lineTotal,
+        status: 'Requested',
+        requestedBy: requestedBy || 'Workshop Supervisor',
+        notes: notes || `Supervisor floor request for ${job.vehicleModel} (${job.vehicleRegistration}).`,
+      });
+
+      await db.logActivity({
+        action: 'PARTS_REQUESTED',
+        entityType: 'PartRequisition',
+        entityId: requisition.id,
+        performedBy: requestedBy || 'Workshop Supervisor',
+        userRole: 'supervisor',
+        details: `Supervisor submitted requisition for ${qty}x "${part.name}" (${part.partNumber}) for Job Card ${job.jobCardNumber} (${job.vehicleRegistration}).`,
+      });
+
+      return NextResponse.json({
+        success: true,
+        requisition,
+        message: `Requisition submitted for ${qty}x "${part.name}". Sent to Spare Parts Manager for approval.`,
+      });
+    }
+
+    // 5c. APPROVE & ISSUE SUPERVISOR REQUISITION
+    if (action === 'approve_and_issue') {
+      const { requisitionId, issuedBy, notes } = body;
+      if (!requisitionId) {
+        return NextResponse.json({ success: false, message: 'Requisition ID is required.' }, { status: 400 });
+      }
+
+      const allReqs = await db.getPartRequisitions();
+      const requisition = allReqs.find((r) => r.id === requisitionId);
+      if (!requisition) {
+        return NextResponse.json({ success: false, message: 'Requisition not found.' }, { status: 404 });
+      }
+
+      if (requisition.status === 'Issued') {
+        return NextResponse.json({ success: false, message: 'Requisition has already been issued to the floor.' }, { status: 400 });
+      }
+
+      const part = await db.getSparePartById(requisition.partId);
+      if (!part) {
+        return NextResponse.json({ success: false, message: 'Associated spare part not found in catalog.' }, { status: 404 });
+      }
+
+      if (part.stockQuantity < requisition.quantity) {
+        await db.updatePartRequisition(requisition.id, { status: 'Pending Stock' });
+        return NextResponse.json(
+          {
+            success: false,
+            message: `Insufficient stock for "${part.name}". Available in warehouse: ${part.stockQuantity} pcs, Requested: ${requisition.quantity} pcs. Please generate a purchase order to restock.`,
+            needsRestock: true,
+            part,
+          },
+          { status: 400 }
+        );
+      }
+
+      // Deduct stock
+      const updatedPart = await db.adjustSparePartStock(part.id, -requisition.quantity);
+
+      // Update Requisition to Issued
+      const updatedReq = await db.updatePartRequisition(requisition.id, {
+        status: 'Issued',
+        issuedAt: new Date().toISOString(),
+        notes: notes ? `${requisition.notes || ''} | Issued: ${notes}` : requisition.notes,
+      });
+
+      // Clear bottleneck if job card was waiting for spare parts
+      const allJobs = await db.getJobCards();
+      const job = allJobs.find((j) => j.id === requisition.jobCardId || j.jobCardNumber === requisition.jobCardNumber);
+      if (job && job.bottleneckInfo?.category === 'Spare Parts Pending') {
+        await db.updateJobCard(job.id, {
+          bottleneckInfo: {
+            ...job.bottleneckInfo,
+            isDelayed: false,
+            resolvedAt: new Date().toISOString(),
+            actionPlan: `Spare parts (${part.name} x${requisition.quantity}) approved & delivered to floor by Spare Parts Manager.`,
+          },
+        });
+      }
+
+      await db.logActivity({
+        action: 'PARTS_ISSUED_TO_JOB',
+        entityType: 'PartRequisition',
+        entityId: requisition.id,
+        performedBy: issuedBy || 'Sachin K. Mane (Spare Parts Manager)',
+        userRole: 'spare_parts_manager',
+        details: `Approved & issued ${requisition.quantity}x "${part.name}" (${part.partNumber}) to Job Card ${requisition.jobCardNumber}. Total value: ₹${requisition.totalPrice.toLocaleString('en-IN')}.`,
+      });
+
+      return NextResponse.json({
+        success: true,
+        requisition: updatedReq,
+        part: updatedPart,
+        message: `Requisition approved! ${requisition.quantity}x "${part.name}" issued to floor for ${requisition.jobCardNumber}.`,
+      });
+    }
+
     // 6. CREATE PURCHASE ORDER
     if (action === 'create_po') {
       const { supplierName, supplierContact, expectedDeliveryDate, items, notes } = body;
