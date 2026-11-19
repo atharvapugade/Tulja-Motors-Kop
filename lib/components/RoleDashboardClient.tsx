@@ -40,6 +40,8 @@ import {
   Loader2,
   Lock,
   KeyRound,
+  Edit2,
+  Trash2,
 } from 'lucide-react';
 import ExportPdfModal from '@/lib/components/ExportPdfModal';
 import AdvisorDashboard from '@/lib/components/AdvisorDashboard';
@@ -83,6 +85,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
   const [payments, setPayments] = useState<any[]>([]);
   const [expenses, setExpenses] = useState<any[]>([]);
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
+  const [attendanceList, setAttendanceList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [feedbackMsg, setFeedbackMsg] = useState('');
 
@@ -136,6 +139,18 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
     reportingManager: 'Ranjeet B. Patil (Owner / MD)',
     salary: '40000',
   });
+  const [editingEmployee, setEditingEmployee] = useState<any | null>(null);
+  const [editEmpForm, setEditEmpForm] = useState({
+    name: '',
+    phone: '',
+    role: 'advisor',
+    department: 'Customer Advisory & Intake',
+    designation: 'Service Advisor',
+    reportingManager: 'Ranjeet B. Patil (Owner / MD)',
+    salary: '40000',
+    status: 'active',
+  });
+  const [savingEditEmp, setSavingEditEmp] = useState(false);
 
   if (!meta) {
     notFound();
@@ -160,6 +175,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
         if (statsData.allPayments) setPayments(statsData.allPayments);
         if (statsData.allExpenses) setExpenses(statsData.allExpenses);
         if (statsData.allActivityLogs) setActivityLogs(statsData.allActivityLogs);
+        if (statsData.allAttendance) setAttendanceList(statsData.allAttendance);
       }
       if (jobsData.success) setJobCards(jobsData.jobCards);
       if (empData.success) setEmployees(empData.employees);
@@ -230,7 +246,8 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           designation: newEmpForm.designation.trim(),
           reportingManager: newEmpForm.reportingManager.trim(),
           salary: parseInt(newEmpForm.salary, 10) || 40000,
-          createdBy: 'Ranjeet B. Patil (Super Admin)',
+          createdBy: role === 'hr' ? 'Snehal Shinde (HR Lead)' : 'Ranjeet B. Patil (Super Admin)',
+          userRole: role,
         }),
       });
       const data = await res.json();
@@ -273,6 +290,136 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
     } finally {
       setSubmittingEmp(false);
     }
+  };
+
+  // Open Edit Employee Modal
+  const handleOpenEditModal = (emp: any) => {
+    const isExecutive = emp.role === 'super_admin' || emp.role === 'admin' || emp.role === 'director';
+    if (role === 'hr' && isExecutive) {
+      showCenterPopup(
+        'Admin and Director accounts are protected executive records and can only be managed by Super Admin.',
+        'Protected Account',
+        'warning'
+      );
+      return;
+    }
+
+    const sal =
+      typeof emp.salary === 'object' && emp.salary?.total
+        ? String(emp.salary.total)
+        : typeof emp.salary === 'number'
+        ? String(emp.salary)
+        : '40000';
+
+    setEditingEmployee(emp);
+    setEditEmpForm({
+      name: emp.name || '',
+      phone: emp.phone || '',
+      role: emp.role || 'advisor',
+      department: emp.department || 'Service Advisory & Intake',
+      designation: emp.designation || '',
+      reportingManager: emp.reportingManager || '',
+      salary: sal,
+      status: emp.status || 'active',
+    });
+  };
+
+  // Save Edited Employee
+  const handleSaveEditEmployee = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingEmployee) return;
+    if (!editEmpForm.name.trim()) {
+      showCenterPopup('Please enter employee full name.', 'Missing Details', 'warning');
+      return;
+    }
+
+    setSavingEditEmp(true);
+    try {
+      const res = await fetch('/api/employees', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingEmployee.id,
+          updates: {
+            name: editEmpForm.name.trim(),
+            phone: editEmpForm.phone.trim(),
+            role: editEmpForm.role,
+            department: editEmpForm.department,
+            designation: editEmpForm.designation.trim(),
+            reportingManager: editEmpForm.reportingManager.trim(),
+            salary: parseInt(editEmpForm.salary, 10) || 40000,
+            status: editEmpForm.status,
+          },
+          userRole: role,
+          performedBy: role === 'hr' ? 'Snehal Shinde (HR Lead)' : 'Ranjeet B. Patil (Super Admin)',
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        showCenterPopup(data.message || 'Failed to update employee.', 'Update Failed', 'error');
+        return;
+      }
+
+      setEditingEmployee(null);
+      await fetchData();
+      setFeedbackMsg(`Employee "${editEmpForm.name}" updated successfully.`);
+      setTimeout(() => setFeedbackMsg(''), 5000);
+    } catch (err: unknown) {
+      showCenterPopup(
+        'Network error updating employee: ' + (err instanceof Error ? err.message : String(err)),
+        'Connection Error',
+        'error'
+      );
+    } finally {
+      setSavingEditEmp(false);
+    }
+  };
+
+  // Delete Employee (with Admin/Director protection)
+  const handleDeleteEmployee = (emp: any) => {
+    const isExecutive = emp.role === 'super_admin' || emp.role === 'admin' || emp.role === 'director';
+    if (isExecutive) {
+      showCenterPopup(
+        'Admin and Director accounts are protected executive profiles and cannot be deleted.',
+        'Cannot Delete Executive',
+        'warning'
+      );
+      return;
+    }
+
+    showCenterPopup(
+      `Are you sure you want to remove employee "${emp.name}" (${emp.employeeCode})? This will delete both the workshop employee record and revoke their portal access credentials.`,
+      `Delete Employee: ${emp.name}`,
+      'warning',
+      {
+        confirmLabel: 'Yes, Delete Employee',
+        onConfirm: async () => {
+          try {
+            const res = await fetch(
+              `/api/employees?id=${encodeURIComponent(emp.id)}&userRole=${encodeURIComponent(role)}`,
+              {
+                method: 'DELETE',
+              }
+            );
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+              showCenterPopup(data.message || 'Failed to delete employee.', 'Deletion Error', 'error');
+              return;
+            }
+            await fetchData();
+            setFeedbackMsg(`Employee "${emp.name}" removed successfully.`);
+            setTimeout(() => setFeedbackMsg(''), 5000);
+          } catch (err: unknown) {
+            showCenterPopup(
+              'Network error deleting employee: ' + (err instanceof Error ? err.message : String(err)),
+              'Connection Error',
+              'error'
+            );
+          }
+        },
+      }
+    );
   };
 
   // Filtered Lists
@@ -811,9 +958,9 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
       )}
 
       {/* ============================================================== */}
-      {/* SUPER ADMIN: TAB 2 - EMPLOYEES DIRECTORY (?tab=employees)       */}
+      {/* SUPER ADMIN & HR: EMPLOYEES DIRECTORY (?tab=employees)         */}
       {/* ============================================================== */}
-      {role === 'admin' && activeTab === 'employees' && (
+      {(role === 'admin' || role === 'hr') && (activeTab === 'employees' || activeTab === 'staff') && (
         <div>
           {/* Header */}
           <div className="workspace-header">
@@ -953,7 +1100,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                     <th>Reporting Manager</th>
                     <th>Contact Phone</th>
                     <th>Joining Date</th>
-                    <th>Salary (MD Confidential)</th>
+                    <th>Monthly Salary</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -984,21 +1131,67 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                         <td>{emp.joiningDate}</td>
                         <td>
                           <strong style={{ color: '#045F60' }}>
-                            ₹{emp.salary ? emp.salary.toLocaleString('en-IN') : '45,000'}
+                            ₹{typeof emp.salary === 'object' && emp.salary?.total
+                              ? emp.salary.total.toLocaleString('en-IN')
+                              : typeof emp.salary === 'number'
+                              ? emp.salary.toLocaleString('en-IN')
+                              : '45,000'}
                           </strong>
                         </td>
                         <td>
-                          <span className="stage-badge badge-active">{emp.status.toUpperCase()}</span>
+                          <span className={`stage-badge ${emp.status === 'active' ? 'badge-active' : 'badge-warning'}`}>
+                            {(emp.status || 'active').toUpperCase()}
+                          </span>
                         </td>
-                        <td>
-                          <button
-                            type="button"
-                            className="btn-secondary-action"
-                            style={{ padding: '5px 10px', fontSize: '12px' }}
-                            onClick={() => setSelectedEmployee(emp)}
-                          >
-                            <Eye size={13} /> View
-                          </button>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                            <button
+                              type="button"
+                              className="btn-secondary-action"
+                              style={{ padding: '5px 8px', fontSize: '12px' }}
+                              onClick={() => setSelectedEmployee(emp)}
+                              title="View Employee Profile"
+                            >
+                              <Eye size={13} /> View
+                            </button>
+
+                            {(emp.role === 'super_admin' || emp.role === 'admin' || emp.role === 'director') && role === 'hr' ? (
+                              <span
+                                className="stage-badge badge-warning"
+                                style={{
+                                  fontSize: '11px',
+                                  padding: '4px 8px',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                }}
+                                title="Protected Executive Account: Managed by Super Admin"
+                              >
+                                <Lock size={11} /> Executive
+                              </span>
+                            ) : (
+                              <>
+                                <button
+                                  type="button"
+                                  className="btn-secondary-action"
+                                  style={{ padding: '5px 8px', fontSize: '12px', color: '#045F60', borderColor: '#045F60' }}
+                                  onClick={() => handleOpenEditModal(emp)}
+                                  title="Edit Employee Profile"
+                                >
+                                  <Edit2 size={13} /> Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn-secondary-action"
+                                  style={{ padding: '5px 8px', fontSize: '12px', color: '#b91c1c', borderColor: '#fca5a5' }}
+                                  onClick={() => handleDeleteEmployee(emp)}
+                                  title="Delete Employee"
+                                >
+                                  <Trash2 size={13} /> Delete
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -1856,6 +2049,516 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
       )}
 
       {/* ============================================================== */}
+      {/* HUMAN RESOURCES (HR): OVERVIEW TAB (?tab=overview)             */}
+      {/* ============================================================== */}
+      {role === 'hr' && (activeTab === 'overview' || !activeTab) && (
+        <div>
+          <div className="workspace-header">
+            <div className="workspace-title-box">
+              <h1>Human Resources Hub</h1>
+              <p style={{ fontSize: '13px', color: '#666', marginTop: '4px' }}>
+                Workshop staff directory, attendance monitoring, and personnel management.
+              </p>
+            </div>
+
+            <div className="workspace-actions">
+              <button
+                type="button"
+                className="btn-secondary-action"
+                style={{ borderColor: '#045F60', color: '#045F60', fontWeight: '700' }}
+                onClick={() => {
+                  setExportModalConfig({
+                    isOpen: true,
+                    page: 'employees',
+                    pageTitle: 'Staff Directory Report',
+                  });
+                }}
+                title="Export Staff Directory PDF"
+              >
+                <Download size={15} /> Export PDF
+              </button>
+
+              <button
+                type="button"
+                className="btn-primary-action"
+                onClick={() => {
+                  setNewEmpForm({
+                    name: '',
+                    email: '',
+                    password: '',
+                    phone: '',
+                    role: 'technician',
+                    department: 'Technician Team',
+                    designation: 'Denting & Bodywork Technician',
+                    reportingManager: 'Mahesh Jadhav (Workshop Supervisor)',
+                    salary: '35000',
+                  });
+                  setShowAddEmpModal(true);
+                }}
+              >
+                <Plus size={16} /> Add Staff
+              </button>
+            </div>
+          </div>
+
+          {/* HR KPI Metrics */}
+          <div className="wms-stats-grid">
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Total Staff</span>
+                <div className="stat-icon-wrapper" style={{ background: '#e6f2f2', color: '#045F60' }}>
+                  <Users size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">{employees.length} Personnel</div>
+              <div className="stat-card-subtext">Across 6 workshop departments</div>
+            </div>
+
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Active Personnel</span>
+                <div className="stat-icon-wrapper" style={{ background: '#e6f7ef', color: '#067a46' }}>
+                  <UserCheck size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">
+                {employees.filter((e) => e.status === 'active').length} Active
+              </div>
+              <div className="stat-card-subtext">Full-time workshop team</div>
+            </div>
+
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Present Today</span>
+                <div className="stat-icon-wrapper" style={{ background: '#e6f7ef', color: '#067a46' }}>
+                  <CheckCircle2 size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">{stats?.presentToday || 7} Staff</div>
+              <div className="stat-card-subtext">Biometric verified at main gate</div>
+            </div>
+
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Departments</span>
+                <div className="stat-icon-wrapper" style={{ background: '#fff8e6', color: '#b45309' }}>
+                  <Building2 size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">6 Workshop Teams</div>
+              <div className="stat-card-subtext">Advisory, Supervision, Paint, Denting</div>
+            </div>
+          </div>
+
+          {/* Quick Staff Roster Table with Edit/Delete */}
+          <div className="wms-panel-card">
+            <div className="panel-card-header">
+              <h3>Workshop Staff Roster</h3>
+              <div className="wms-filter-controls">
+                <input
+                  type="text"
+                  className="table-search-input"
+                  placeholder="Search staff by name, code, designation..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <select
+                  className="wms-select-input"
+                  value={deptFilter}
+                  onChange={(e) => setDeptFilter(e.target.value)}
+                >
+                  <option value="ALL">All Departments ({employees.length})</option>
+                  <option value="Top Management">Top Management</option>
+                  <option value="Board of Directors">Board of Directors</option>
+                  <option value="Workshop Operations">Workshop Operations</option>
+                  <option value="Human Resources">Human Resources</option>
+                  <option value="Service Advisory & Intake">Service Advisory & Intake</option>
+                  <option value="Workshop Supervision">Workshop Supervision</option>
+                  <option value="Spare Parts & Inventory">Spare Parts & Inventory</option>
+                  <option value="Accounts & Finance">Accounts & Finance</option>
+                  <option value="Digital Marketing & CRM">Digital Marketing & CRM</option>
+                  <option value="Technician Team">Technician Team</option>
+                </select>
+                <span className="stage-badge badge-info">
+                  {filteredEmployees.length} of {employees.length} Staff
+                </span>
+              </div>
+            </div>
+
+            <div className="wms-table-responsive">
+              <table className="wms-table">
+                <thead>
+                  <tr>
+                    <th>Emp Code</th>
+                    <th>Employee Name</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Reporting Manager</th>
+                    <th>Contact Phone</th>
+                    <th>Monthly Salary</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredEmployees.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} style={{ textAlign: 'center', padding: '30px', color: '#888' }}>
+                        No employees found matching filter criteria.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredEmployees.map((emp) => (
+                      <tr key={emp.id}>
+                        <td>
+                          <code>{emp.employeeCode}</code>
+                        </td>
+                        <td>
+                          <strong>{emp.name}</strong>
+                          <div style={{ fontSize: '11px', color: '#777' }}>{emp.email}</div>
+                        </td>
+                        <td>{emp.designation}</td>
+                        <td>
+                          <span className="stage-badge badge-info">{emp.department}</span>
+                        </td>
+                        <td>{emp.reportingManager || 'Board'}</td>
+                        <td>{emp.phone || '+91 98220 11001'}</td>
+                        <td>
+                          <strong style={{ color: '#045F60' }}>
+                            ₹{typeof emp.salary === 'object' && emp.salary?.total
+                              ? emp.salary.total.toLocaleString('en-IN')
+                              : typeof emp.salary === 'number'
+                              ? emp.salary.toLocaleString('en-IN')
+                              : '45,000'}
+                          </strong>
+                        </td>
+                        <td>
+                          <span className={`stage-badge ${emp.status === 'active' ? 'badge-active' : 'badge-warning'}`}>
+                            {(emp.status || 'active').toUpperCase()}
+                          </span>
+                        </td>
+                        <td style={{ whiteSpace: 'nowrap' }}>
+                          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                            <button
+                              type="button"
+                              className="btn-secondary-action"
+                              style={{ padding: '5px 8px', fontSize: '12px' }}
+                              onClick={() => setSelectedEmployee(emp)}
+                              title="View Employee Profile"
+                            >
+                              <Eye size={13} /> View
+                            </button>
+
+                            {emp.role === 'super_admin' || emp.role === 'admin' || emp.role === 'director' ? (
+                              <span
+                                className="stage-badge badge-warning"
+                                style={{
+                                  fontSize: '11px',
+                                  padding: '4px 8px',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                }}
+                                title="Protected Executive Account: Managed by Super Admin"
+                              >
+                                <Lock size={11} /> Executive
+                              </span>
+                            ) : (
+                              <>
+                                <button
+                                  type="button"
+                                  className="btn-secondary-action"
+                                  style={{ padding: '5px 8px', fontSize: '12px', color: '#045F60', borderColor: '#045F60' }}
+                                  onClick={() => handleOpenEditModal(emp)}
+                                  title="Edit Employee Profile"
+                                >
+                                  <Edit2 size={13} /> Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn-secondary-action"
+                                  style={{ padding: '5px 8px', fontSize: '12px', color: '#b91c1c', borderColor: '#fca5a5' }}
+                                  onClick={() => handleDeleteEmployee(emp)}
+                                  title="Delete Employee"
+                                >
+                                  <Trash2 size={13} /> Delete
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* HUMAN RESOURCES (HR): ATTENDANCE TAB (?tab=attendance)          */}
+      {/* ============================================================== */}
+      {role === 'hr' && activeTab === 'attendance' && (
+        <div>
+          <div className="workspace-header">
+            <div className="workspace-title-box">
+              <h1>Workshop Staff Attendance</h1>
+              <p style={{ fontSize: '13px', color: '#666', marginTop: '4px' }}>
+                Daily biometric check-in tracking, attendance status, and workshop floor presence.
+              </p>
+            </div>
+            <div className="workspace-actions">
+              <button
+                type="button"
+                className="btn-secondary-action"
+                onClick={() =>
+                  showCenterPopup(
+                    'Biometric device sync active. All gate punches verified.',
+                    'Biometric Attendance',
+                    'info'
+                  )
+                }
+              >
+                <CheckCircle2 size={15} /> Biometric Sync: Active
+              </button>
+            </div>
+          </div>
+
+          <div className="wms-stats-grid">
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Present Today</span>
+                <div className="stat-icon-wrapper" style={{ background: '#e6f7ef', color: '#067a46' }}>
+                  <UserCheck size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">{stats?.presentToday || 7} Staff</div>
+              <div className="stat-card-subtext">On workshop floor</div>
+            </div>
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">On Leave / Absent</span>
+                <div className="stat-icon-wrapper" style={{ background: '#fbebed', color: '#8A181A' }}>
+                  <Clock size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">{stats?.absentToday || 2} Staff</div>
+              <div className="stat-card-subtext">Approved leaves & off-duty</div>
+            </div>
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Biometric Gate</span>
+                <div className="stat-icon-wrapper" style={{ background: '#e6f2f2', color: '#045F60' }}>
+                  <ShieldCheck size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">Online</div>
+              <div className="stat-card-subtext">Main gate entry scanner</div>
+            </div>
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Work Shift</span>
+                <div className="stat-icon-wrapper" style={{ background: '#fff8e6', color: '#b45309' }}>
+                  <Calendar size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">09:00 - 18:30</div>
+              <div className="stat-card-subtext">General workshop shift</div>
+            </div>
+          </div>
+
+          <div className="wms-panel-card">
+            <div className="panel-card-header">
+              <h3>Daily Attendance Log</h3>
+            </div>
+            <div className="wms-table-responsive">
+              <table className="wms-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Employee Name</th>
+                    <th>Department</th>
+                    <th>Check-In Time</th>
+                    <th>Check-Out Time</th>
+                    <th>Gate Device</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {attendanceList.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} style={{ textAlign: 'center', padding: '30px', color: '#888' }}>
+                        Loading attendance records...
+                      </td>
+                    </tr>
+                  ) : (
+                    attendanceList.slice(0, 15).map((att: any, idx: number) => (
+                      <tr key={att.id || idx}>
+                        <td>
+                          <strong>{att.date}</strong>
+                        </td>
+                        <td>
+                          <strong>{att.employeeName}</strong>
+                        </td>
+                        <td>
+                          <span className="stage-badge badge-info">{att.department || 'Workshop'}</span>
+                        </td>
+                        <td>{att.checkInTime || '09:02 AM'}</td>
+                        <td>{att.checkOutTime || '—'}</td>
+                        <td>{att.device || 'Gate-01 Biometric'}</td>
+                        <td>
+                          <span
+                            className={`stage-badge ${
+                              att.status === 'Present'
+                                ? 'badge-active'
+                                : att.status === 'Late'
+                                ? 'badge-warning'
+                                : 'badge-danger'
+                            }`}
+                          >
+                            {att.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* HUMAN RESOURCES (HR): LEAVES TAB (?tab=leaves)                  */}
+      {/* ============================================================== */}
+      {role === 'hr' && activeTab === 'leaves' && (
+        <div>
+          <div className="workspace-header">
+            <div className="workspace-title-box">
+              <h1>Staff Leave & Absence Management</h1>
+              <p style={{ fontSize: '13px', color: '#666', marginTop: '4px' }}>
+                Review and approve workshop staff leave requests, casual leaves, and sick leaves.
+              </p>
+            </div>
+          </div>
+
+          <div className="wms-stats-grid">
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Pending Leave Requests</span>
+                <div className="stat-icon-wrapper" style={{ background: '#fff8e6', color: '#b45309' }}>
+                  <Clock size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">1 Request</div>
+              <div className="stat-card-subtext">Awaiting HR review</div>
+            </div>
+            <div className="wms-stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-title">Approved Leaves This Month</span>
+                <div className="stat-icon-wrapper" style={{ background: '#e6f7ef', color: '#067a46' }}>
+                  <CheckCircle2 size={20} />
+                </div>
+              </div>
+              <div className="stat-card-value">4 Days</div>
+              <div className="stat-card-subtext">Across workshop staff</div>
+            </div>
+          </div>
+
+          <div className="wms-panel-card">
+            <div className="panel-card-header">
+              <h3>Leave Applications & Requests</h3>
+            </div>
+            <div className="wms-table-responsive">
+              <table className="wms-table">
+                <thead>
+                  <tr>
+                    <th>Employee Name</th>
+                    <th>Department</th>
+                    <th>Leave Type</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Total Days</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>Pravin Gaikwad</strong>
+                      <div style={{ fontSize: '11px', color: '#777' }}>painter@tuljamotors.com</div>
+                    </td>
+                    <td>
+                      <span className="stage-badge badge-info">Technician Team</span>
+                    </td>
+                    <td>Casual Leave</td>
+                    <td>2026-11-22</td>
+                    <td>2026-11-23</td>
+                    <td>2 Days</td>
+                    <td>Family function in Karad</td>
+                    <td>
+                      <span className="stage-badge badge-warning">Pending Approval</span>
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                          type="button"
+                          className="btn-primary-action"
+                          style={{ padding: '4px 8px', fontSize: '11px' }}
+                          onClick={() => {
+                            setFeedbackMsg('Leave request for Pravin Gaikwad approved.');
+                            setTimeout(() => setFeedbackMsg(''), 4000);
+                          }}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-secondary-action"
+                          style={{ padding: '4px 8px', fontSize: '11px', color: '#b91c1c' }}
+                          onClick={() => {
+                            setFeedbackMsg('Leave request rejected.');
+                            setTimeout(() => setFeedbackMsg(''), 4000);
+                          }}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Rohan Pawar</strong>
+                      <div style={{ fontSize: '11px', color: '#777' }}>mechanic@tuljamotors.com</div>
+                    </td>
+                    <td>
+                      <span className="stage-badge badge-info">Technician Team</span>
+                    </td>
+                    <td>Sick Leave</td>
+                    <td>2026-11-15</td>
+                    <td>2026-11-16</td>
+                    <td>2 Days</td>
+                    <td>Fever and medical rest</td>
+                    <td>
+                      <span className="stage-badge badge-active">Approved</span>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '12px', color: '#045F60', fontWeight: '600' }}>✓ Approved by HR</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
       {/* OTHER ROLES (Accounts, Digital Marketing, Director)            */}
       {/* ============================================================== */}
       {role !== 'admin' &&
@@ -1863,7 +2566,8 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
         role !== 'supervisor' &&
         role !== 'body-shop-manager' &&
         role !== 'spare-parts-manager' &&
-        role !== 'technician' && (
+        role !== 'technician' &&
+        role !== 'hr' && (
         <div>
           {/* Role Header */}
           <div className="workspace-header">
@@ -2134,9 +2838,11 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                   <span className="stage-badge badge-active">Live Database Write</span>
                   <span className="stage-badge badge-info">Portal User Account</span>
                 </div>
-                <h3>Register Staff & Create Portal Account</h3>
+                <h3>{role === 'hr' ? 'Add Workshop Staff & Portal Account' : 'Register Staff & Create Portal Account'}</h3>
                 <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                  Super Admin can add HR or workshop personnel. Credentials are saved directly in DB so they can immediately sign in.
+                  {role === 'hr'
+                    ? 'HR can register workshop personnel and staff members. Credentials are saved directly in DB so they can immediately sign in.'
+                    : 'Super Admin can add HR or workshop personnel. Credentials are saved directly in DB so they can immediately sign in.'}
                 </p>
               </div>
               <button
@@ -2368,6 +3074,187 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
       )}
 
       {/* ============================================================== */}
+      {/* MODAL 1B: EDIT EMPLOYEE PROFILE                                */}
+      {/* ============================================================== */}
+      {editingEmployee && (
+        <div className="wms-modal-backdrop" onClick={() => !savingEditEmp && setEditingEmployee(null)}>
+          <div className="wms-modal-card" style={{ maxWidth: '640px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div>
+                <div className="wms-header-badges">
+                  <span className="stage-badge badge-active">{editingEmployee.employeeCode}</span>
+                  <span className="stage-badge badge-info">{editingEmployee.email}</span>
+                </div>
+                <h3>Edit Employee: {editingEmployee.name}</h3>
+                <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                  Update workshop staff record, department, designation, and salary details.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                disabled={savingEditEmp}
+                onClick={() => setEditingEmployee(null)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <form onSubmit={handleSaveEditEmployee}>
+              <div className="modal-body" style={{ maxHeight: '72vh', overflowY: 'auto' }}>
+                <div className="wms-form-grid-2">
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editEmpForm.name}
+                      onChange={(e) => setEditEmpForm({ ...editEmpForm, name: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Contact Phone
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editEmpForm.phone}
+                      onChange={(e) => setEditEmpForm({ ...editEmpForm, phone: e.target.value })}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Employment Status
+                    </label>
+                    <select
+                      className="wms-select-input"
+                      style={{ width: '100%' }}
+                      value={editEmpForm.status}
+                      onChange={(e) => setEditEmpForm({ ...editEmpForm, status: e.target.value })}
+                    >
+                      <option value="active">Active</option>
+                      <option value="on_leave">On Leave</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Portal Role *
+                    </label>
+                    <select
+                      className="wms-select-input"
+                      style={{ width: '100%' }}
+                      value={editEmpForm.role}
+                      onChange={(e) => setEditEmpForm({ ...editEmpForm, role: e.target.value })}
+                    >
+                      <option value="advisor">Service Advisor</option>
+                      <option value="supervisor">Workshop Supervisor</option>
+                      <option value="body_shop_manager">Body Shop Manager</option>
+                      <option value="spare_parts_manager">Spare Parts Manager</option>
+                      <option value="technician">Technician</option>
+                      <option value="hr">Human Resources (HR)</option>
+                      <option value="accounts">Accounts & Finance</option>
+                      <option value="digital_marketing">Digital Marketing</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Department *
+                    </label>
+                    <select
+                      className="wms-select-input"
+                      style={{ width: '100%' }}
+                      value={editEmpForm.department}
+                      onChange={(e) => setEditEmpForm({ ...editEmpForm, department: e.target.value })}
+                    >
+                      <option value="Service Advisory & Intake">Service Advisory & Intake</option>
+                      <option value="Workshop Supervision">Workshop Supervision</option>
+                      <option value="Workshop Operations">Workshop Operations</option>
+                      <option value="Spare Parts & Inventory">Spare Parts & Inventory</option>
+                      <option value="Technician Team">Technician Team</option>
+                      <option value="Human Resources">Human Resources</option>
+                      <option value="Accounts & Finance">Accounts & Finance</option>
+                      <option value="Digital Marketing & CRM">Digital Marketing & CRM</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Designation *
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editEmpForm.designation}
+                      onChange={(e) => setEditEmpForm({ ...editEmpForm, designation: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Reporting Manager
+                    </label>
+                    <input
+                      type="text"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editEmpForm.reportingManager}
+                      onChange={(e) => setEditEmpForm({ ...editEmpForm, reportingManager: e.target.value })}
+                    />
+                  </div>
+
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                      Monthly Salary (₹)
+                    </label>
+                    <input
+                      type="number"
+                      className="table-search-input"
+                      style={{ width: '100%' }}
+                      value={editEmpForm.salary}
+                      onChange={(e) => setEditEmpForm({ ...editEmpForm, salary: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn-secondary-action"
+                  disabled={savingEditEmp}
+                  onClick={() => setEditingEmployee(null)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn-primary-action" disabled={savingEditEmp}>
+                  {savingEditEmp ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" /> Saving Changes...
+                    </>
+                  ) : (
+                    <>
+                      <Check size={16} /> Save Changes
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
       {/* MODAL 2: VIEW EMPLOYEE PROFILE                                 */}
       {/* ============================================================== */}
       {selectedEmployee && (
@@ -2415,16 +3302,36 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 <div>
                   <strong style={{ color: '#888', fontSize: '11px', display: 'block' }}>MONTHLY COMPENSATION</strong>
                   <div style={{ color: '#045F60', fontWeight: '700' }}>
-                    ₹{selectedEmployee.salary?.toLocaleString('en-IN') || '45,000'} / month
+                    ₹{typeof selectedEmployee.salary === 'object' && selectedEmployee.salary?.total
+                      ? selectedEmployee.salary.total.toLocaleString('en-IN')
+                      : typeof selectedEmployee.salary === 'number'
+                      ? selectedEmployee.salary.toLocaleString('en-IN')
+                      : '45,000'}{' '}
+                    / month
                   </div>
                 </div>
                 <div>
                   <strong style={{ color: '#888', fontSize: '11px', display: 'block' }}>STATUS</strong>
-                  <span className="stage-badge badge-active">{selectedEmployee.status.toUpperCase()}</span>
+                  <span className={`stage-badge ${selectedEmployee.status === 'active' ? 'badge-active' : 'badge-warning'}`}>
+                    {(selectedEmployee.status || 'active').toUpperCase()}
+                  </span>
                 </div>
               </div>
             </div>
             <div className="modal-footer">
+              {!(selectedEmployee.role === 'super_admin' || selectedEmployee.role === 'admin' || selectedEmployee.role === 'director') || role === 'admin' ? (
+                <button
+                  type="button"
+                  className="btn-primary-action"
+                  onClick={() => {
+                    const emp = selectedEmployee;
+                    setSelectedEmployee(null);
+                    handleOpenEditModal(emp);
+                  }}
+                >
+                  <Edit2 size={14} /> Edit Staff
+                </button>
+              ) : null}
               <button
                 type="button"
                 className="btn-secondary-action"

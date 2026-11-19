@@ -255,6 +255,25 @@ export const db = {
     return state.users[idx];
   },
 
+  deleteUser: async (id: string): Promise<boolean> => {
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        await UserModel.deleteOne({ id });
+      }
+    } catch (err) {
+      console.warn('Error deleting user from MongoDB:', err);
+    }
+    const state = loadDatabase();
+    const idx = state.users.findIndex((u) => u.id === id);
+    if (idx !== -1) {
+      state.users.splice(idx, 1);
+      saveDatabase(state);
+      return true;
+    }
+    return false;
+  },
+
   // ==========================================
   // EMPLOYEES
   // ==========================================
@@ -325,6 +344,25 @@ export const db = {
     state.employees[idx] = { ...state.employees[idx], ...updates };
     saveDatabase(state);
     return state.employees[idx];
+  },
+
+  deleteEmployee: async (id: string): Promise<boolean> => {
+    try {
+      const { isConnected } = await connectToDatabase();
+      if (isConnected) {
+        await EmployeeModel.deleteOne({ $or: [{ id }, { employeeCode: id }] });
+      }
+    } catch (err) {
+      console.warn('Error deleting employee from MongoDB:', err);
+    }
+    const state = loadDatabase();
+    const idx = state.employees.findIndex((e) => e.id === id || e.employeeCode === id);
+    if (idx !== -1) {
+      state.employees.splice(idx, 1);
+      saveDatabase(state);
+      return true;
+    }
+    return false;
   },
 
   // ==========================================

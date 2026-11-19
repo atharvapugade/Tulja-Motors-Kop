@@ -134,16 +134,13 @@ export default function DashboardLayout({
           { name: 'Delays & Issues', href: `${base}?tab=delays`, icon: Clock },
           { name: 'Billing & Invoices', href: `${base}?tab=billing`, icon: ReceiptIndianRupee },
         ];
-      /*
       case 'hr':
         return [
           { name: 'Overview', href: base, icon: LayoutDashboard },
-          { name: 'Staff', href: `${base}?tab=staff`, icon: Users },
+          { name: 'Employees', href: `${base}?tab=employees`, icon: Users },
           { name: 'Attendance', href: `${base}?tab=attendance`, icon: UserCheck },
-          { name: 'Marketing', href: `${base}?tab=marketing`, icon: Megaphone },
           { name: 'Leaves', href: `${base}?tab=leaves`, icon: Clock },
         ];
-      */
       case 'advisor':
         return [
           { name: 'Overview', href: base, icon: LayoutDashboard },

@@ -80,6 +80,14 @@ export async function POST(req: NextRequest) {
       userRole = 'hr';
     }
 
+    const creatorRole: UserRole = body.userRole || body.creatorRole || 'super_admin';
+    if (creatorRole === 'hr' && (userRole === 'super_admin' || userRole === 'admin' || userRole === 'director')) {
+      return NextResponse.json(
+        { success: false, message: 'HR is not authorized to create Admin or Director accounts.' },
+        { status: 403 }
+      );
+    }
+
     const dept = body.department || (userRole === 'hr' ? 'Human Resources' : 'Workshop Operations');
     const designation =
       body.designation?.trim() || (userRole === 'hr' ? 'Human Resources Manager' : 'Staff Specialist');
@@ -140,7 +148,6 @@ export async function POST(req: NextRequest) {
     const savedEmp = await db.createEmployee(newEmp);
 
     // 3. Log Audit Trail
-    const creatorRole: UserRole = body.userRole || 'super_admin';
     await db.logActivity({
       action: 'EMPLOYEE_ADDED',
       entityType: 'Employee',
@@ -164,6 +171,149 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Error creating employee';
+    return NextResponse.json({ success: false, message }, { status: 500 });
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { id, updates, userRole: requesterRole } = body;
+
+    if (!id) {
+      return NextResponse.json({ success: false, message: 'Employee ID is required.' }, { status: 400 });
+    }
+
+    const employee = await db.getEmployeeById(id);
+    if (!employee) {
+      return NextResponse.json({ success: false, message: 'Employee not found.' }, { status: 404 });
+    }
+
+    // Protection rule: HR cannot modify Admin or Director accounts
+    const isExecutive = employee.role === 'super_admin' || employee.role === 'admin' || employee.role === 'director';
+    if (requesterRole === 'hr' && isExecutive) {
+      return NextResponse.json(
+        { success: false, message: 'Protected account: HR cannot modify Admin or Director accounts.' },
+        { status: 403 }
+      );
+    }
+
+    // Protection rule: HR cannot elevate an employee to Admin or Director
+    if (requesterRole === 'hr' && updates?.role && (updates.role === 'super_admin' || updates.role === 'admin' || updates.role === 'director')) {
+      return NextResponse.json(
+        { success: false, message: 'HR cannot assign Admin or Director roles.' },
+        { status: 403 }
+      );
+    }
+
+    // Format salary if provided
+    const empUpdates: Partial<Employee> = { ...updates };
+    if (updates?.salary !== undefined) {
+      if (typeof updates.salary === 'number' || typeof updates.salary === 'string') {
+        const basic = Number(updates.salary) || 0;
+        const allowances = Math.round(basic * 0.15);
+        empUpdates.salary = { basic, allowances, total: basic + allowances };
+      } else if (typeof updates.salary === 'object' && updates.salary !== null) {
+        const basic = Number(updates.salary.basic) || 0;
+        const allowances = Number(updates.salary.allowances) || 0;
+        empUpdates.salary = { basic, allowances, total: basic + allowances };
+      }
+    }
+
+    const updatedEmp = await db.updateEmployee(id, empUpdates);
+
+    // Sync changes to linked User account if applicable
+    if (employee.userId) {
+      const userUpdates: Partial<User> = {};
+      if (updates.name) userUpdates.name = updates.name.trim();
+      if (updates.phone) userUpdates.phone = updates.phone.trim();
+      if (updates.department) userUpdates.department = updates.department;
+      if (updates.role) userUpdates.role = updates.role;
+      if (updates.status) userUpdates.status = updates.status;
+      if (Object.keys(userUpdates).length > 0) {
+        await db.updateUser(employee.userId, userUpdates);
+      }
+    }
+
+    // Audit log
+    await db.logActivity({
+      action: 'EMPLOYEE_UPDATED',
+      entityType: 'Employee',
+      entityId: id,
+      performedBy: body.performedBy || (requesterRole === 'hr' ? 'HR Lead (Snehal Shinde)' : 'Ranjeet B. Patil (Super Admin)'),
+      userRole: (requesterRole as UserRole) || 'hr',
+      details: `Updated employee profile for ${employee.name} (${employee.employeeCode}).`,
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: `Employee ${employee.name} updated successfully.`,
+      employee: updatedEmp,
+    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Error updating employee';
+    return NextResponse.json({ success: false, message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    let id = searchParams.get('id');
+    let requesterRole = searchParams.get('userRole');
+
+    if (!id) {
+      try {
+        const body = await req.json();
+        id = body.id;
+        requesterRole = body.userRole || requesterRole;
+      } catch {
+        // query param was used
+      }
+    }
+
+    if (!id) {
+      return NextResponse.json({ success: false, message: 'Employee ID is required.' }, { status: 400 });
+    }
+
+    const employee = await db.getEmployeeById(id);
+    if (!employee) {
+      return NextResponse.json({ success: false, message: 'Employee not found.' }, { status: 404 });
+    }
+
+    // Protection rule: Admin and Director accounts cannot be deleted
+    const isExecutive = employee.role === 'super_admin' || employee.role === 'admin' || employee.role === 'director';
+    if (isExecutive) {
+      return NextResponse.json(
+        { success: false, message: 'Protected account: Admin and Director accounts cannot be deleted.' },
+        { status: 403 }
+      );
+    }
+
+    // Delete employee
+    await db.deleteEmployee(id);
+
+    // Delete linked user account if exists
+    if (employee.userId) {
+      await db.deleteUser(employee.userId);
+    }
+
+    // Audit log
+    await db.logActivity({
+      action: 'EMPLOYEE_DELETED',
+      entityType: 'Employee',
+      entityId: id,
+      performedBy: requesterRole === 'hr' ? 'HR Lead (Snehal Shinde)' : 'Ranjeet B. Patil (Super Admin)',
+      userRole: (requesterRole as UserRole) || 'hr',
+      details: `Removed employee ${employee.name} (${employee.employeeCode}) and revoked portal user account.`,
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: `Employee ${employee.name} deleted successfully.`,
+    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Error deleting employee';
     return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }
