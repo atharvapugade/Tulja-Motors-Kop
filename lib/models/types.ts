@@ -76,7 +76,38 @@ export interface Vehicle {
   createdAt: string;
 }
 
+export type StandardRepairStage = 'Denting' | 'Painting' | 'Detailing' | 'Delivery';
+
+export const WORKSHOP_STAGES: StandardRepairStage[] = [
+  'Denting',
+  'Painting',
+  'Detailing',
+  'Delivery',
+];
+
+export function normalizeStage(stage?: string): StandardRepairStage {
+  if (!stage) return 'Denting';
+  const s = stage.trim().toLowerCase();
+  if (s.includes('paint')) return 'Painting';
+  if (
+    s.includes('detail') ||
+    s.includes('reassembl') ||
+    s.includes('quality') ||
+    s.includes('final') ||
+    s.includes('inspection')
+  ) {
+    return 'Detailing';
+  }
+  if (s.includes('deliver') || s.includes('ready')) return 'Delivery';
+  return 'Denting';
+}
+
 export type RepairStage =
+  | 'Denting'
+  | 'Painting'
+  | 'Detailing'
+  | 'Delivery'
+  // Legacy stages supported for existing data compatibility
   | 'Vehicle Received'
   | 'Initial Inspection'
   | 'Estimation'
@@ -84,7 +115,6 @@ export type RepairStage =
   | 'Dismantling'
   | 'Denting & Bodywork'
   | 'Mechanical Work'
-  | 'Painting'
   | 'Reassembly'
   | 'Quality Inspection'
   | 'Final Approval'
@@ -106,6 +136,8 @@ export interface InspectionDetail {
   visibleDamages: string[];
   inspectionNotes: string;
   photographs: string[];
+  damagePhotos?: string[];
+  insurancePhotos?: string[];
   insuranceProvider?: string;
   policyNumber?: string;
   claimNumber?: string;
@@ -166,9 +198,20 @@ export interface JobCard {
   customerId: string;
   customerName: string;
   customerPhone: string;
+  customerEmail?: string;
+  customerAddress?: string;
+  customerCity?: string;
   vehicleId: string;
   vehicleRegistration: string;
   vehicleModel: string;
+  vehicleMake?: string;
+  vehicleVariant?: string;
+  vehicleYear?: number;
+  vehicleColor?: string;
+  vehicleFuel?: string;
+  vehicleOdometer?: number;
+  vehicleVin?: string;
+  vehicleEngine?: string;
   intakeDate: string;
   estimatedCompletionDate: string;
   currentStage: RepairStage;
@@ -192,6 +235,7 @@ export interface JobCard {
   approvalDate?: string;
   advisorName?: string;
   priority?: 'Normal' | 'Urgent' | 'Insurance Express';
+  repairSeverity?: 'Minor' | 'Major';
   handoverToSupervisor?: boolean;
   handoverDate?: string;
   handoverNotes?: string;
@@ -328,10 +372,26 @@ export interface PartRequisition {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
-  status: 'Requested' | 'Allocated' | 'Issued' | 'Pending Stock';
+  status:
+    | 'Requested'
+    | 'Pending Approval'
+    | 'Advisor Approved'
+    | 'Manager Approved'
+    | 'Approved'
+    | 'Allocated'
+    | 'Issued'
+    | 'Pending Stock'
+    | 'Rejected';
   requestedBy: string;
   requestedAt: string;
+  advisorApproved?: boolean;
+  advisorApprovedBy?: string;
+  advisorApprovedAt?: string;
+  managerApproved?: boolean;
+  managerApprovedBy?: string;
+  managerApprovedAt?: string;
   issuedAt?: string;
+  issuedBy?: string;
   notes?: string;
 }
 

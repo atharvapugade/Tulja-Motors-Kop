@@ -49,6 +49,7 @@ import SparePartsManagerDashboard from '@/lib/components/SparePartsManagerDashbo
 import TechnicianDashboard from '@/lib/components/TechnicianDashboard';
 import CenterPopupModal, { CenterPopupState } from '@/lib/components/CenterPopupModal';
 import { AdminReportPage } from '@/lib/utils/pdfGenerator';
+import { normalizeStage, WORKSHOP_STAGES } from '@/lib/models/types';
 
 interface RoleDashboardClientProps {
   role: string;
@@ -58,7 +59,7 @@ const roleTitles: Record<string, { title: string; dept: string }> = {
   admin: { title: 'Super Admin Dashboard', dept: 'Executive & Governance' },
   director: { title: 'Director Analytics Portal', dept: 'Board of Directors' },
   'body-shop-manager': { title: 'Body Shop Floor Operations', dept: 'Workshop Floor' },
-  /* hr: { title: 'Human Resources Hub', dept: 'HR & Personnel' }, */
+  hr: { title: 'Human Resources Hub', dept: 'HR & Personnel' },
   advisor: { title: 'Service Advisor Intake Desk', dept: 'Customer Advisory' },
   supervisor: { title: 'Workshop Supervision Floor', dept: 'Floor Supervision' },
   accounts: { title: 'Accounts & Billing Ledger', dept: 'Accounts & Finance' },
@@ -67,21 +68,7 @@ const roleTitles: Record<string, { title: string; dept: string }> = {
   'spare-parts-manager': { title: 'Spare Parts & Inventory Management', dept: 'Parts & Inventory' },
 };
 
-const ALL_13_STAGES = [
-  'Vehicle Received',
-  'Initial Inspection',
-  'Estimation',
-  'Customer Approval',
-  'Dismantling',
-  'Denting & Bodywork',
-  'Mechanical Work',
-  'Painting',
-  'Reassembly',
-  'Quality Inspection',
-  'Final Approval',
-  'Ready for Delivery',
-  'Delivered',
-];
+const ALL_13_STAGES = WORKSHOP_STAGES;
 
 export default function RoleDashboardClient({ role }: RoleDashboardClientProps) {
   const meta = roleTitles[role];
@@ -187,10 +174,11 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
     fetchData();
   }, [role]);
 
-  // Stage Advancement
+  // Stage Advancement (4 Workshop Stages)
   const advanceStage = async (jobId: string, currentStage: string) => {
-    const currentIndex = ALL_13_STAGES.indexOf(currentStage);
-    const nextStage = currentIndex < ALL_13_STAGES.length - 1 ? ALL_13_STAGES[currentIndex + 1] : currentStage;
+    const curNormalized = normalizeStage(currentStage);
+    const currentIndex = ALL_13_STAGES.indexOf(curNormalized);
+    const nextStage = currentIndex < ALL_13_STAGES.length - 1 ? ALL_13_STAGES[currentIndex + 1] : curNormalized;
 
     try {
       const res = await fetch('/api/job-cards', {
@@ -199,7 +187,8 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
         body: JSON.stringify({
           id: jobId,
           currentStage: nextStage,
-          stageNote: `Advanced from ${currentStage} to ${nextStage}`,
+          jobStatus: nextStage === 'Delivery' ? 'Delivered' : undefined,
+          stageNote: `Advanced from ${curNormalized} to ${nextStage}`,
           updatedBy: `${meta.title} (Ranjeet B. Patil)`,
           userRole: role,
         }),
@@ -303,7 +292,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
       job.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.vehicleRegistration?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.vehicleModel?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStage = stageFilter === 'ALL' || job.currentStage === stageFilter;
+    const matchesStage = stageFilter === 'ALL' || normalizeStage(job.currentStage) === stageFilter;
     const matchesStatus = statusFilter === 'ALL' || job.jobStatus === statusFilter;
     return matchesSearch && matchesStage && matchesStatus;
   });
@@ -559,7 +548,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                     <strong style={{ fontSize: '14px', color: '#141b1b' }}>Floor Supervision</strong>
                     <div style={{ fontSize: '12px', color: '#666' }}>Head: Mahesh Jadhav</div>
                     <div style={{ fontSize: '11px', color: '#7e22ce', fontWeight: '700', marginTop: '4px' }}>
-                      13-Stage tracking · Quality inspections
+                      4-Stage tracking · Quality inspections
                     </div>
                   </div>
                 </div>
@@ -595,10 +584,10 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             </div>
           </div>
 
-          {/* 13-Stage Workflow Health Bar */}
+          {/* 4-Stage Workflow Health Bar */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <h3>13-Stage Vehicle Repair Workflow Distribution</h3>
+              <h3>4-Stage Vehicle Repair Workflow Distribution</h3>
               <Link href="/panels/admin/dashboard?tab=jobs" className="btn-secondary-action" style={{ padding: '6px 12px', fontSize: '12px' }}>
                 All Job Cards <ArrowUpRight size={14} />
               </Link>
@@ -607,7 +596,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             <div style={{ padding: '20px' }}>
               <div className="wms-stage-board-grid">
                 {ALL_13_STAGES.map((stg, idx) => {
-                  const count = jobCards.filter((j) => j.currentStage === stg).length;
+                  const count = jobCards.filter((j) => normalizeStage(j.currentStage) === stg).length;
                   return (
                     <div
                       key={stg}
@@ -1120,16 +1109,16 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
             </div>
           </div>
 
-          {/* 13-Stage Visual Pipeline Bar */}
+          {/* 4-Stage Visual Pipeline Bar */}
           <div className="wms-panel-card">
             <div className="panel-card-header">
-              <h3>Standardized 13-Stage Vehicle Repair Lifecycle</h3>
-              <span className="stage-badge badge-info">ISO-Compliant SOP</span>
+              <h3>Standardized 4-Stage Vehicle Repair Lifecycle</h3>
+              <span className="stage-badge badge-info">Streamlined SOP</span>
             </div>
             <div style={{ padding: '16px 20px', overflowX: 'auto' }}>
               <div className="wms-stage-pipeline-row">
                 {ALL_13_STAGES.map((stageName, idx) => {
-                  const count = jobCards.filter((j) => j.currentStage === stageName).length;
+                  const count = jobCards.filter((j) => normalizeStage(j.currentStage) === stageName).length;
                   return (
                     <div
                       key={stageName}
@@ -1177,7 +1166,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                   value={stageFilter}
                   onChange={(e) => setStageFilter(e.target.value)}
                 >
-                  <option value="ALL">All 13 Repair Stages</option>
+                  <option value="ALL">All 4 Repair Stages</option>
                   {ALL_13_STAGES.map((s) => (
                     <option key={s} value={s}>
                       {s}
@@ -2243,7 +2232,7 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                         });
                       }}
                     >
-                      {/* <option value="hr">Human Resources (HR) - Access to /panels/hr</option> */}
+                      <option value="hr">Human Resources (HR) - Access to /panels/hr</option>
                       <option value="body_shop_manager">Body Shop Manager - Access to /panels/body-shop-manager</option>
                       <option value="advisor">Service Advisor - Access to /panels/advisor</option>
                       <option value="supervisor">Workshop Supervisor - Access to /panels/supervisor</option>
@@ -2456,7 +2445,16 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
           <div className="wms-modal-card" style={{ maxWidth: '750px' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>
-                <span className="stage-badge badge-warning">{selectedJob.currentStage}</span>
+                <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <span className="stage-badge badge-warning">{selectedJob.currentStage}</span>
+                  <span
+                    className={`stage-badge ${
+                      selectedJob.repairSeverity === 'Major' ? 'badge-danger' : 'badge-active'
+                    }`}
+                  >
+                    {selectedJob.repairSeverity === 'Major' ? '🔴 Major Repair' : '🟢 Minor Repair (Same Day)'}
+                  </span>
+                </div>
                 <h3 style={{ marginTop: '4px' }}>Job Card: {selectedJob.jobCardNumber}</h3>
               </div>
               <button
@@ -2483,17 +2481,33 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </div>
                 <div>
                   <strong style={{ color: '#888', fontSize: '11px', display: 'block' }}>INSURANCE CARRIER & CLAIM</strong>
-                  <div>{selectedJob.insurance?.company || 'ICICI Lombard General Insurance'}</div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>Claim No: {selectedJob.insurance?.claimNumber || 'CLM-2026-9041'}</div>
+                  <div>{selectedJob.insurance?.company || selectedJob.inspection?.insuranceProvider || 'Direct Self-Pay'}</div>
+                  <div style={{ fontSize: '12px', color: '#666' }}>Claim No: {selectedJob.insurance?.claimNumber || selectedJob.inspection?.claimNumber || 'N/A'}</div>
                 </div>
                 <div>
                   <strong style={{ color: '#888', fontSize: '11px', display: 'block' }}>ESTIMATED COST</strong>
                   <div style={{ fontSize: '16px', fontWeight: '800', color: '#045F60' }}>
-                    ₹{selectedJob.costEstimate?.total?.toLocaleString('en-IN') || '63,012'}
+                    ₹{selectedJob.costEstimate?.total?.toLocaleString('en-IN') || '0'}
                   </div>
                   <span className={`stage-badge ${selectedJob.customerApproved ? 'badge-active' : 'badge-danger'}`} style={{ marginTop: '4px' }}>
                     {selectedJob.customerApproved ? 'Customer Approved' : 'Pending Customer Approval'}
                   </span>
+                </div>
+                <div>
+                  <strong style={{ color: '#888', fontSize: '11px', display: 'block' }}>ASSIGNED SUPERVISOR</strong>
+                  <div style={{ fontWeight: '700' }}>{selectedJob.assignedSupervisorName || 'Mahesh Jadhav'}</div>
+                  {selectedJob.handoverNotes && (
+                    <div style={{ fontSize: '12px', color: '#045F60', marginTop: '2px' }}>
+                      Notes: {selectedJob.handoverNotes}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <strong style={{ color: '#888', fontSize: '11px', display: 'block' }}>SCHEDULE & SCOPE</strong>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: selectedJob.repairSeverity === 'Major' ? '#b91c1c' : '#045F60' }}>
+                    {selectedJob.repairSeverity === 'Major' ? '🔴 Major Repair (Extended)' : '🟢 Minor Repair (On Time / Same Day)'}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#666' }}>Target Due: {selectedJob.estimatedCompletionDate}</div>
                 </div>
               </div>
 
@@ -2503,8 +2517,65 @@ export default function RoleDashboardClient({ role }: RoleDashboardClientProps) 
                 </strong>
                 <p style={{ marginTop: '6px', fontSize: '13px', color: '#444', lineHeight: 1.5, background: '#fafafa', padding: '10px 14px', borderRadius: '6px' }}>
                   {selectedJob.inspection?.accidentDescription ||
-                    'Front LHS collision damage with bumper fracture, left fender crimp, headlight bracket broken, radiator frame minor misalignment. Bonnet edge dented.'}
+                    'Vehicle intake damage record.'}
                 </p>
+
+                {/* Uploaded Damage & Insurance Photographs */}
+                {((selectedJob.inspection?.damagePhotos && selectedJob.inspection.damagePhotos.length > 0) ||
+                  (selectedJob.inspection?.photographs && selectedJob.inspection.photographs.length > 0) ||
+                  (selectedJob.inspection?.insurancePhotos && selectedJob.inspection.insurancePhotos.length > 0)) && (
+                  <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #eee' }}>
+                    {((selectedJob.inspection?.damagePhotos && selectedJob.inspection.damagePhotos.length > 0) ||
+                      (selectedJob.inspection?.photographs && selectedJob.inspection.photographs.length > 0)) && (
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontSize: '11px', fontWeight: '700', color: '#8A181A', marginBottom: '6px' }}>
+                          DAMAGE ASSESSMENT PHOTOGRAPHS:
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                          {(selectedJob.inspection?.damagePhotos || selectedJob.inspection?.photographs || []).map((img: string, i: number) => (
+                            <a key={i} href={img} target="_blank" rel="noreferrer" style={{ display: 'block' }}>
+                              <img
+                                src={img}
+                                alt={`Damage ${i + 1}`}
+                                style={{
+                                  width: '80px',
+                                  height: '80px',
+                                  objectFit: 'cover',
+                                  borderRadius: '6px',
+                                  border: '1px solid #cbd5e1',
+                                }}
+                              />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {selectedJob.inspection?.insurancePhotos && selectedJob.inspection.insurancePhotos.length > 0 && (
+                      <div>
+                        <div style={{ fontSize: '11px', fontWeight: '700', color: '#045F60', marginBottom: '6px' }}>
+                          ATTACHED INSURANCE CLAIM DOCUMENTS:
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                          {selectedJob.inspection.insurancePhotos.map((img: string, i: number) => (
+                            <a key={i} href={img} target="_blank" rel="noreferrer" style={{ display: 'block' }}>
+                              <img
+                                src={img}
+                                alt={`Insurance Doc ${i + 1}`}
+                                style={{
+                                  width: '80px',
+                                  height: '80px',
+                                  objectFit: 'cover',
+                                  borderRadius: '6px',
+                                  border: '1px solid #cbd5e1',
+                                }}
+                              />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {selectedJob.tasks && selectedJob.tasks.length > 0 && (

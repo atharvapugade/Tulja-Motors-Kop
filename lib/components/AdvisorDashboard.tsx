@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   Car,
@@ -24,17 +24,23 @@ import {
   X,
   Loader2,
   MapPin,
+  Package,
   Gauge,
   FileCheck,
   Trash2,
+  Upload,
 } from 'lucide-react';
-import type {
-  Customer,
-  Employee,
-  JobCard,
-  RepairStage,
-  RepairTask,
-  Vehicle,
+import {
+  WORKSHOP_STAGES,
+  normalizeStage,
+  type Customer,
+  type Employee,
+  type JobCard,
+  type PartRequisition,
+  type RepairStage,
+  type RepairTask,
+  type StandardRepairStage,
+  type Vehicle,
 } from '@/lib/models/types';
 
 interface AdvisorDashboardProps {
@@ -47,33 +53,12 @@ interface AdvisorDashboardProps {
   onNotify: (msg: string) => void;
 }
 
-const ALL_13_STAGES: RepairStage[] = [
-  'Vehicle Received',
-  'Initial Inspection',
-  'Estimation',
-  'Customer Approval',
-  'Dismantling',
-  'Denting & Bodywork',
-  'Mechanical Work',
-  'Painting',
-  'Reassembly',
-  'Quality Inspection',
-  'Final Approval',
-  'Ready for Delivery',
-  'Delivered',
-];
-
-const PRE_FLOOR_STAGES: RepairStage[] = [
-  'Vehicle Received',
-  'Initial Inspection',
-  'Estimation',
-  'Customer Approval',
-];
+const WORKSHOP_4_STAGES: RepairStage[] = WORKSHOP_STAGES;
 
 export function isJobHandedOver(job: JobCard): boolean {
   if (job.handoverToSupervisor === true) return true;
   if (job.handoverToSupervisor === false) return false;
-  return !PRE_FLOOR_STAGES.includes(job.currentStage);
+  return Boolean(job.assignedSupervisorId);
 }
 
 interface JobFormState {
@@ -101,6 +86,7 @@ interface JobFormState {
 
   intakeDate: string;
   estimatedCompletionDate: string;
+  repairSeverity: 'Minor' | 'Major';
   priority: 'Normal' | 'Urgent' | 'Insurance Express';
   currentStage: RepairStage;
   jobStatus: JobCard['jobStatus'];
@@ -109,6 +95,8 @@ interface JobFormState {
   customerComplaintsText: string;
   visibleDamagesText: string;
   inspectionNotes: string;
+  damagePhotos: string[];
+  insurancePhotos: string[];
 
   hasInsurance: boolean;
   insuranceProvider: string;
@@ -154,6 +142,8 @@ export default function AdvisorDashboard({
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loadingRegistry, setLoadingRegistry] = useState(true);
   const [advisorName, setAdvisorName] = useState('Amit Kulkarni');
+  const [partRequisitions, setPartRequisitions] = useState<PartRequisition[]>([]);
+  const [approvingReqId, setApprovingReqId] = useState<string | null>(null);
 
   // Determine normalized active tab
   const currentTab =
@@ -276,14 +266,14 @@ export default function AdvisorDashboard({
   const [jobForm, setJobForm] = useState<JobFormState>(() => {
     const { today, est } = getDefaultDates();
     return {
-      customerMode: 'existing',
+      customerMode: 'new',
       customerId: '',
       newCustomerName: '',
       newCustomerPhone: '',
       newCustomerEmail: '',
       newCustomerAddress: '',
       newCustomerCity: 'Kolhapur',
-      vehicleMode: 'existing',
+      vehicleMode: 'new',
       vehicleId: '',
       newVehicleReg: '',
       newVehicleMake: '',
@@ -296,14 +286,17 @@ export default function AdvisorDashboard({
       newVehicleVin: '',
       newVehicleEngine: '',
       intakeDate: today,
-      estimatedCompletionDate: est,
+      estimatedCompletionDate: today,
+      repairSeverity: 'Minor',
       priority: 'Normal',
-      currentStage: 'Vehicle Received',
+      currentStage: 'Denting',
       jobStatus: 'Active',
       accidentDescription: '',
       customerComplaintsText: '',
       visibleDamagesText: '',
       inspectionNotes: '',
+      damagePhotos: [],
+      insurancePhotos: [],
       hasInsurance: false,
       insuranceProvider: '',
       policyNumber: '',
@@ -320,7 +313,7 @@ export default function AdvisorDashboard({
       tasks: [],
       assignedSupervisorId: 'usr_sup_01',
       assignedSupervisorName: 'Mahesh Jadhav',
-      handoverToSupervisor: false,
+      handoverToSupervisor: true,
       handoverNotes: '',
     };
   });
@@ -333,11 +326,72 @@ export default function AdvisorDashboard({
     estimatedHours: '4',
   });
 
+  // Image Upload Handlers for Damage & Insurance
+  const handleDamagePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    Array.from(files).forEach((file) => {
+      if (file.size > 8 * 1024 * 1024) {
+        showCenterPopup('Damage photo file size must be less than 8MB.', 'File Size Limit');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        if (result) {
+          setJobForm((prev) => ({
+            ...prev,
+            damagePhotos: [...prev.damagePhotos, result],
+          }));
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+  };
+
+  const removeDamagePhoto = (index: number) => {
+    setJobForm((prev) => ({
+      ...prev,
+      damagePhotos: prev.damagePhotos.filter((_, idx) => idx !== index),
+    }));
+  };
+
+  const handleInsurancePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    Array.from(files).forEach((file) => {
+      if (file.size > 8 * 1024 * 1024) {
+        showCenterPopup('Insurance photo file size must be less than 8MB.', 'File Size Limit');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        if (result) {
+          setJobForm((prev) => ({
+            ...prev,
+            insurancePhotos: [...prev.insurancePhotos, result],
+          }));
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+  };
+
+  const removeInsurancePhoto = (index: number) => {
+    setJobForm((prev) => ({
+      ...prev,
+      insurancePhotos: prev.insurancePhotos.filter((_, idx) => idx !== index),
+    }));
+  };
+
   // View & Handover modals
   const [viewingJob, setViewingJob] = useState<JobCard | null>(null);
   const [handoverJob, setHandoverJob] = useState<JobCard | null>(null);
   const [handoverSupId, setHandoverSupId] = useState('usr_sup_01');
-  const [handoverTargetStage, setHandoverTargetStage] = useState<RepairStage>('Dismantling');
+  const [handoverTargetStage, setHandoverTargetStage] = useState<StandardRepairStage>('Denting');
   const [handoverNoteText, setHandoverNoteText] = useState('');
   const [submittingHandover, setSubmittingHandover] = useState(false);
 
@@ -410,6 +464,83 @@ export default function AdvisorDashboard({
     );
     activeBtn?.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
   }, [showJobModal, jobModalSection]);
+
+  const fetchSparePartsData = useCallback(async () => {
+    try {
+      const res = await fetch('/api/spare-parts');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.requisitions)) {
+        setPartRequisitions(data.requisitions);
+      }
+    } catch (err) {
+      console.error('Failed to load spare parts for advisor:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSparePartsData();
+  }, [fetchSparePartsData]);
+
+  const pendingAdvisorRequests = useMemo(() => {
+    return partRequisitions.filter(
+      (r) => !r.advisorApproved && r.status !== 'Issued' && r.status !== 'Rejected'
+    );
+  }, [partRequisitions]);
+
+  const handleApprovePartAdvisor = async (req: PartRequisition) => {
+    setApprovingReqId(req.id);
+    try {
+      const res = await fetch('/api/spare-parts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'approve_part_advisor',
+          requisitionId: req.id,
+          approvedBy: `${advisorName} (Service Advisor)`,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await Promise.all([fetchSparePartsData(), onRefresh()]);
+        onNotify(data.message || `Approved part request for "${req.partName}"!`);
+      } else {
+        onNotify(data.message || 'Failed to approve part request.');
+      }
+    } catch {
+      onNotify('Error approving part request.');
+    } finally {
+      setApprovingReqId(null);
+    }
+  };
+
+  const handleRejectPartAdvisor = async (req: PartRequisition) => {
+    const reason = window.prompt(`Please enter reason for rejecting part "${req.partName}":`, 'Not required for current repair scope');
+    if (reason === null) return;
+    setApprovingReqId(req.id);
+    try {
+      const res = await fetch('/api/spare-parts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'reject_part',
+          requisitionId: req.id,
+          rejectedBy: `${advisorName} (Service Advisor)`,
+          reason,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await Promise.all([fetchSparePartsData(), onRefresh()]);
+        onNotify(`Rejected part request for "${req.partName}".`);
+      } else {
+        onNotify(data.message || 'Failed to reject part request.');
+      }
+    } catch {
+      onNotify('Error rejecting part request.');
+    } finally {
+      setApprovingReqId(null);
+    }
+  };
 
   // Supervisors from employees list
   const supervisors = useMemo(() => {
@@ -666,16 +797,16 @@ export default function AdvisorDashboard({
     setJobModalMode('create');
     setJobModalSection(1);
     setJobForm({
-      customerMode: customers.length > 0 ? 'existing' : 'new',
-      customerId: defaultCustId,
+      customerMode: 'new',
+      customerId: '',
       newCustomerName: '',
       newCustomerPhone: '',
       newCustomerEmail: '',
       newCustomerAddress: '',
       newCustomerCity: 'Kolhapur',
 
-      vehicleMode: vehicles.length > 0 ? 'existing' : 'new',
-      vehicleId: defaultVehId,
+      vehicleMode: 'new',
+      vehicleId: '',
       newVehicleReg: '',
       newVehicleMake: '',
       newVehicleModel: '',
@@ -688,15 +819,18 @@ export default function AdvisorDashboard({
       newVehicleEngine: '',
 
       intakeDate: today,
-      estimatedCompletionDate: est,
+      estimatedCompletionDate: today,
+      repairSeverity: 'Minor',
       priority: 'Normal',
-      currentStage: 'Vehicle Received',
+      currentStage: 'Denting',
       jobStatus: 'Active',
 
       accidentDescription: '',
       customerComplaintsText: '',
       visibleDamagesText: '',
       inspectionNotes: '',
+      damagePhotos: [],
+      insurancePhotos: [],
 
       hasInsurance: false,
       insuranceProvider: '',
@@ -717,7 +851,7 @@ export default function AdvisorDashboard({
 
       assignedSupervisorId: primarySup?.userId || primarySup?.id || 'usr_sup_01',
       assignedSupervisorName: primarySup?.name || 'Mahesh Jadhav',
-      handoverToSupervisor: false,
+      handoverToSupervisor: true,
       handoverNotes: '',
     });
     setShowJobModal(true);
@@ -753,15 +887,18 @@ export default function AdvisorDashboard({
       newVehicleEngine: '',
 
       intakeDate: job.intakeDate || getDefaultDates().today,
-      estimatedCompletionDate: job.estimatedCompletionDate || getDefaultDates().est,
+      estimatedCompletionDate: job.estimatedCompletionDate || getDefaultDates().today,
+      repairSeverity: job.repairSeverity || 'Minor',
       priority: job.priority || 'Normal',
-      currentStage: job.currentStage || 'Vehicle Received',
+      currentStage: normalizeStage(job.currentStage) || 'Denting',
       jobStatus: job.jobStatus || 'Active',
 
       accidentDescription: job.inspection?.accidentDescription || '',
       customerComplaintsText: (job.inspection?.customerComplaints || []).join('\n'),
       visibleDamagesText: (job.inspection?.visibleDamages || []).join('\n'),
       inspectionNotes: job.inspection?.inspectionNotes || '',
+      damagePhotos: job.inspection?.damagePhotos || job.inspection?.photographs || [],
+      insurancePhotos: job.inspection?.insurancePhotos || [],
 
       hasInsurance: hasIns,
       insuranceProvider: job.inspection?.insuranceProvider || '',
@@ -809,57 +946,105 @@ export default function AdvisorDashboard({
     setJobForm((prev) => ({ ...prev, tasks: prev.tasks.filter((t) => t.id !== taskId) }));
   };
 
+  const validateStep = (stepNumber: 1 | 2 | 3 | 4): { valid: boolean; message: string } => {
+    if (stepNumber === 1) {
+      if (jobForm.customerMode === 'new') {
+        if (!jobForm.newCustomerName.trim() || !jobForm.newCustomerPhone.trim()) {
+          return {
+            valid: false,
+            message: 'Please enter Customer Full Name and Mobile Phone Number before proceeding.',
+          };
+        }
+      } else if (!jobForm.customerId) {
+        return {
+          valid: false,
+          message: 'Please select a registered customer or switch to New Customer.',
+        };
+      }
+    }
+    if (stepNumber === 2) {
+      if (jobForm.vehicleMode === 'new') {
+        if (
+          !jobForm.newVehicleReg.trim() ||
+          !jobForm.newVehicleMake.trim() ||
+          !jobForm.newVehicleModel.trim()
+        ) {
+          return {
+            valid: false,
+            message: 'Please enter Vehicle Registration #, Make, and Model before proceeding.',
+          };
+        }
+      } else if (!jobForm.vehicleId) {
+        return {
+          valid: false,
+          message: 'Please select a registered vehicle or register a new vehicle.',
+        };
+      }
+    }
+    if (stepNumber === 3) {
+      if (
+        !jobForm.accidentDescription.trim() &&
+        !jobForm.visibleDamagesText.trim() &&
+        !jobForm.customerComplaintsText.trim() &&
+        !jobForm.inspectionNotes.trim()
+      ) {
+        return {
+          valid: false,
+          message: 'Please provide Accident Narrative, Customer Complaints, or Visible Damages before proceeding.',
+        };
+      }
+      if (!jobForm.repairSeverity) {
+        return {
+          valid: false,
+          message: 'Please select repair delivery schedule: Minor (Same Day) or Major (Extended).',
+        };
+      }
+    }
+    if (stepNumber === 4) {
+      if (!jobForm.assignedSupervisorId) {
+        return {
+          valid: false,
+          message: 'Please choose an Assigned Workshop Supervisor to receive this job card.',
+        };
+      }
+    }
+    return { valid: true, message: '' };
+  };
+
+  const handleNextStep = () => {
+    const check = validateStep(jobModalSection);
+    if (!check.valid) {
+      showCenterPopup(check.message, `Step ${jobModalSection} Details Required`);
+      return;
+    }
+    setJobModalSection((prev) => (prev + 1) as 1 | 2 | 3 | 4);
+  };
+
+  const handleGoToStep = (targetStep: 1 | 2 | 3 | 4) => {
+    if (targetStep > jobModalSection) {
+      for (let s = 1; s < targetStep; s++) {
+        const check = validateStep(s as 1 | 2 | 3 | 4);
+        if (!check.valid) {
+          showCenterPopup(check.message, `Step ${s} Incomplete`);
+          setJobModalSection(s as 1 | 2 | 3 | 4);
+          return;
+        }
+      }
+    }
+    setJobModalSection(targetStep);
+  };
+
   const handleSaveJobCard = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation
-    if (jobForm.customerMode === 'new') {
-      if (!jobForm.newCustomerName.trim() || !jobForm.newCustomerPhone.trim()) {
-        setJobModalSection(1);
-        showCenterPopup(
-          'Please enter the New Customer Name and Mobile Phone number.',
-          'Customer Information Required'
-        );
+    // Verify all 4 sections in order before submitting
+    for (const step of [1, 2, 3, 4] as const) {
+      const check = validateStep(step);
+      if (!check.valid) {
+        setJobModalSection(step);
+        showCenterPopup(check.message, `Step ${step} Incomplete`);
         return;
       }
-    } else if (!jobForm.customerId) {
-      setJobModalSection(1);
-      showCenterPopup(
-        'Please select an existing customer or switch to New Customer.',
-        'Customer Selection Required'
-      );
-      return;
-    }
-
-    if (jobForm.vehicleMode === 'new') {
-      if (
-        !jobForm.newVehicleReg.trim() ||
-        !jobForm.newVehicleMake.trim() ||
-        !jobForm.newVehicleModel.trim()
-      ) {
-        setJobModalSection(1);
-        showCenterPopup(
-          'Please enter Vehicle Registration #, Make, and Model.',
-          'Vehicle Specifications Required'
-        );
-        return;
-      }
-    } else if (!jobForm.vehicleId) {
-      setJobModalSection(1);
-      showCenterPopup(
-        'Please select a vehicle or register a new vehicle.',
-        'Vehicle Selection Required'
-      );
-      return;
-    }
-
-    if (!jobForm.accidentDescription.trim() && !jobForm.inspectionNotes.trim()) {
-      setJobModalSection(2);
-      showCenterPopup(
-        'Please provide Damage / Accident Description or Inspection Notes.',
-        'Inspection Details Required'
-      );
-      return;
     }
 
     setSubmittingJob(true);
@@ -874,9 +1059,16 @@ export default function AdvisorDashboard({
           .map((s) => s.trim())
           .filter(Boolean);
 
+      const isMinor = jobForm.repairSeverity === 'Minor';
+      const todayStr = new Date().toISOString().split('T')[0];
+      const deliveryStr = isMinor
+        ? todayStr
+        : new Date(Date.now() + 6 * 86400000).toISOString().split('T')[0];
+
       const payload: Record<string, unknown> = {
-        intakeDate: jobForm.intakeDate,
-        estimatedCompletionDate: jobForm.estimatedCompletionDate,
+        intakeDate: todayStr,
+        estimatedCompletionDate: deliveryStr,
+        repairSeverity: jobForm.repairSeverity,
         priority: jobForm.priority,
         currentStage: jobForm.currentStage,
         jobStatus: jobForm.jobStatus,
@@ -885,12 +1077,14 @@ export default function AdvisorDashboard({
         updatedBy: advisorName,
         userRole: 'advisor',
         inspection: {
-          intakeDate: jobForm.intakeDate,
+          intakeDate: todayStr,
           accidentDescription: jobForm.accidentDescription.trim(),
           customerComplaints: splitLines(jobForm.customerComplaintsText),
           visibleDamages: splitLines(jobForm.visibleDamagesText),
           inspectionNotes: jobForm.inspectionNotes.trim(),
-          photographs: [],
+          photographs: jobForm.damagePhotos,
+          damagePhotos: jobForm.damagePhotos,
+          insurancePhotos: jobForm.insurancePhotos,
           insuranceProvider: jobForm.hasInsurance ? jobForm.insuranceProvider.trim() : '',
           policyNumber: jobForm.hasInsurance ? jobForm.policyNumber.trim() : '',
           claimNumber: jobForm.hasInsurance ? jobForm.claimNumber.trim() : '',
@@ -1010,9 +1204,7 @@ export default function AdvisorDashboard({
     const defaultSup =
       supervisors.find((s) => (s.userId || s.id) === job.assignedSupervisorId) || supervisors[0];
     setHandoverSupId(defaultSup?.userId || defaultSup?.id || 'usr_sup_01');
-    setHandoverTargetStage(
-      PRE_FLOOR_STAGES.includes(job.currentStage) ? 'Dismantling' : job.currentStage
-    );
+    setHandoverTargetStage(normalizeStage(job.currentStage) || 'Denting');
     setHandoverNoteText(
       job.handoverNotes ||
         `Intake completed by ${advisorName}. Ready for floor supervision and technician allocation.`
@@ -1132,7 +1324,7 @@ export default function AdvisorDashboard({
                 className="btn-primary-action"
                 onClick={() => openCreateJobCard()}
               >
-                <Plus size={16} /> New Job Card
+                <Plus size={16} /> Add Job Card
               </button>
             </div>
           </div>
@@ -1188,51 +1380,153 @@ export default function AdvisorDashboard({
             </div>
           </div>
 
+          {/* Spare Parts Requests Awaiting Advisor Approval */}
+          {pendingAdvisorRequests.length > 0 && (
+            <div
+              className="wms-panel-card"
+              style={{
+                borderLeft: '4px solid #D97706',
+                background: '#fffdfa',
+                marginBottom: '20px',
+              }}
+            >
+              <div className="panel-card-header" style={{ borderBottom: '1px solid #fed7aa' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Package size={18} color="#D97706" />
+                  <h3 style={{ margin: 0, color: '#9a3412', fontSize: '15px' }}>
+                    Spare Parts Awaiting Advisor Approval
+                  </h3>
+                  <span className="stage-badge badge-warning">
+                    {pendingAdvisorRequests.length} Pending
+                  </span>
+                </div>
+                <span style={{ fontSize: '12px', color: '#78350f' }}>
+                  Supervisor requisitions require your sign-off before parts can be issued
+                </span>
+              </div>
+
+              <div className="wms-table-responsive" style={{ padding: '0' }}>
+                <table className="wms-table">
+                  <thead>
+                    <tr>
+                      <th>Job Card &amp; Vehicle</th>
+                      <th>Requested Part</th>
+                      <th>Qty &amp; Price</th>
+                      <th>Supervisor Notes</th>
+                      <th>Manager Sign-off</th>
+                      <th>Advisor Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pendingAdvisorRequests.map((req) => (
+                      <tr key={req.id}>
+                        <td>
+                          <code>{req.jobCardNumber}</code>
+                          <div style={{ fontWeight: '700', color: '#045F60', fontSize: '13px', marginTop: '2px' }}>
+                            {req.vehicleRegistration}
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#64748b' }}>{req.vehicleModel}</div>
+                        </td>
+                        <td>
+                          <div style={{ fontWeight: '700', fontSize: '13px', color: '#1e293b' }}>
+                            {req.partName}
+                          </div>
+                          <code style={{ fontSize: '11px', color: '#64748b' }}>{req.partNumber}</code>
+                        </td>
+                        <td>
+                          <strong>{req.quantity} pcs</strong>
+                          <div style={{ fontSize: '11px', color: '#64748b' }}>
+                            ₹{req.totalPrice.toLocaleString('en-IN')} (₹{req.unitPrice}/pc)
+                          </div>
+                        </td>
+                        <td style={{ maxWidth: '240px' }}>
+                          <div style={{ fontSize: '11px', color: '#045F60', fontWeight: '600' }}>
+                            By: {req.requestedBy}
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#334155', fontStyle: req.notes ? 'italic' : 'normal' }}>
+                            {req.notes || 'Floor repair requisition.'}
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            className={`stage-badge ${req.managerApproved ? 'badge-active' : 'badge-warning'}`}
+                            style={{ fontSize: '11px' }}
+                          >
+                            {req.managerApproved ? '✓ Body Shop Mgr Approved' : '⏳ Awaiting Mgr Approval'}
+                          </span>
+                        </td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                            <button
+                              type="button"
+                              className="btn-primary-action"
+                              style={{
+                                padding: '5px 12px',
+                                fontSize: '11px',
+                                background: '#067a46',
+                                borderColor: '#067a46',
+                              }}
+                              disabled={approvingReqId === req.id}
+                              onClick={() => handleApprovePartAdvisor(req)}
+                              title="Approve this spare part requisition"
+                            >
+                              {approvingReqId === req.id ? 'Approving...' : '✓ Approve Part'}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn-secondary-action"
+                              style={{
+                                padding: '5px 8px',
+                                fontSize: '11px',
+                                borderColor: '#ef4444',
+                                color: '#b91c1c',
+                              }}
+                              disabled={approvingReqId === req.id}
+                              onClick={() => handleRejectPartAdvisor(req)}
+                              title="Reject this spare part requisition"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           {/* 2-Column Overview Grid */}
           <div className="wms-grid-2col">
             {/* Quick Desk Launchpad */}
             <div className="wms-panel-card" style={{ marginBottom: 0 }}>
               <div className="panel-card-header">
-                <h3>Quick Intake Actions</h3>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '15px' }}>Job Card Intake &amp; Handover</h3>
+                  <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#64748b' }}>
+                    Complete 4-Step Intake: 1. Customer → 2. Vehicle → 3. Job Card &amp; Damage Photos → 4. Supervisor Handover
+                  </p>
+                </div>
               </div>
-              <div className="wms-form-grid-2 wms-quick-actions-grid" style={{ padding: '18px 20px' }}>
+              <div style={{ padding: '16px 20px' }}>
                 <button
                   type="button"
                   className="btn-primary-action"
-                  style={{ justifyContent: 'center', padding: '12px' }}
+                  style={{
+                    width: '100%',
+                    justifyContent: 'center',
+                    padding: '14px 20px',
+                    fontSize: '15px',
+                    fontWeight: '800',
+                    background: '#045F60',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 8px rgba(4,95,96,0.25)',
+                  }}
                   onClick={() => openCreateJobCard()}
                 >
-                  <Plus size={16} /> New Job Card
+                  <Plus size={18} /> Add Job Card
                 </button>
-                <button
-                  type="button"
-                  className="btn-secondary-action"
-                  style={{ justifyContent: 'center', padding: '12px' }}
-                  onClick={openCreateCustomer}
-                >
-                  <Users size={16} /> Add Customer
-                </button>
-                <button
-                  type="button"
-                  className="btn-secondary-action"
-                  style={{ justifyContent: 'center', padding: '12px' }}
-                  onClick={() => openCreateVehicle()}
-                >
-                  <Car size={16} /> Add Vehicle
-                </button>
-                <Link
-                  href="/panels/advisor/dashboard?tab=supervisors"
-                  className="btn-secondary-action"
-                  style={{
-                    justifyContent: 'center',
-                    padding: '12px',
-                    textDecoration: 'none',
-                    borderColor: '#045F60',
-                    color: '#045F60',
-                  }}
-                >
-                  <Send size={16} /> Handovers
-                </Link>
               </div>
             </div>
 
@@ -1823,7 +2117,7 @@ export default function AdvisorDashboard({
                 className="btn-primary-action"
                 onClick={() => openCreateJobCard()}
               >
-                <Plus size={16} /> New Job Card
+                <Plus size={16} /> Add Job Card
               </button>
             </div>
           </div>
@@ -1891,7 +2185,7 @@ export default function AdvisorDashboard({
                 onChange={(e) => setStageFilter(e.target.value)}
               >
                 <option value="ALL">All Stages ({jobCards.length})</option>
-                {ALL_13_STAGES.map((st) => (
+                {WORKSHOP_4_STAGES.map((st) => (
                   <option key={st} value={st}>
                     {st}
                   </option>
@@ -1914,6 +2208,118 @@ export default function AdvisorDashboard({
             </span>
           </div>
 
+          {/* Spare Parts Requests Awaiting Advisor Approval */}
+          {pendingAdvisorRequests.length > 0 && (
+            <div
+              className="wms-panel-card"
+              style={{
+                borderLeft: '4px solid #D97706',
+                background: '#fffdfa',
+                marginBottom: '20px',
+              }}
+            >
+              <div className="panel-card-header" style={{ borderBottom: '1px solid #fed7aa' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Package size={18} color="#D97706" />
+                  <h3 style={{ margin: 0, color: '#9a3412', fontSize: '15px' }}>
+                    Spare Parts Awaiting Advisor Approval ({pendingAdvisorRequests.length})
+                  </h3>
+                </div>
+                <span style={{ fontSize: '12px', color: '#78350f' }}>
+                  Click &quot;Approve Part&quot; to authorize floor requisition
+                </span>
+              </div>
+
+              <div className="wms-table-responsive" style={{ padding: '0' }}>
+                <table className="wms-table">
+                  <thead>
+                    <tr>
+                      <th>Job Card &amp; Vehicle</th>
+                      <th>Requested Part</th>
+                      <th>Qty &amp; Price</th>
+                      <th>Supervisor Notes</th>
+                      <th>Manager Sign-off</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pendingAdvisorRequests.map((req) => (
+                      <tr key={req.id}>
+                        <td>
+                          <code>{req.jobCardNumber}</code>
+                          <div style={{ fontWeight: '700', color: '#045F60', fontSize: '13px', marginTop: '2px' }}>
+                            {req.vehicleRegistration}
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#64748b' }}>{req.vehicleModel}</div>
+                        </td>
+                        <td>
+                          <div style={{ fontWeight: '700', fontSize: '13px', color: '#1e293b' }}>
+                            {req.partName}
+                          </div>
+                          <code style={{ fontSize: '11px', color: '#64748b' }}>{req.partNumber}</code>
+                        </td>
+                        <td>
+                          <strong>{req.quantity} pcs</strong>
+                          <div style={{ fontSize: '11px', color: '#64748b' }}>
+                            ₹{req.totalPrice.toLocaleString('en-IN')}
+                          </div>
+                        </td>
+                        <td style={{ maxWidth: '240px' }}>
+                          <div style={{ fontSize: '11px', color: '#045F60', fontWeight: '600' }}>
+                            By: {req.requestedBy}
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#334155' }}>
+                            {req.notes || 'Floor requisition.'}
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            className={`stage-badge ${req.managerApproved ? 'badge-active' : 'badge-warning'}`}
+                            style={{ fontSize: '11px' }}
+                          >
+                            {req.managerApproved ? '✓ Mgr Approved' : '⏳ Awaiting Mgr'}
+                          </span>
+                        </td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                            <button
+                              type="button"
+                              className="btn-primary-action"
+                              style={{
+                                padding: '5px 12px',
+                                fontSize: '11px',
+                                background: '#067a46',
+                                borderColor: '#067a46',
+                              }}
+                              disabled={approvingReqId === req.id}
+                              onClick={() => handleApprovePartAdvisor(req)}
+                            >
+                              {approvingReqId === req.id ? 'Approving...' : '✓ Approve Part'}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn-secondary-action"
+                              style={{
+                                padding: '5px 8px',
+                                fontSize: '11px',
+                                borderColor: '#ef4444',
+                                color: '#b91c1c',
+                              }}
+                              disabled={approvingReqId === req.id}
+                              onClick={() => handleRejectPartAdvisor(req)}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           <div className="wms-panel-card">
             <div className="panel-card-header">
               <h3>Master Job Cards & Estimates Ledger</h3>
@@ -1923,7 +2329,7 @@ export default function AdvisorDashboard({
                 style={{ padding: '6px 14px', fontSize: '12px' }}
                 onClick={() => openCreateJobCard()}
               >
-                <Plus size={14} /> New Job Card
+                <Plus size={14} /> Add Job Card
               </button>
             </div>
             <div className="wms-table-responsive">
@@ -2073,7 +2479,7 @@ export default function AdvisorDashboard({
                 className="btn-primary-action"
                 onClick={() => openCreateJobCard()}
               >
-                <Plus size={16} /> New Job Card
+                <Plus size={16} /> Add Job Card
               </button>
             </div>
           </div>
@@ -2747,16 +3153,16 @@ export default function AdvisorDashboard({
             {/* Section Stepper Bar */}
             <div className="wms-stepper-bar" ref={stepperBarRef}>
               {[
-                { num: 1 as const, label: '1. Customer & Vehicle' },
-                { num: 2 as const, label: '2. Damage & Insurance' },
-                { num: 3 as const, label: '3. Estimate (18% GST) & Tasks' },
-                { num: 4 as const, label: '4. Schedule & Supervisor' },
+                { num: 1 as const, label: '1. Customer Details' },
+                { num: 2 as const, label: '2. Vehicle Details' },
+                { num: 3 as const, label: '3. Job Card Details' },
+                { num: 4 as const, label: '4. Supervisor Handover' },
               ].map((sec) => (
                 <button
                   key={sec.num}
                   type="button"
                   data-step={sec.num}
-                  onClick={() => setJobModalSection(sec.num)}
+                  onClick={() => handleGoToStep(sec.num)}
                   style={{
                     padding: '7px 14px',
                     borderRadius: '6px',
@@ -2776,10 +3182,9 @@ export default function AdvisorDashboard({
 
             <form onSubmit={handleSaveJobCard}>
               <div className="modal-body" style={{ maxHeight: '64vh', overflowY: 'auto' }}>
-                {/* SECTION 1: CUSTOMER & VEHICLE */}
+                {/* STEP 1: CUSTOMER DETAILS */}
                 {jobModalSection === 1 && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                    {/* Customer Block */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div
                       style={{
                         border: '1px solid #e2eeec',
@@ -2798,9 +3203,14 @@ export default function AdvisorDashboard({
                           marginBottom: '12px',
                         }}
                       >
-                        <strong style={{ fontSize: '13px', color: '#045F60' }}>
-                          CUSTOMER / OWNER INFORMATION
-                        </strong>
+                        <div>
+                          <strong style={{ fontSize: '13px', color: '#045F60' }}>
+                            STEP 1: CUSTOMER / OWNER INFORMATION
+                          </strong>
+                          <p style={{ fontSize: '11px', color: '#64748b', margin: '2px 0 0' }}>
+                            Select an existing registered client or enter new customer details
+                          </p>
+                        </div>
                         {jobModalMode === 'create' && (
                           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                             <button
@@ -2921,8 +3331,12 @@ export default function AdvisorDashboard({
                         </div>
                       )}
                     </div>
+                  </div>
+                )}
 
-                    {/* Vehicle Block */}
+                {/* STEP 2: VEHICLE DETAILS */}
+                {jobModalSection === 2 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div
                       style={{
                         border: '1px solid #e2eeec',
@@ -2941,9 +3355,14 @@ export default function AdvisorDashboard({
                           marginBottom: '12px',
                         }}
                       >
-                        <strong style={{ fontSize: '13px', color: '#045F60' }}>
-                          VEHICLE INTAKE SPECIFICATIONS
-                        </strong>
+                        <div>
+                          <strong style={{ fontSize: '13px', color: '#045F60' }}>
+                            STEP 2: VEHICLE INTAKE SPECIFICATIONS
+                          </strong>
+                          <p style={{ fontSize: '11px', color: '#64748b', margin: '2px 0 0' }}>
+                            Choose from registered customer vehicles or add new vehicle specs
+                          </p>
+                        </div>
                         {jobModalMode === 'create' && jobForm.customerMode === 'existing' && (
                           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                             <button
@@ -2982,11 +3401,13 @@ export default function AdvisorDashboard({
                             onChange={(e) => setJobForm({ ...jobForm, vehicleId: e.target.value })}
                           >
                             <option value="">-- Choose Vehicle --</option>
-                            {vehicles.map((v) => (
-                              <option key={v.id} value={v.id}>
-                                {v.registrationNumber} — {v.make} {v.model} ({v.year}, {v.color})
-                              </option>
-                            ))}
+                            {vehicles
+                              .filter((v) => !jobForm.customerId || v.customerId === jobForm.customerId)
+                              .map((v) => (
+                                <option key={v.id} value={v.id}>
+                                  {v.registrationNumber} — {v.make} {v.model} ({v.year}, {v.color})
+                                </option>
+                              ))}
                           </select>
                         </div>
                       ) : (
@@ -3135,8 +3556,8 @@ export default function AdvisorDashboard({
                   </div>
                 )}
 
-                {/* SECTION 2: DAMAGE INSPECTION & INSURANCE */}
-                {jobModalSection === 2 && (
+                {/* STEP 3: JOB CARD DETAILS (DAMAGES, PHOTOS, SCHEDULE, ESTIMATE) */}
+                {jobModalSection === 3 && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
@@ -3201,7 +3622,111 @@ export default function AdvisorDashboard({
                       />
                     </div>
 
-                    {/* Insurance Block */}
+                    {/* Damage Photo Upload Section */}
+                    <div
+                      style={{
+                        border: '1px solid #e2eeec',
+                        borderRadius: '8px',
+                        padding: '14px 16px',
+                        background: '#fafdfc',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
+                        <div>
+                          <strong style={{ fontSize: '12px', color: '#045F60' }}>
+                            DAMAGE INSPECTION PHOTOGRAPHS ({jobForm.damagePhotos.length})
+                          </strong>
+                          <p style={{ fontSize: '11px', color: '#64748b', margin: '2px 0 0' }}>
+                            Upload vehicle damage photos for supervisor and bodyshop manager review
+                          </p>
+                        </div>
+                        <label
+                          className="btn-secondary-action"
+                          style={{
+                            cursor: 'pointer',
+                            padding: '6px 12px',
+                            fontSize: '12px',
+                            borderColor: '#045F60',
+                            color: '#045F60',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                          }}
+                        >
+                          <Upload size={14} /> Upload Damage Photos
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            style={{ display: 'none' }}
+                            onChange={handleDamagePhotoUpload}
+                          />
+                        </label>
+                      </div>
+
+                      {jobForm.damagePhotos.length > 0 ? (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px' }}>
+                          {jobForm.damagePhotos.map((photo, idx) => (
+                            <div
+                              key={idx}
+                              style={{
+                                position: 'relative',
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '6px',
+                                overflow: 'hidden',
+                                border: '1px solid #cbd5e1',
+                                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                              }}
+                            >
+                              <img
+                                src={photo}
+                                alt={`Damage preview ${idx + 1}`}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeDamagePhoto(idx)}
+                                style={{
+                                  position: 'absolute',
+                                  top: 2,
+                                  right: 2,
+                                  background: 'rgba(0,0,0,0.65)',
+                                  color: '#fff',
+                                  border: 'none',
+                                  borderRadius: '50%',
+                                  width: '20px',
+                                  height: '20px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  cursor: 'pointer',
+                                }}
+                                title="Remove photo"
+                              >
+                                <X size={12} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            padding: '12px',
+                            border: '1px dashed #cbd5e1',
+                            borderRadius: '6px',
+                            textAlign: 'center',
+                            fontSize: '12px',
+                            color: '#94a3b8',
+                            marginTop: '6px',
+                          }}
+                        >
+                          No damage photos uploaded yet. Click &quot;Upload Damage Photos&quot; to attach bay intake photos.
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Insurance Block with Document Photo Upload */}
                     <div
                       style={{
                         border: '1px solid #d9e8e6',
@@ -3230,189 +3755,347 @@ export default function AdvisorDashboard({
                       </label>
 
                       {jobForm.hasInsurance && (
-                        <div className="wms-form-grid-3" style={{ marginTop: '12px' }}>
-                          <div>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                              Insurance Company
-                            </label>
-                            <input
-                              type="text"
-                              className="table-search-input"
-                              style={{ width: '100%' }}
-                              placeholder="ICICI Lombard / HDFC ERGO"
-                              value={jobForm.insuranceProvider}
-                              onChange={(e) =>
-                                setJobForm({ ...jobForm, insuranceProvider: e.target.value })
-                              }
-                            />
+                        <div style={{ marginTop: '12px' }}>
+                          <div className="wms-form-grid-3">
+                            <div>
+                              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                                Insurance Company
+                              </label>
+                              <input
+                                type="text"
+                                className="table-search-input"
+                                style={{ width: '100%' }}
+                                placeholder="ICICI Lombard / HDFC ERGO"
+                                value={jobForm.insuranceProvider}
+                                onChange={(e) =>
+                                  setJobForm({ ...jobForm, insuranceProvider: e.target.value })
+                                }
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                                Policy Number
+                              </label>
+                              <input
+                                type="text"
+                                className="table-search-input"
+                                style={{ width: '100%' }}
+                                value={jobForm.policyNumber}
+                                onChange={(e) =>
+                                  setJobForm({ ...jobForm, policyNumber: e.target.value })
+                                }
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                                Claim Number
+                              </label>
+                              <input
+                                type="text"
+                                className="table-search-input"
+                                style={{ width: '100%' }}
+                                placeholder="CLM-2026-..."
+                                value={jobForm.claimNumber}
+                                onChange={(e) =>
+                                  setJobForm({ ...jobForm, claimNumber: e.target.value })
+                                }
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                                Surveyor Name
+                              </label>
+                              <input
+                                type="text"
+                                className="table-search-input"
+                                style={{ width: '100%' }}
+                                value={jobForm.surveyorName}
+                                onChange={(e) =>
+                                  setJobForm({ ...jobForm, surveyorName: e.target.value })
+                                }
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                                Surveyor Phone
+                              </label>
+                              <input
+                                type="text"
+                                className="table-search-input"
+                                style={{ width: '100%' }}
+                                value={jobForm.surveyorPhone}
+                                onChange={(e) =>
+                                  setJobForm({ ...jobForm, surveyorPhone: e.target.value })
+                                }
+                              />
+                            </div>
                           </div>
-                          <div>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                              Policy Number
-                            </label>
-                            <input
-                              type="text"
-                              className="table-search-input"
-                              style={{ width: '100%' }}
-                              value={jobForm.policyNumber}
-                              onChange={(e) =>
-                                setJobForm({ ...jobForm, policyNumber: e.target.value })
-                              }
-                            />
-                          </div>
-                          <div>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                              Claim Number
-                            </label>
-                            <input
-                              type="text"
-                              className="table-search-input"
-                              style={{ width: '100%' }}
-                              placeholder="CLM-2026-..."
-                              value={jobForm.claimNumber}
-                              onChange={(e) =>
-                                setJobForm({ ...jobForm, claimNumber: e.target.value })
-                              }
-                            />
-                          </div>
-                          <div>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                              Surveyor Name
-                            </label>
-                            <input
-                              type="text"
-                              className="table-search-input"
-                              style={{ width: '100%' }}
-                              value={jobForm.surveyorName}
-                              onChange={(e) =>
-                                setJobForm({ ...jobForm, surveyorName: e.target.value })
-                              }
-                            />
-                          </div>
-                          <div>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                              Surveyor Phone
-                            </label>
-                            <input
-                              type="text"
-                              className="table-search-input"
-                              style={{ width: '100%' }}
-                              value={jobForm.surveyorPhone}
-                              onChange={(e) =>
-                                setJobForm({ ...jobForm, surveyorPhone: e.target.value })
-                              }
-                            />
+
+                          {/* Insurance Documents Upload */}
+                          <div style={{ marginTop: '12px', borderTop: '1px solid #e2eeec', paddingTop: '10px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
+                              <strong style={{ fontSize: '11px', color: '#045F60' }}>
+                                INSURANCE CLAIM &amp; POLICY DOCUMENTS ({jobForm.insurancePhotos.length})
+                              </strong>
+                              <label
+                                className="btn-secondary-action"
+                                style={{
+                                  cursor: 'pointer',
+                                  padding: '4px 10px',
+                                  fontSize: '11px',
+                                  borderColor: '#045F60',
+                                  color: '#045F60',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '6px',
+                                }}
+                              >
+                                <Upload size={12} /> Add Document / Photo
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  multiple
+                                  style={{ display: 'none' }}
+                                  onChange={handleInsurancePhotoUpload}
+                                />
+                              </label>
+                            </div>
+                            {jobForm.insurancePhotos.length > 0 && (
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '6px' }}>
+                                {jobForm.insurancePhotos.map((photo, idx) => (
+                                  <div
+                                    key={idx}
+                                    style={{
+                                      position: 'relative',
+                                      width: '70px',
+                                      height: '70px',
+                                      borderRadius: '6px',
+                                      overflow: 'hidden',
+                                      border: '1px solid #cbd5e1',
+                                    }}
+                                  >
+                                    <img
+                                      src={photo}
+                                      alt={`Insurance doc ${idx + 1}`}
+                                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => removeInsurancePhoto(idx)}
+                                      style={{
+                                        position: 'absolute',
+                                        top: 2,
+                                        right: 2,
+                                        background: 'rgba(0,0,0,0.65)',
+                                        color: '#fff',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '18px',
+                                        height: '18px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                      }}
+                                      title="Remove photo"
+                                    >
+                                      <X size={12} />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}
                     </div>
-                  </div>
-                )}
 
-                {/* SECTION 3: ESTIMATE (18% GST) & INITIAL TASKS */}
-                {jobModalSection === 3 && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div className="wms-form-grid-5">
-                      <div>
-                        <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                          Labour (₹)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          className="table-search-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.labour}
-                          onChange={(e) => setJobForm({ ...jobForm, labour: e.target.value })}
-                        />
+                    {/* REPAIR SCHEDULE & SEVERITY (SIMPLIFIED 2-OPTION SELECTOR) */}
+                    <div
+                      style={{
+                        border: '1px solid #045F60',
+                        borderRadius: '10px',
+                        padding: '16px',
+                        background: '#f8fafc',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                        <div>
+                          <strong style={{ fontSize: '13px', color: '#045F60', textTransform: 'uppercase' }}>
+                            Repair Schedule &amp; Delivery Commitment *
+                          </strong>
+                          <p style={{ fontSize: '11px', color: '#64748b', margin: '2px 0 0' }}>
+                            Select repair scope to auto-set delivery expectation without complex dates
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                          Spare Parts (₹)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          className="table-search-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.spareParts}
-                          onChange={(e) => setJobForm({ ...jobForm, spareParts: e.target.value })}
-                        />
-                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                          Painting (₹)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          className="table-search-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.painting}
-                          onChange={(e) => setJobForm({ ...jobForm, painting: e.target.value })}
-                        />
-                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                          Consumables (₹)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          className="table-search-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.additionalCharges}
-                          onChange={(e) =>
-                            setJobForm({ ...jobForm, additionalCharges: e.target.value })
-                          }
-                        />
-                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
-                          Discount (₹)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          className="table-search-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.discount}
-                          onChange={(e) => setJobForm({ ...jobForm, discount: e.target.value })}
-                        />
+
+                      <div className="wms-form-grid-2" style={{ gap: '12px' }}>
+                        {/* Minor Option */}
+                        <div
+                          onClick={() => setJobForm({ ...jobForm, repairSeverity: 'Minor' })}
+                          style={{
+                            border: jobForm.repairSeverity === 'Minor' ? '2px solid #067a46' : '1px solid #cbd5e1',
+                            borderRadius: '8px',
+                            padding: '14px',
+                            background: jobForm.repairSeverity === 'Minor' ? '#f0fdf4' : '#fff',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ fontSize: '18px' }}>🟢</span>
+                              <strong style={{ fontSize: '14px', color: '#067a46' }}>Minor Repair</strong>
+                            </div>
+                            {jobForm.repairSeverity === 'Minor' && (
+                              <span className="stage-badge badge-active">Selected</span>
+                            )}
+                          </div>
+                          <div style={{ fontSize: '12px', fontWeight: '700', color: '#166534', marginBottom: '4px' }}>
+                            ⚡ On Time · Same Day Delivery
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#4b5563', lineHeight: 1.4 }}>
+                            Quick denting touch-up, bumper repair, minor scratch buffing, or standard running repairs. Completed within 24 hours.
+                          </div>
+                        </div>
+
+                        {/* Major Option */}
+                        <div
+                          onClick={() => setJobForm({ ...jobForm, repairSeverity: 'Major' })}
+                          style={{
+                            border: jobForm.repairSeverity === 'Major' ? '2px solid #b91c1c' : '1px solid #cbd5e1',
+                            borderRadius: '8px',
+                            padding: '14px',
+                            background: jobForm.repairSeverity === 'Major' ? '#fef2f2' : '#fff',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ fontSize: '18px' }}>🔴</span>
+                              <strong style={{ fontSize: '14px', color: '#b91c1c' }}>Major Repair</strong>
+                            </div>
+                            {jobForm.repairSeverity === 'Major' && (
+                              <span className="stage-badge badge-danger">Selected</span>
+                            )}
+                          </div>
+                          <div style={{ fontSize: '12px', fontWeight: '700', color: '#991b1b', marginBottom: '4px' }}>
+                            ⏳ Delivery Will Take Time
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#4b5563', lineHeight: 1.4 }}>
+                            Heavy structural collision, multiple panel replacement, apron realignment, full chassis pull, or complete repainting.
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Live GST Calculation Summary Box */}
-                    <div
-                      style={{
-                        background: '#f0fdfa',
-                        border: '1px solid #045F60',
-                        borderRadius: '8px',
-                        padding: '14px 18px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                        gap: '12px',
-                      }}
-                    >
-                      <div style={{ fontSize: '12px', color: '#334155' }}>
+                    {/* COST ESTIMATE (18% GST) */}
+                    <div>
+                      <div className="wms-form-grid-5">
                         <div>
-                          Taxable Subtotal:{' '}
-                          <strong>₹{modalEstimateCalc.taxable.toLocaleString('en-IN')}</strong>
+                          <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                            Labour (₹)
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            className="table-search-input"
+                            style={{ width: '100%' }}
+                            value={jobForm.labour}
+                            onChange={(e) => setJobForm({ ...jobForm, labour: e.target.value })}
+                          />
                         </div>
                         <div>
-                          GST 18% (CGST 9% ₹{modalEstimateCalc.cgst.toLocaleString('en-IN')} + SGST
-                          9% ₹{modalEstimateCalc.sgst.toLocaleString('en-IN')}):{' '}
-                          <strong>₹{modalEstimateCalc.gst.toLocaleString('en-IN')}</strong>
+                          <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                            Spare Parts (₹)
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            className="table-search-input"
+                            style={{ width: '100%' }}
+                            value={jobForm.spareParts}
+                            onChange={(e) => setJobForm({ ...jobForm, spareParts: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                            Painting (₹)
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            className="table-search-input"
+                            style={{ width: '100%' }}
+                            value={jobForm.painting}
+                            onChange={(e) => setJobForm({ ...jobForm, painting: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                            Consumables (₹)
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            className="table-search-input"
+                            style={{ width: '100%' }}
+                            value={jobForm.additionalCharges}
+                            onChange={(e) =>
+                              setJobForm({ ...jobForm, additionalCharges: e.target.value })
+                            }
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', marginBottom: '4px' }}>
+                            Discount (₹)
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            className="table-search-input"
+                            style={{ width: '100%' }}
+                            value={jobForm.discount}
+                            onChange={(e) => setJobForm({ ...jobForm, discount: e.target.value })}
+                          />
                         </div>
                       </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <span style={{ fontSize: '11px', color: '#045F60', fontWeight: '700' }}>
-                          GRAND TOTAL ESTIMATE (INCL. 18% GST)
-                        </span>
-                        <div style={{ fontSize: '22px', fontWeight: '900', color: '#045F60' }}>
-                          ₹{modalEstimateCalc.total.toLocaleString('en-IN')}
+
+                      {/* Live GST Calculation Summary Box */}
+                      <div
+                        style={{
+                          background: '#f0fdfa',
+                          border: '1px solid #045F60',
+                          borderRadius: '8px',
+                          padding: '14px 18px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                          gap: '12px',
+                          marginTop: '12px',
+                        }}
+                      >
+                        <div style={{ fontSize: '12px', color: '#334155' }}>
+                          <div>
+                            Taxable Subtotal:{' '}
+                            <strong>₹{modalEstimateCalc.taxable.toLocaleString('en-IN')}</strong>
+                          </div>
+                          <div>
+                            GST 18% (CGST 9% ₹{modalEstimateCalc.cgst.toLocaleString('en-IN')} + SGST
+                            9% ₹{modalEstimateCalc.sgst.toLocaleString('en-IN')}):{' '}
+                            <strong>₹{modalEstimateCalc.gst.toLocaleString('en-IN')}</strong>
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <span style={{ fontSize: '11px', color: '#045F60', fontWeight: '700' }}>
+                            GRAND TOTAL ESTIMATE (INCL. 18% GST)
+                          </span>
+                          <div style={{ fontSize: '22px', fontWeight: '900', color: '#045F60' }}>
+                            ₹{modalEstimateCalc.total.toLocaleString('en-IN')}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -3448,7 +4131,7 @@ export default function AdvisorDashboard({
                             setJobForm({ ...jobForm, customerApproved: e.target.checked })
                           }
                         />
-                        Customer Has Approved Cost Estimate & Authorized Work
+                        Customer Has Approved Cost Estimate &amp; Authorized Work
                       </label>
                       {jobForm.customerApproved && (
                         <input
@@ -3564,130 +4247,14 @@ export default function AdvisorDashboard({
                   </div>
                 )}
 
-                {/* SECTION 4: SCHEDULE & SUPERVISOR HANDOVER */}
+                {/* STEP 4: SUPERVISOR HANDOVER */}
                 {jobModalSection === 4 && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div className="wms-form-grid-3">
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                          Intake Date
-                        </label>
-                        <input
-                          type="date"
-                          className="table-search-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.intakeDate}
-                          onChange={(e) => setJobForm({ ...jobForm, intakeDate: e.target.value })}
-                        />
-                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                          Estimated Delivery Date
-                        </label>
-                        <input
-                          type="date"
-                          className="table-search-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.estimatedCompletionDate}
-                          onChange={(e) =>
-                            setJobForm({ ...jobForm, estimatedCompletionDate: e.target.value })
-                          }
-                        />
-                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                          Job Priority
-                        </label>
-                        <select
-                          className="wms-select-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.priority}
-                          onChange={(e) =>
-                            setJobForm({
-                              ...jobForm,
-                              priority: e.target.value as JobFormState['priority'],
-                            })
-                          }
-                        >
-                          <option value="Normal">Normal Workflow</option>
-                          <option value="Urgent">Urgent Priority</option>
-                          <option value="Insurance Express">Insurance Express Claim</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                          Current Repair Stage
-                        </label>
-                        <select
-                          className="wms-select-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.currentStage}
-                          onChange={(e) =>
-                            setJobForm({ ...jobForm, currentStage: e.target.value as RepairStage })
-                          }
-                        >
-                          {ALL_13_STAGES.map((st) => (
-                            <option key={st} value={st}>
-                              {st}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                          Job Status
-                        </label>
-                        <select
-                          className="wms-select-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.jobStatus}
-                          onChange={(e) =>
-                            setJobForm({
-                              ...jobForm,
-                              jobStatus: e.target.value as JobCard['jobStatus'],
-                            })
-                          }
-                        >
-                          <option value="Active">Active</option>
-                          <option value="On Hold">On Hold</option>
-                          <option value="Completed">Completed</option>
-                          <option value="Delivered">Delivered</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
-                          Assigned Workshop Supervisor
-                        </label>
-                        <select
-                          className="wms-select-input"
-                          style={{ width: '100%' }}
-                          value={jobForm.assignedSupervisorId}
-                          onChange={(e) => {
-                            const sup = supervisors.find((s) => (s.userId || s.id) === e.target.value);
-                            setJobForm({
-                              ...jobForm,
-                              assignedSupervisorId: e.target.value,
-                              assignedSupervisorName: sup?.name || 'Mahesh Jadhav',
-                            });
-                          }}
-                        >
-                          {supervisors.map((s) => (
-                            <option key={s.id} value={s.userId || s.id}>
-                              {s.name} ({s.designation})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
                     <div
                       style={{
                         border: '1px solid #045F60',
-                        borderRadius: '8px',
-                        padding: '14px 16px',
+                        borderRadius: '10px',
+                        padding: '16px',
                         background: '#f0fdfa',
                       }}
                     >
@@ -3695,8 +4262,8 @@ export default function AdvisorDashboard({
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '8px',
-                          fontSize: '13px',
+                          gap: '10px',
+                          fontSize: '14px',
                           fontWeight: '700',
                           color: '#045F60',
                           cursor: 'pointer',
@@ -3709,19 +4276,97 @@ export default function AdvisorDashboard({
                             setJobForm({ ...jobForm, handoverToSupervisor: e.target.checked })
                           }
                         />
-                        Handover to Supervisor ({jobForm.assignedSupervisorName}) immediately upon saving
+                        Handover this Job Card to Workshop Floor Supervisor Immediately
                       </label>
-                      <p style={{ fontSize: '11px', color: '#475569', marginTop: '4px', marginBottom: '8px' }}>
-                        Leave unchecked if you want to save as an Advisor Intake/Estimate first and trigger handover later from the Supervisor Coordination tab.
+                      <p style={{ fontSize: '12px', color: '#475569', marginTop: '6px', marginBottom: '14px' }}>
+                        When checked, this vehicle is officially released to the workshop floor, allowing the supervisor to assign technicians, schedule bays, and request spare parts.
                       </p>
-                      <textarea
-                        rows={2}
-                        className="table-search-input"
-                        style={{ width: '100%', height: 'auto', padding: '8px 12px', background: '#fff' }}
-                        placeholder="Briefing notes for floor supervisor (optional)..."
-                        value={jobForm.handoverNotes}
-                        onChange={(e) => setJobForm({ ...jobForm, handoverNotes: e.target.value })}
-                      />
+
+                      <div className="wms-form-grid-3">
+                        <div>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                            Assigned Workshop Supervisor *
+                          </label>
+                          <select
+                            className="wms-select-input"
+                            style={{ width: '100%', background: '#fff' }}
+                            value={jobForm.assignedSupervisorId}
+                            onChange={(e) => {
+                              const sup = supervisors.find((s) => (s.userId || s.id) === e.target.value);
+                              setJobForm({
+                                ...jobForm,
+                                assignedSupervisorId: e.target.value,
+                                assignedSupervisorName: sup?.name || 'Mahesh Jadhav',
+                              });
+                            }}
+                          >
+                            {supervisors.map((s) => (
+                              <option key={s.id} value={s.userId || s.id}>
+                                {s.name} ({s.designation})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                            Initial Repair Stage
+                          </label>
+                          <select
+                            className="wms-select-input"
+                            style={{ width: '100%', background: '#fff' }}
+                            value={jobForm.currentStage}
+                            onChange={(e) =>
+                              setJobForm({ ...jobForm, currentStage: e.target.value as RepairStage })
+                            }
+                          >
+                            {WORKSHOP_4_STAGES.map((st) => (
+                              <option key={st} value={st}>
+                                {st}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>
+                            Workshop Priority
+                          </label>
+                          <select
+                            className="wms-select-input"
+                            style={{ width: '100%', background: '#fff' }}
+                            value={jobForm.priority}
+                            onChange={(e) =>
+                              setJobForm({
+                                ...jobForm,
+                                priority: e.target.value as JobFormState['priority'],
+                              })
+                            }
+                          >
+                            <option value="Normal">Normal Workflow</option>
+                            <option value="Urgent">Urgent Priority</option>
+                            <option value="Insurance Express">Insurance Express Claim</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div style={{ marginTop: '14px' }}>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#045F60' }}>
+                          Floor Handover Instructions &amp; Briefing Notes for Supervisor
+                        </label>
+                        <textarea
+                          rows={3}
+                          className="table-search-input"
+                          style={{ width: '100%', height: 'auto', padding: '10px 12px', background: '#fff' }}
+                          placeholder="e.g. Inspect radiator frame first. Check customer approval on parts before stripping rear quarter..."
+                          value={jobForm.handoverNotes}
+                          onChange={(e) => setJobForm({ ...jobForm, handoverNotes: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ padding: '12px 14px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2eeec', fontSize: '12px', color: '#475569' }}>
+                      <strong>Handover Visibility Notice:</strong> Once saved, {jobForm.assignedSupervisorName} will immediately see all customer specs, vehicle specs, damage notes, photos, and estimate on their Supervisor Dashboard.
                     </div>
                   </div>
                 )}
@@ -3744,12 +4389,10 @@ export default function AdvisorDashboard({
                     <button
                       type="button"
                       className="btn-secondary-action"
-                      style={{ borderColor: '#045F60', color: '#045F60' }}
-                      onClick={() =>
-                        setJobModalSection((prev) => (prev + 1) as 1 | 2 | 3 | 4)
-                      }
+                      style={{ borderColor: '#045F60', color: '#045F60', fontWeight: '700' }}
+                      onClick={handleNextStep}
                     >
-                      Next Step →
+                      Next: {jobModalSection === 1 ? 'Vehicle Details' : jobModalSection === 2 ? 'Job Card Details' : 'Supervisor Handover'} →
                     </button>
                   )}
                 </div>
@@ -3771,7 +4414,7 @@ export default function AdvisorDashboard({
                     ) : (
                       <>
                         <Check size={15} />{' '}
-                        {jobModalMode === 'create' ? 'Save Job Card' : 'Update Job Card'}
+                        {jobModalMode === 'create' ? '✓ Create & Handover Job Card' : 'Update Job Card'}
                       </>
                     )}
                   </button>
@@ -3796,6 +4439,13 @@ export default function AdvisorDashboard({
               <div>
                 <div className="wms-header-badges">
                   <span className="stage-badge badge-warning">{viewingJob.currentStage}</span>
+                  <span
+                    className={`stage-badge ${
+                      viewingJob.repairSeverity === 'Major' ? 'badge-danger' : 'badge-active'
+                    }`}
+                  >
+                    {viewingJob.repairSeverity === 'Major' ? '🔴 Major Repair' : '🟢 Minor Repair (Same Day)'}
+                  </span>
                   <span
                     className={`stage-badge ${
                       isJobHandedOver(viewingJob) ? 'badge-active' : 'badge-danger'
@@ -3886,7 +4536,147 @@ export default function AdvisorDashboard({
                     <strong>Inspection Notes:</strong> {viewingJob.inspection.inspectionNotes}
                   </p>
                 )}
+
+                {/* Uploaded Photos Gallery */}
+                {((viewingJob.inspection?.damagePhotos && viewingJob.inspection.damagePhotos.length > 0) ||
+                  (viewingJob.inspection?.photographs && viewingJob.inspection.photographs.length > 0) ||
+                  (viewingJob.inspection?.insurancePhotos && viewingJob.inspection.insurancePhotos.length > 0)) && (
+                  <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #e2eeec' }}>
+                    {((viewingJob.inspection?.damagePhotos && viewingJob.inspection.damagePhotos.length > 0) ||
+                      (viewingJob.inspection?.photographs && viewingJob.inspection.photographs.length > 0)) && (
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontSize: '11px', fontWeight: '700', color: '#045F60', marginBottom: '6px' }}>
+                          DAMAGE ASSESSMENT PHOTOGRAPHS:
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                          {(viewingJob.inspection?.damagePhotos || viewingJob.inspection?.photographs || []).map((img, i) => (
+                            <a key={i} href={img} target="_blank" rel="noreferrer" style={{ display: 'block' }}>
+                              <img
+                                src={img}
+                                alt={`Damage ${i + 1}`}
+                                style={{
+                                  width: '80px',
+                                  height: '80px',
+                                  objectFit: 'cover',
+                                  borderRadius: '6px',
+                                  border: '1px solid #cbd5e1',
+                                }}
+                              />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {viewingJob.inspection?.insurancePhotos && viewingJob.inspection.insurancePhotos.length > 0 && (
+                      <div>
+                        <div style={{ fontSize: '11px', fontWeight: '700', color: '#045F60', marginBottom: '6px' }}>
+                          INSURANCE &amp; CLAIM DOCUMENTS:
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                          {viewingJob.inspection.insurancePhotos.map((img, i) => (
+                            <a key={i} href={img} target="_blank" rel="noreferrer" style={{ display: 'block' }}>
+                              <img
+                                src={img}
+                                alt={`Insurance Doc ${i + 1}`}
+                                style={{
+                                  width: '80px',
+                                  height: '80px',
+                                  objectFit: 'cover',
+                                  borderRadius: '6px',
+                                  border: '1px solid #cbd5e1',
+                                }}
+                              />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
+
+              {/* Requested Spare Parts for this Job */}
+              {(() => {
+                const jobParts = partRequisitions.filter(
+                  (r) => r.jobCardId === viewingJob.id || r.jobCardNumber === viewingJob.jobCardNumber
+                );
+                if (jobParts.length === 0) return null;
+                return (
+                  <div style={{ borderTop: '1px solid #eee', paddingTop: '12px', marginTop: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <strong style={{ fontSize: '12px', color: '#045F60', textTransform: 'uppercase' }}>
+                        Requested Spare Parts &amp; Approvals ({jobParts.length})
+                      </strong>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {jobParts.map((r) => {
+                        const isPendingAdvisor = !r.advisorApproved && r.status !== 'Issued' && r.status !== 'Rejected';
+                        return (
+                          <div
+                            key={r.id}
+                            style={{
+                              padding: '10px 12px',
+                              background: isPendingAdvisor ? '#fffdfa' : '#f8fafc',
+                              border: isPendingAdvisor ? '1px solid #fde68a' : '1px solid #e2eeec',
+                              borderRadius: '8px',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              flexWrap: 'wrap',
+                              gap: '8px',
+                            }}
+                          >
+                            <div>
+                              <div style={{ fontWeight: '700', fontSize: '13px', color: '#1e293b' }}>
+                                {r.partName}{' '}
+                                <span style={{ fontSize: '11px', color: '#64748b' }}>[{r.partNumber}]</span>
+                              </div>
+                              <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                                {r.quantity} pcs · ₹{r.totalPrice.toLocaleString('en-IN')} · Requested by {r.requestedBy}
+                              </div>
+                              {r.notes && (
+                                <div style={{ fontSize: '11px', color: '#475569', fontStyle: 'italic', marginTop: '2px' }}>
+                                  &quot;{r.notes}&quot;
+                                </div>
+                              )}
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span
+                                className={`stage-badge ${r.advisorApproved ? 'badge-active' : 'badge-warning'}`}
+                                style={{ fontSize: '11px' }}
+                              >
+                                {r.advisorApproved ? '✓ Advisor Approved' : '⏳ Awaiting Advisor'}
+                              </span>
+                              <span
+                                className={`stage-badge ${r.managerApproved ? 'badge-active' : 'badge-warning'}`}
+                                style={{ fontSize: '11px' }}
+                              >
+                                {r.managerApproved ? '✓ Mgr Approved' : '⏳ Awaiting Mgr'}
+                              </span>
+                              {isPendingAdvisor && (
+                                <button
+                                  type="button"
+                                  className="btn-primary-action"
+                                  style={{
+                                    padding: '4px 10px',
+                                    fontSize: '11px',
+                                    background: '#067a46',
+                                    borderColor: '#067a46',
+                                  }}
+                                  disabled={approvingReqId === r.id}
+                                  onClick={() => handleApprovePartAdvisor(r)}
+                                >
+                                  {approvingReqId === r.id ? 'Approving...' : '✓ Approve'}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {viewingJob.stageHistory && viewingJob.stageHistory.length > 0 && (
                 <div style={{ borderTop: '1px solid #eee', paddingTop: '12px', marginTop: '14px' }}>
@@ -4072,9 +4862,9 @@ export default function AdvisorDashboard({
                     className="wms-select-input"
                     style={{ width: '100%' }}
                     value={handoverTargetStage}
-                    onChange={(e) => setHandoverTargetStage(e.target.value as RepairStage)}
+                    onChange={(e) => setHandoverTargetStage(e.target.value as StandardRepairStage)}
                   >
-                    {ALL_13_STAGES.map((st) => (
+                    {WORKSHOP_4_STAGES.map((st) => (
                       <option key={st} value={st}>
                         {st}
                       </option>

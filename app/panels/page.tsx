@@ -44,8 +44,7 @@ const departments = [
     demoUser: 'bodyshop@tuljamotors.com',
   },
 
-  /*
-  // 3. Human Resources (HR) - commented out
+  // 3. Human Resources (HR)
   {
     slug: 'hr',
     name: 'Human Resources (HR)',
@@ -56,7 +55,6 @@ const departments = [
     bg: '#e8f3f1',
     demoUser: 'hr@tuljamotors.com',
   },
-  */
 
   // 3. Service Advisor - handles customer intake and coordinates with supervisor team
   {

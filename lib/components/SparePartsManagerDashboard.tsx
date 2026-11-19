@@ -180,9 +180,31 @@ export default function SparePartsManagerDashboard({
     );
   }, [parts]);
 
+  // Requisitions where BOTH Advisor and Body Shop Manager have approved -> Ready for Store Issue
+  const approvedReadyRequisitions = useMemo(() => {
+    return requisitions.filter(
+      (r) =>
+        ((r.advisorApproved && r.managerApproved) || r.status === 'Approved') &&
+        r.status !== 'Issued' &&
+        r.status !== 'Rejected'
+    );
+  }, [requisitions]);
+
+  // Requisitions awaiting approval from Service Advisor and/or Body Shop Manager
+  const awaitingApprovalRequisitions = useMemo(() => {
+    return requisitions.filter(
+      (r) =>
+        !(r.advisorApproved && r.managerApproved) &&
+        r.status !== 'Approved' &&
+        r.status !== 'Issued' &&
+        r.status !== 'Rejected'
+    );
+  }, [requisitions]);
+
+  // All active pending requisitions (not yet issued or rejected)
   const pendingRequisitions = useMemo(() => {
     return requisitions.filter(
-      (r) => r.status === 'Requested' || r.status === 'Pending Stock'
+      (r) => r.status !== 'Issued' && r.status !== 'Rejected'
     );
   }, [requisitions]);
 
@@ -219,7 +241,18 @@ export default function SparePartsManagerDashboard({
         r.partName.toLowerCase().includes(q) ||
         r.requestedBy.toLowerCase().includes(q);
 
-      const matchStatus = reqStatusFilter === 'ALL' || r.status === reqStatusFilter;
+      const isBothApproved = (r.advisorApproved && r.managerApproved) || r.status === 'Approved';
+      let matchStatus = true;
+      if (reqStatusFilter === 'ALL') {
+        matchStatus = true;
+      } else if (reqStatusFilter === 'Approved') {
+        matchStatus = isBothApproved && r.status !== 'Issued' && r.status !== 'Rejected';
+      } else if (reqStatusFilter === 'Pending Approval') {
+        matchStatus = !isBothApproved && r.status !== 'Issued' && r.status !== 'Rejected';
+      } else {
+        matchStatus = r.status === reqStatusFilter;
+      }
+
       return matchSearch && matchStatus;
     });
   }, [requisitions, searchQuery, reqStatusFilter]);
@@ -457,6 +490,19 @@ export default function SparePartsManagerDashboard({
   };
 
   const handleApproveAndIssue = async (req: PartRequisition) => {
+    const isBothApproved = (req.advisorApproved && req.managerApproved) || req.status === 'Approved';
+    if (!isBothApproved) {
+      const missing: string[] = [];
+      if (!req.advisorApproved) missing.push('Service Advisor');
+      if (!req.managerApproved) missing.push('Body Shop Manager');
+      showCenterPopup(
+        `Cannot issue part yet: Requisition requires sign-off from ${missing.join(' and ')} first. Once both have approved under the job card, you can issue this item directly to the workshop bay.`,
+        'Approvals Required',
+        'warning'
+      );
+      return;
+    }
+
     const part = parts.find((p) => p.id === req.partId || p.partNumber === req.partNumber);
     if (part && part.stockQuantity < req.quantity) {
       showCenterPopup(
@@ -638,6 +684,67 @@ export default function SparePartsManagerDashboard({
             </div>
           </div>
 
+          {/* Prominent Dual-Approval Requisitions Alert Banner */}
+          {approvedReadyRequisitions.length > 0 && (
+            <div
+              style={{
+                background: '#ecfdf5',
+                border: '1.5px solid #10b981',
+                borderRadius: '12px',
+                padding: '16px 20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '14px',
+                marginBottom: '20px',
+                boxShadow: '0 2px 10px rgba(16, 185, 129, 0.12)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '10px',
+                    background: '#059669',
+                    color: '#ffffff',
+                    display: 'grid',
+                    placeItems: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <CheckCircle2 size={24} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: '800', color: '#065f46', fontSize: '15px' }}>
+                    {approvedReadyRequisitions.length} Spare Part Request(s) Dual-Approved &amp; Ready to Issue!
+                  </div>
+                  <div style={{ fontSize: '12.5px', color: '#047857', marginTop: '2px' }}>
+                    Both Service Advisor and Body Shop Manager have approved these supervisor part requests. Please issue the parts directly to the workshop bays.
+                  </div>
+                </div>
+              </div>
+
+              <Link
+                href="/panels/spare-parts-manager/dashboard?tab=requisitions"
+                className="btn-primary-action"
+                style={{
+                  background: '#059669',
+                  borderColor: '#059669',
+                  padding: '9px 18px',
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <Package size={15} /> View &amp; Issue Parts ({approvedReadyRequisitions.length}) →
+              </Link>
+            </div>
+          )}
+
           {/* KPI Metrics */}
           <div className="wms-stats-grid">
             <div className="wms-stat-card">
@@ -681,15 +788,38 @@ export default function SparePartsManagerDashboard({
 
             <div className="wms-stat-card">
               <div className="stat-card-top">
-                <span className="stat-card-title">Pending Floor Requisitions</span>
-                <div className="stat-icon-wrapper" style={{ background: '#eef7f6', color: '#045F60' }}>
+                <span className="stat-card-title">Floor Part Requisitions</span>
+                <div
+                  className="stat-icon-wrapper"
+                  style={{
+                    background: approvedReadyRequisitions.length > 0 ? '#ecfdf5' : '#eef7f6',
+                    color: approvedReadyRequisitions.length > 0 ? '#059669' : '#045F60',
+                  }}
+                >
                   <Clock size={20} />
                 </div>
               </div>
-              <div className="stat-card-value">
-                {loading ? '...' : `${pendingRequisitions.length} Pending`}
+              <div className="stat-card-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
+                {loading ? (
+                  '...'
+                ) : (
+                  <>
+                    <span style={{ color: approvedReadyRequisitions.length > 0 ? '#059669' : '#1e293b' }}>
+                      {approvedReadyRequisitions.length} Ready to Issue
+                    </span>
+                    {awaitingApprovalRequisitions.length > 0 && (
+                      <span style={{ fontSize: '12px', color: '#b45309', fontWeight: '600' }}>
+                        ({awaitingApprovalRequisitions.length} awaiting sign-off)
+                      </span>
+                    )}
+                  </>
+                )}
               </div>
-              <div className="stat-card-subtext">Active repair job demands</div>
+              <div className="stat-card-subtext">
+                {approvedReadyRequisitions.length > 0
+                  ? '✓ Dual approvals complete — awaiting warehouse dispatch'
+                  : 'Active repair job demands'}
+              </div>
             </div>
           </div>
 
@@ -791,54 +921,117 @@ export default function SparePartsManagerDashboard({
                 </Link>
               </div>
               <div style={{ padding: '14px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {jobCards.slice(0, 4).map((job) => {
-                    const partsCost = job.costEstimate?.spareParts || 0;
-                    const isPartsBottleneck = job.bottleneckInfo?.category === 'Spare Parts Pending';
-                    return (
-                      <div
-                        key={job.id}
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          padding: '10px 12px',
-                          background: '#fcfdfd',
-                          border: isPartsBottleneck ? '1px solid #f87171' : '1px solid #e0e9e8',
-                          borderRadius: '8px',
-                          gap: '8px',
-                          flexWrap: 'wrap',
-                        }}
-                      >
-                        <div>
-                          <div style={{ fontWeight: '700', fontSize: '13px', color: '#1e293b' }}>
-                            {job.vehicleModel} ({job.vehicleRegistration})
-                          </div>
-                          <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
-                            Job Card: <strong>{job.jobCardNumber}</strong> · Stage: {job.currentStage}
-                          </div>
-                          <div style={{ fontSize: '11.5px', color: '#045F60', fontWeight: '700', marginTop: '3px' }}>
-                            Allocated Parts Budget: ₹{partsCost.toLocaleString('en-IN')}
-                          </div>
-                        </div>
+                {approvedReadyRequisitions.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '800', color: '#059669', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <CheckCircle2 size={14} /> Dual-Approved Parts Ready to Issue ({approvedReadyRequisitions.length})
+                    </div>
+                    {approvedReadyRequisitions.slice(0, 4).map((req) => {
+                      const matchedPart = parts.find((p) => p.id === req.partId || p.partNumber === req.partNumber);
+                      const currentStock = matchedPart ? matchedPart.stockQuantity : 0;
+                      const hasSufficientStock = currentStock >= req.quantity;
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          {isPartsBottleneck && (
-                            <span className="stage-badge badge-danger">Parts Hold</span>
-                          )}
-                          <button
-                            type="button"
-                            className="btn-primary-action"
-                            style={{ padding: '5px 10px', fontSize: '11.5px' }}
-                            onClick={() => handleOpenIssueModal(job.id)}
-                          >
-                            Issue Part
-                          </button>
+                      return (
+                        <div
+                          key={req.id}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: '10px 12px',
+                            background: '#f0fdf4',
+                            border: '1.5px solid #86efac',
+                            borderRadius: '8px',
+                            gap: '8px',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <div>
+                            <div style={{ fontWeight: '700', fontSize: '13px', color: '#166534' }}>
+                              {req.partName} <span style={{ color: '#047857' }}>({req.quantity} pcs)</span>
+                            </div>
+                            <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                              Job: <strong>{req.jobCardNumber}</strong> · {req.vehicleRegistration} ({req.vehicleModel})
+                            </div>
+                            <div style={{ fontSize: '11px', color: hasSufficientStock ? '#047857' : '#b91c1c', fontWeight: '700', marginTop: '3px' }}>
+                              {hasSufficientStock ? `✓ ${currentStock} pcs available in store` : `⚠️ Low stock: only ${currentStock} pcs in store`}
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <button
+                              type="button"
+                              className="btn-primary-action"
+                              style={{ padding: '6px 12px', fontSize: '11.5px', background: '#059669', borderColor: '#059669' }}
+                              disabled={approvingReqId === req.id}
+                              onClick={() => handleApproveAndIssue(req)}
+                              title="Deduct stock & issue to vehicle bay"
+                            >
+                              {approvingReqId === req.id ? (
+                                <>
+                                  <Loader2 size={12} className="animate-spin" /> Issuing...
+                                </>
+                              ) : (
+                                <>
+                                  <CheckCircle2 size={12} /> Issue to Bay
+                                </>
+                              )}
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {jobCards.slice(0, 4).map((job) => {
+                      const partsCost = job.costEstimate?.spareParts || 0;
+                      const isPartsBottleneck = job.bottleneckInfo?.category === 'Spare Parts Pending';
+                      return (
+                        <div
+                          key={job.id}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: '10px 12px',
+                            background: '#fcfdfd',
+                            border: isPartsBottleneck ? '1px solid #f87171' : '1px solid #e0e9e8',
+                            borderRadius: '8px',
+                            gap: '8px',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <div>
+                            <div style={{ fontWeight: '700', fontSize: '13px', color: '#1e293b' }}>
+                              {job.vehicleModel} ({job.vehicleRegistration})
+                            </div>
+                            <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                              Job Card: <strong>{job.jobCardNumber}</strong> · Stage: {job.currentStage}
+                            </div>
+                            <div style={{ fontSize: '11.5px', color: '#045F60', fontWeight: '700', marginTop: '3px' }}>
+                              Allocated Parts Budget: ₹{partsCost.toLocaleString('en-IN')}
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {isPartsBottleneck && (
+                              <span className="stage-badge badge-danger">Parts Hold</span>
+                            )}
+                            <button
+                              type="button"
+                              className="btn-primary-action"
+                              style={{ padding: '5px 10px', fontSize: '11.5px' }}
+                              onClick={() => handleOpenIssueModal(job.id)}
+                            >
+                              Issue Part
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1170,32 +1363,239 @@ export default function SparePartsManagerDashboard({
             </div>
           </div>
 
-          {/* Incoming Floor Requisitions (Supervisor Approval Queue) */}
-          <div className="wms-panel-card" style={{ marginBottom: '24px' }}>
-            <div className="panel-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+          {/* 1. DUAL-APPROVED FLOOR REQUISITIONS QUEUE (READY TO ISSUE) */}
+          <div
+            className="wms-panel-card"
+            style={{
+              marginBottom: '24px',
+              border: approvedReadyRequisitions.length > 0 ? '2px solid #10b981' : undefined,
+              boxShadow: approvedReadyRequisitions.length > 0 ? '0 4px 14px rgba(16, 185, 129, 0.12)' : undefined,
+            }}
+          >
+            <div
+              className="panel-card-header"
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '8px',
+                background: approvedReadyRequisitions.length > 0 ? '#f0fdf4' : undefined,
+              }}
+            >
               <div>
-                <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Package size={18} style={{ color: '#D97706' }} />
-                  Incoming Floor Requisitions (Supervisor Approval Queue)
+                <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', color: '#065f46' }}>
+                  <CheckCircle2 size={18} style={{ color: '#059669' }} />
+                  Dual-Approved Floor Requisitions (Ready to Issue to Bay)
                 </h3>
-                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#64748b' }}>
-                  Live parts requested by workshop floor supervisors for active repairs
+                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#047857' }}>
+                  Parts approved by both Service Advisor and Body Shop Manager — release directly from warehouse stock
                 </p>
               </div>
               <div>
-                <span className={`stage-badge ${pendingRequisitions.length > 0 ? 'badge-warning' : 'badge-active'}`}>
-                  {pendingRequisitions.length} Pending Approval
+                <span
+                  className={`stage-badge ${
+                    approvedReadyRequisitions.length > 0 ? 'badge-active' : 'badge-neutral'
+                  }`}
+                  style={{ fontSize: '12px', padding: '4px 10px' }}
+                >
+                  {approvedReadyRequisitions.length} Ready to Issue
                 </span>
               </div>
             </div>
 
-            {pendingRequisitions.length === 0 ? (
+            {approvedReadyRequisitions.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '32px 16px', color: '#64748b' }}>
                 <CheckCircle2 size={36} style={{ color: '#059669', margin: '0 auto 8px' }} />
-                <div style={{ fontWeight: '600', color: '#1e293b' }}>No Pending Floor Requisitions</div>
-                <div style={{ fontSize: '12px', marginTop: '4px' }}>All parts requested by workshop floor supervisors have been processed and issued.</div>
+                <div style={{ fontWeight: '700', color: '#1e293b', fontSize: '14px' }}>
+                  No Approved Requisitions Waiting to Issue
+                </div>
+                <div style={{ fontSize: '12px', marginTop: '4px', maxWidth: '480px', margin: '4px auto 0' }}>
+                  When a supervisor submits a part request and both the Service Advisor and Body Shop Manager approve it under the job card, it will appear here immediately for warehouse dispatch.
+                </div>
               </div>
             ) : (
+              <div className="wms-table-responsive">
+                <table className="wms-table">
+                  <thead>
+                    <tr>
+                      <th>Job Card &amp; Vehicle</th>
+                      <th>Approved Part</th>
+                      <th>Quantity</th>
+                      <th>Warehouse Stock</th>
+                      <th>Approval Signatures</th>
+                      <th>Supervisor Notes</th>
+                      <th>Store Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {approvedReadyRequisitions.map((req) => {
+                      const matchedPart = parts.find(
+                        (p) => p.id === req.partId || p.partNumber === req.partNumber
+                      );
+                      const currentStock = matchedPart ? matchedPart.stockQuantity : 0;
+                      const hasSufficientStock = currentStock >= req.quantity;
+
+                      return (
+                        <tr key={req.id} style={{ background: '#fcfdfd' }}>
+                          <td>
+                            <strong>{req.jobCardNumber}</strong>
+                            <div style={{ color: '#045F60', fontWeight: '700', fontSize: '13px' }}>
+                              {req.vehicleRegistration}
+                            </div>
+                            <div style={{ fontSize: '11px', color: '#64748b' }}>
+                              {req.vehicleModel}
+                            </div>
+                          </td>
+                          <td>
+                            <strong style={{ fontSize: '13px', color: '#166534' }}>{req.partName}</strong>
+                            <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                              Code: <code>{req.partNumber}</code> · ₹{req.unitPrice} each
+                            </div>
+                          </td>
+                          <td>
+                            <strong style={{ fontSize: '14px', color: '#1e293b' }}>
+                              {req.quantity} pcs
+                            </strong>
+                            <div style={{ fontSize: '11px', color: '#059669', fontWeight: '700' }}>
+                              Total: ₹{req.totalPrice.toLocaleString('en-IN')}
+                            </div>
+                          </td>
+                          <td>
+                            {matchedPart ? (
+                              hasSufficientStock ? (
+                                <span className="stage-badge badge-active" title="Available in warehouse">
+                                  ✓ {currentStock} in stock
+                                </span>
+                              ) : (
+                                <span
+                                  className="stage-badge badge-danger"
+                                  title="Warehouse stock is less than requested"
+                                >
+                                  ⚠️ Shortage ({currentStock} available)
+                                </span>
+                              )
+                            ) : (
+                              <span className="stage-badge badge-neutral">Part Not Found</span>
+                            )}
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                              <span
+                                className="stage-badge badge-active"
+                                style={{ fontSize: '10px', padding: '2px 6px', display: 'inline-block' }}
+                              >
+                                Advisor: ✓ {req.advisorApprovedBy || 'Approved'}
+                              </span>
+                              <span
+                                className="stage-badge badge-active"
+                                style={{ fontSize: '10px', padding: '2px 6px', display: 'inline-block' }}
+                              >
+                                Manager: ✓ {req.managerApprovedBy || 'Approved'}
+                              </span>
+                            </div>
+                            <div style={{ fontSize: '10px', color: '#64748b', marginTop: '3px' }}>
+                              Req by {req.requestedBy}
+                            </div>
+                          </td>
+                          <td style={{ maxWidth: '200px', fontSize: '12px', color: '#334155' }}>
+                            {req.notes || '—'}
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                              {hasSufficientStock ? (
+                                <button
+                                  type="button"
+                                  className="btn-primary-action"
+                                  style={{
+                                    padding: '7px 14px',
+                                    fontSize: '12px',
+                                    background: '#059669',
+                                    borderColor: '#059669',
+                                    fontWeight: '700',
+                                  }}
+                                  disabled={approvingReqId === req.id}
+                                  onClick={() => handleApproveAndIssue(req)}
+                                  title="Deduct warehouse stock & issue directly to job card bay"
+                                >
+                                  {approvingReqId === req.id ? (
+                                    <>
+                                      <Loader2 size={13} className="animate-spin" /> Issuing...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <CheckCircle2 size={13} /> Issue Part to Bay
+                                    </>
+                                  )}
+                                </button>
+                              ) : (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="btn-secondary-action"
+                                    style={{
+                                      padding: '6px 10px',
+                                      fontSize: '11px',
+                                      borderColor: '#D97706',
+                                      color: '#B45309',
+                                      fontWeight: '700',
+                                    }}
+                                    onClick={() => handleOpenPoModal(matchedPart)}
+                                    title="Create Purchase Order for this part"
+                                  >
+                                    <Truck size={12} /> Order Stock
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn-secondary-action"
+                                    style={{ padding: '6px 9px', fontSize: '11px' }}
+                                    disabled={approvingReqId === req.id}
+                                    onClick={() => handleApproveAndIssue(req)}
+                                  >
+                                    Check &amp; Issue
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* 2. REQUISITIONS AWAITING ADVISOR OR MANAGER APPROVAL */}
+          {awaitingApprovalRequisitions.length > 0 && (
+            <div className="wms-panel-card" style={{ marginBottom: '24px' }}>
+              <div
+                className="panel-card-header"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                }}
+              >
+                <div>
+                  <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', color: '#92400e' }}>
+                    <Clock size={18} style={{ color: '#D97706' }} />
+                    Floor Requisitions Awaiting Sign-Off ({awaitingApprovalRequisitions.length})
+                  </h3>
+                  <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#64748b' }}>
+                    Supervisor requested parts pending sign-off from Service Advisor and/or Body Shop Manager
+                  </p>
+                </div>
+                <div>
+                  <span className="stage-badge badge-warning" style={{ fontSize: '11px' }}>
+                    {awaitingApprovalRequisitions.length} Awaiting Dual Approval
+                  </span>
+                </div>
+              </div>
+
               <div className="wms-table-responsive">
                 <table className="wms-table">
                   <thead>
@@ -1204,14 +1604,16 @@ export default function SparePartsManagerDashboard({
                       <th>Requested Part</th>
                       <th>Qty</th>
                       <th>Warehouse Stock</th>
+                      <th>Approval Status</th>
                       <th>Supervisor Notes</th>
-                      <th>Requested By</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {pendingRequisitions.map((req) => {
-                      const matchedPart = parts.find((p) => p.id === req.partId || p.partNumber === req.partNumber);
+                    {awaitingApprovalRequisitions.map((req) => {
+                      const matchedPart = parts.find(
+                        (p) => p.id === req.partId || p.partNumber === req.partNumber
+                      );
                       const currentStock = matchedPart ? matchedPart.stockQuantity : 0;
                       const hasSufficientStock = currentStock >= req.quantity;
 
@@ -1245,7 +1647,10 @@ export default function SparePartsManagerDashboard({
                                   {currentStock} in stock
                                 </span>
                               ) : (
-                                <span className="stage-badge badge-danger" title="Warehouse stock is less than requested">
+                                <span
+                                  className="stage-badge badge-danger"
+                                  title="Warehouse stock is less than requested"
+                                >
                                   Only {currentStock} in stock
                                 </span>
                               )
@@ -1253,78 +1658,45 @@ export default function SparePartsManagerDashboard({
                               <span className="stage-badge badge-neutral">Part Not Found</span>
                             )}
                           </td>
-                          <td style={{ maxWidth: '220px', fontSize: '12px', color: '#334155' }}>
+                          <td>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                              <span
+                                className={`stage-badge ${
+                                  req.advisorApproved ? 'badge-active' : 'badge-warning'
+                                }`}
+                                style={{ fontSize: '10px', padding: '2px 5px' }}
+                              >
+                                Advisor: {req.advisorApproved ? '✓ Approved' : '⏳ Pending'}
+                              </span>
+                              <span
+                                className={`stage-badge ${
+                                  req.managerApproved ? 'badge-active' : 'badge-warning'
+                                }`}
+                                style={{ fontSize: '10px', padding: '2px 5px' }}
+                              >
+                                Manager: {req.managerApproved ? '✓ Approved' : '⏳ Pending'}
+                              </span>
+                            </div>
+                          </td>
+                          <td style={{ maxWidth: '200px', fontSize: '12px', color: '#334155' }}>
                             {req.notes || '—'}
                           </td>
                           <td>
-                            <div style={{ fontSize: '12px', fontWeight: '500' }}>{req.requestedBy}</div>
-                            <div style={{ fontSize: '11px', color: '#64748b' }}>
-                              {new Date(req.requestedAt).toLocaleDateString('en-IN', {
-                                day: 'numeric',
-                                month: 'short',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
-                            </div>
-                          </td>
-                          <td>
-                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                              {hasSufficientStock ? (
-                                <button
-                                  type="button"
-                                  className="btn-primary-action"
-                                  style={{
-                                    padding: '5px 10px',
-                                    fontSize: '11px',
-                                    background: '#067a46',
-                                    borderColor: '#067a46',
-                                  }}
-                                  disabled={approvingReqId === req.id}
-                                  onClick={() => handleApproveAndIssue(req)}
-                                  title="Deduct stock & issue to job card"
-                                >
-                                  {approvingReqId === req.id ? (
-                                    <>
-                                      <Loader2 size={12} className="animate-spin" /> Issuing...
-                                    </>
-                                  ) : (
-                                    <>
-                                      <CheckCircle2 size={12} /> Approve &amp; Issue
-                                    </>
-                                  )}
-                                </button>
-                              ) : (
-                                <>
-                                  <button
-                                    type="button"
-                                    className="btn-secondary-action"
-                                    style={{
-                                      padding: '5px 9px',
-                                      fontSize: '11px',
-                                      borderColor: '#D97706',
-                                      color: '#B45309',
-                                    }}
-                                    onClick={() => handleOpenPoModal(matchedPart)}
-                                    title="Create Purchase Order for this part"
-                                  >
-                                    <Truck size={12} /> Order Stock
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="btn-secondary-action"
-                                    style={{
-                                      padding: '5px 8px',
-                                      fontSize: '11px',
-                                    }}
-                                    disabled={approvingReqId === req.id}
-                                    onClick={() => handleApproveAndIssue(req)}
-                                    title="Attempt issue or mark pending"
-                                  >
-                                    Check &amp; Issue
-                                  </button>
-                                </>
-                              )}
-                            </div>
+                            <button
+                              type="button"
+                              className="btn-secondary-action"
+                              style={{
+                                padding: '5px 8px',
+                                fontSize: '11px',
+                                borderColor: '#f59e0b',
+                                color: '#b45309',
+                                background: '#fffbeb',
+                              }}
+                              onClick={() => handleApproveAndIssue(req)}
+                              title="Click to check approvals"
+                            >
+                              ⏳ Check Approvals
+                            </button>
                           </td>
                         </tr>
                       );
@@ -1332,8 +1704,8 @@ export default function SparePartsManagerDashboard({
                   </tbody>
                 </table>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Active Job Cards Table */}
           <div className="wms-panel-card" style={{ marginBottom: '24px' }}>
@@ -1418,11 +1790,12 @@ export default function SparePartsManagerDashboard({
                   value={reqStatusFilter}
                   onChange={(e) => setReqStatusFilter(e.target.value)}
                 >
-                  <option value="ALL">All Statuses</option>
-                  <option value="Requested">Requested (Floor)</option>
-                  <option value="Issued">Issued</option>
-                  <option value="Allocated">Allocated</option>
-                  <option value="Pending Stock">Pending Stock</option>
+                  <option value="ALL">All Requisitions ({requisitions.length})</option>
+                  <option value="Approved">✓ Dual-Approved &amp; Ready to Issue ({approvedReadyRequisitions.length})</option>
+                  <option value="Pending Approval">⏳ Awaiting Approvals ({awaitingApprovalRequisitions.length})</option>
+                  <option value="Issued">Issued to Bay ({requisitions.filter((r) => r.status === 'Issued').length})</option>
+                  <option value="Pending Stock">Pending Stock ({requisitions.filter((r) => r.status === 'Pending Stock').length})</option>
+                  <option value="Rejected">Rejected</option>
                 </select>
               </div>
             </div>
@@ -1471,44 +1844,90 @@ export default function SparePartsManagerDashboard({
                           <strong>₹{req.totalPrice.toLocaleString('en-IN')}</strong>
                         </td>
                         <td>
-                          <span
-                            className={`stage-badge ${
-                              req.status === 'Issued'
-                                ? 'badge-active'
-                                : req.status === 'Allocated'
-                                ? 'badge-info'
-                                : req.status === 'Requested'
-                                ? 'badge-warning'
-                                : 'badge-danger'
-                            }`}
-                          >
-                            {req.status}
-                          </span>
+                          {(() => {
+                            const isBothApproved = (req.advisorApproved && req.managerApproved) || req.status === 'Approved';
+                            const isIssued = req.status === 'Issued';
+                            return (
+                              <div>
+                                <span
+                                  className={`stage-badge ${
+                                    isIssued
+                                      ? 'badge-active'
+                                      : isBothApproved
+                                      ? 'badge-info'
+                                      : req.status === 'Rejected'
+                                      ? 'badge-danger'
+                                      : 'badge-warning'
+                                  }`}
+                                >
+                                  {isIssued
+                                    ? 'Issued'
+                                    : isBothApproved
+                                    ? '✓ Dual Approved'
+                                    : req.status === 'Rejected'
+                                    ? 'Rejected'
+                                    : 'Awaiting Approvals'}
+                                </span>
+                                <div style={{ display: 'flex', gap: '3px', marginTop: '3px' }}>
+                                  <span style={{ fontSize: '9px', color: req.advisorApproved ? '#067a46' : '#d97706' }}>
+                                    Adv: {req.advisorApproved ? '✓' : '⏳'}
+                                  </span>
+                                  <span style={{ fontSize: '9px', color: '#94a3b8' }}>·</span>
+                                  <span style={{ fontSize: '9px', color: req.managerApproved ? '#067a46' : '#d97706' }}>
+                                    Mgr: {req.managerApproved ? '✓' : '⏳'}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })()}
                         </td>
                         <td style={{ fontSize: '12px' }}>{req.requestedBy}</td>
                         <td style={{ fontSize: '11px', color: '#64748b' }}>
                           {req.issuedAt ? new Date(req.issuedAt).toLocaleDateString('en-IN') : 'Pending'}
                         </td>
                         <td>
-                          {req.status === 'Requested' || req.status === 'Pending Stock' ? (
-                            <button
-                              type="button"
-                              className="btn-primary-action"
-                              style={{
-                                padding: '4px 8px',
-                                fontSize: '11px',
-                                background: '#067a46',
-                                borderColor: '#067a46',
-                              }}
-                              disabled={approvingReqId === req.id}
-                              onClick={() => handleApproveAndIssue(req)}
-                              title="Approve and issue part to floor"
-                            >
-                              {approvingReqId === req.id ? 'Issuing...' : 'Approve & Issue'}
-                            </button>
-                          ) : (
-                            <span style={{ fontSize: '11px', color: '#64748b' }}>Fulfilled</span>
-                          )}
+                          {(() => {
+                            if (req.status === 'Issued') {
+                              return <span style={{ fontSize: '11px', color: '#067a46', fontWeight: '600' }}>✓ Issued to Bay</span>;
+                            }
+                            const isBothApproved = (req.advisorApproved && req.managerApproved) || req.status === 'Approved';
+                            if (!isBothApproved) {
+                              return (
+                                <button
+                                  type="button"
+                                  className="btn-secondary-action"
+                                  style={{
+                                    padding: '4px 8px',
+                                    fontSize: '11px',
+                                    borderColor: '#f59e0b',
+                                    color: '#b45309',
+                                    background: '#fffbeb',
+                                  }}
+                                  onClick={() => handleApproveAndIssue(req)}
+                                  title="Dual approval required before issuance"
+                                >
+                                  ⏳ Awaiting Approvals
+                                </button>
+                              );
+                            }
+                            return (
+                              <button
+                                type="button"
+                                className="btn-primary-action"
+                                style={{
+                                  padding: '4px 8px',
+                                  fontSize: '11px',
+                                  background: '#067a46',
+                                  borderColor: '#067a46',
+                                }}
+                                disabled={approvingReqId === req.id}
+                                onClick={() => handleApproveAndIssue(req)}
+                                title="Issue part directly to workshop bay"
+                              >
+                                {approvingReqId === req.id ? 'Issuing...' : 'Issue to Bay'}
+                              </button>
+                            );
+                          })()}
                         </td>
                       </tr>
                     ))

@@ -180,9 +180,12 @@ export async function POST(req: NextRequest) {
     const intakeDate = body.intakeDate || todayDate;
     const parsedIntake = new Date(intakeDate);
     const estBaseTime = Number.isNaN(parsedIntake.getTime()) ? Date.now() : parsedIntake.getTime();
-    const defaultEstDate = new Date(estBaseTime + 7 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split('T')[0];
+    const severity = body.repairSeverity || (body.estimatedCompletionDate === todayDate ? 'Minor' : 'Major');
+    const computedEstDate =
+      body.estimatedCompletionDate ||
+      (severity === 'Minor'
+        ? todayDate
+        : new Date(estBaseTime + 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
     const isHandover = Boolean(body.handoverToSupervisor);
     const initialStage = body.currentStage || (isHandover ? 'Initial Inspection' : 'Vehicle Received');
 
@@ -218,7 +221,8 @@ export async function POST(req: NextRequest) {
       vehicleRegistration: vehicleRegistration || 'MH-09-NEW',
       vehicleModel: vehicleModel || 'Vehicle Model',
       intakeDate,
-      estimatedCompletionDate: body.estimatedCompletionDate || defaultEstDate,
+      estimatedCompletionDate: computedEstDate,
+      repairSeverity: severity,
       currentStage: initialStage,
       stageHistory,
       inspection: {
@@ -227,7 +231,9 @@ export async function POST(req: NextRequest) {
         customerComplaints: body.inspection?.customerComplaints ?? body.customerComplaints ?? [],
         visibleDamages: body.inspection?.visibleDamages ?? body.visibleDamages ?? [],
         inspectionNotes: body.inspection?.inspectionNotes ?? body.inspectionNotes ?? '',
-        photographs: body.inspection?.photographs ?? [],
+        photographs: body.inspection?.photographs ?? body.photographs ?? [],
+        damagePhotos: body.inspection?.damagePhotos ?? body.damagePhotos ?? [],
+        insurancePhotos: body.inspection?.insurancePhotos ?? body.insurancePhotos ?? [],
         insuranceProvider: body.inspection?.insuranceProvider || '',
         policyNumber: body.inspection?.policyNumber || '',
         claimNumber: body.inspection?.claimNumber || '',
@@ -337,6 +343,7 @@ export async function PUT(req: NextRequest) {
     if (estimatedCompletionDate !== undefined) updates.estimatedCompletionDate = estimatedCompletionDate;
     if (advisorName !== undefined) updates.advisorName = advisorName;
     if (priority !== undefined) updates.priority = priority;
+    if (body.repairSeverity !== undefined) updates.repairSeverity = body.repairSeverity;
 
     if (inspection !== undefined) {
       updates.inspection = {
@@ -442,6 +449,36 @@ export async function PUT(req: NextRequest) {
     }
 
     updates.stageHistory = nextHistory;
+
+    // Sync customer & vehicle updates to database if provided
+    try {
+      if (existing.customerId && (customerName || customerPhone || body.customerEmail || body.customerAddress || body.customerCity)) {
+        await db.updateCustomer(existing.customerId, {
+          ...(customerName ? { name: customerName } : {}),
+          ...(customerPhone ? { phone: customerPhone } : {}),
+          ...(body.customerEmail !== undefined ? { email: body.customerEmail } : {}),
+          ...(body.customerAddress !== undefined ? { address: body.customerAddress } : {}),
+          ...(body.customerCity !== undefined ? { city: body.customerCity } : {}),
+        });
+      }
+
+      if (existing.vehicleId && (vehicleRegistration || vehicleModel || body.vehicleMake || body.vehicleVariant || body.vehicleYear || body.vehicleColor || body.vehicleFuel || body.vehicleOdometer !== undefined || body.vehicleVin || body.vehicleEngine)) {
+        await db.updateVehicle(existing.vehicleId, {
+          ...(vehicleRegistration ? { registrationNumber: vehicleRegistration.toUpperCase() } : {}),
+          ...(body.vehicleMake ? { make: body.vehicleMake } : {}),
+          ...(vehicleModel ? { model: vehicleModel } : {}),
+          ...(body.vehicleVariant !== undefined ? { variant: body.vehicleVariant } : {}),
+          ...(body.vehicleYear ? { year: Number(body.vehicleYear) } : {}),
+          ...(body.vehicleColor ? { color: body.vehicleColor } : {}),
+          ...(body.vehicleFuel ? { fuelType: body.vehicleFuel } : {}),
+          ...(body.vehicleOdometer !== undefined ? { odometer: Number(body.vehicleOdometer) } : {}),
+          ...(body.vehicleVin !== undefined ? { vin: body.vehicleVin } : {}),
+          ...(body.vehicleEngine !== undefined ? { engineNumber: body.vehicleEngine } : {}),
+        });
+      }
+    } catch (syncErr) {
+      console.warn('Non-fatal warning updating customer/vehicle in registry:', syncErr);
+    }
 
     const updated = await db.updateJobCard(id, updates);
 

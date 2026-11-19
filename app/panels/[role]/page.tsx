@@ -37,7 +37,6 @@ const roleMeta: Record<
     accentBg: '#fbebed',
     defaultEmail: 'bodyshop@tuljamotors.com',
   },
-  /*
   hr: {
     roleTitle: 'Human Resources (HR)',
     departmentName: 'HR & Personnel Records',
@@ -46,7 +45,6 @@ const roleMeta: Record<
     accentBg: '#e8f3f1',
     defaultEmail: 'hr@tuljamotors.com',
   },
-  */
   advisor: {
     roleTitle: 'Service Advisor Desk',
     departmentName: 'Customer Advisory & Intake',
@@ -58,7 +56,7 @@ const roleMeta: Record<
   supervisor: {
     roleTitle: 'Workshop Supervisor',
     departmentName: 'Repair Floor Supervision',
-    description: 'Sign in to advance 13-stage repair workflows, assign tasks to technicians, and inspect quality before paint/assembly.',
+    description: 'Sign in to advance 4-stage repair workflows, assign tasks to technicians, and inspect quality before paint/delivery.',
     accentColor: '#8A181A',
     accentBg: '#fbebed',
     defaultEmail: 'supervisor@tuljamotors.com',

@@ -14,7 +14,8 @@ export async function GET() {
     const inventoryValuation = parts.reduce((acc, p) => acc + (p.stockQuantity || 0) * (p.unitPrice || 0), 0);
     const lowStockCount = parts.filter((p) => (p.stockQuantity || 0) > 0 && (p.stockQuantity || 0) <= (p.minThreshold || 2)).length;
     const outOfStockCount = parts.filter((p) => (p.stockQuantity || 0) === 0).length;
-    const pendingRequisitions = requisitions.filter((r) => r.status === 'Requested' || r.status === 'Pending Stock').length;
+    const pendingRequisitions = requisitions.filter((r) => r.status !== 'Issued' && r.status !== 'Rejected').length;
+    const approvedRequisitionsCount = requisitions.filter((r) => ((r.advisorApproved && r.managerApproved) || r.status === 'Approved') && r.status !== 'Issued' && r.status !== 'Rejected').length;
     const issuedRequisitions = requisitions.filter((r) => r.status === 'Issued').length;
     const activePurchaseOrders = purchaseOrders.filter((po) => po.status === 'Placed' || po.status === 'Draft').length;
 
@@ -30,6 +31,7 @@ export async function GET() {
         lowStockCount,
         outOfStockCount,
         pendingRequisitions,
+        approvedRequisitionsCount,
         issuedRequisitions,
         activePurchaseOrders,
       },
@@ -307,7 +309,9 @@ export async function POST(req: NextRequest) {
         quantity: qty,
         unitPrice: part.unitPrice || 0,
         totalPrice: lineTotal,
-        status: 'Requested',
+        status: 'Pending Approval',
+        advisorApproved: false,
+        managerApproved: false,
         requestedBy: requestedBy || 'Workshop Supervisor',
         notes: notes || `Supervisor floor request for ${job.vehicleModel} (${job.vehicleRegistration}).`,
       });
@@ -318,17 +322,137 @@ export async function POST(req: NextRequest) {
         entityId: requisition.id,
         performedBy: requestedBy || 'Workshop Supervisor',
         userRole: 'supervisor',
-        details: `Supervisor submitted requisition for ${qty}x "${part.name}" (${part.partNumber}) for Job Card ${job.jobCardNumber} (${job.vehicleRegistration}).`,
+        details: `Supervisor submitted requisition for ${qty}x "${part.name}" (${part.partNumber}) for Job Card ${job.jobCardNumber} (${job.vehicleRegistration}). Awaiting Advisor & Body Shop Manager approvals.`,
       });
 
       return NextResponse.json({
         success: true,
         requisition,
-        message: `Requisition submitted for ${qty}x "${part.name}". Sent to Spare Parts Manager for approval.`,
+        message: `Part request submitted for ${qty}x "${part.name}". Sent to Service Advisor and Body Shop Manager for approval.`,
       });
     }
 
-    // 5c. APPROVE & ISSUE SUPERVISOR REQUISITION
+    // 5c. SERVICE ADVISOR APPROVES PART REQUISITION
+    if (action === 'approve_part_advisor') {
+      const { requisitionId, approvedBy } = body;
+      if (!requisitionId) {
+        return NextResponse.json({ success: false, message: 'Requisition ID is required.' }, { status: 400 });
+      }
+
+      const allReqs = await db.getPartRequisitions();
+      const requisition = allReqs.find((r) => r.id === requisitionId);
+      if (!requisition) {
+        return NextResponse.json({ success: false, message: 'Requisition not found.' }, { status: 404 });
+      }
+
+      const nowIso = new Date().toISOString();
+      const isManagerAlreadyApproved = Boolean(requisition.managerApproved);
+      const newStatus = isManagerAlreadyApproved ? 'Approved' : 'Advisor Approved';
+
+      const updated = await db.updatePartRequisition(requisition.id, {
+        advisorApproved: true,
+        advisorApprovedBy: approvedBy || 'Service Advisor',
+        advisorApprovedAt: nowIso,
+        status: newStatus,
+      });
+
+      await db.logActivity({
+        action: 'PARTS_ADVISOR_APPROVED',
+        entityType: 'PartRequisition',
+        entityId: requisition.id,
+        performedBy: approvedBy || 'Service Advisor',
+        userRole: 'advisor',
+        details: `Service Advisor approved spare part request for ${requisition.quantity}x "${requisition.partName}" (${requisition.partNumber}) on ${requisition.jobCardNumber}.${isManagerAlreadyApproved ? ' Both approvals completed — sent to Spare Parts Manager.' : ' Waiting for Body Shop Manager approval.'}`,
+      });
+
+      return NextResponse.json({
+        success: true,
+        requisition: updated,
+        isFullyApproved: isManagerAlreadyApproved,
+        message: isManagerAlreadyApproved
+          ? `Both approvals complete! Part request for "${requisition.partName}" forwarded to Spare Parts Manager to issue.`
+          : `Approved by Service Advisor! Awaiting sign-off from Body Shop Manager.`,
+      });
+    }
+
+    // 5d. BODY SHOP MANAGER APPROVES PART REQUISITION
+    if (action === 'approve_part_manager') {
+      const { requisitionId, approvedBy } = body;
+      if (!requisitionId) {
+        return NextResponse.json({ success: false, message: 'Requisition ID is required.' }, { status: 400 });
+      }
+
+      const allReqs = await db.getPartRequisitions();
+      const requisition = allReqs.find((r) => r.id === requisitionId);
+      if (!requisition) {
+        return NextResponse.json({ success: false, message: 'Requisition not found.' }, { status: 404 });
+      }
+
+      const nowIso = new Date().toISOString();
+      const isAdvisorAlreadyApproved = Boolean(requisition.advisorApproved);
+      const newStatus = isAdvisorAlreadyApproved ? 'Approved' : 'Manager Approved';
+
+      const updated = await db.updatePartRequisition(requisition.id, {
+        managerApproved: true,
+        managerApprovedBy: approvedBy || 'Body Shop Manager',
+        managerApprovedAt: nowIso,
+        status: newStatus,
+      });
+
+      await db.logActivity({
+        action: 'PARTS_MANAGER_APPROVED',
+        entityType: 'PartRequisition',
+        entityId: requisition.id,
+        performedBy: approvedBy || 'Body Shop Manager',
+        userRole: 'body_shop_manager',
+        details: `Body Shop Manager approved spare part request for ${requisition.quantity}x "${requisition.partName}" (${requisition.partNumber}) on ${requisition.jobCardNumber}.${isAdvisorAlreadyApproved ? ' Both approvals completed — sent to Spare Parts Manager.' : ' Waiting for Service Advisor approval.'}`,
+      });
+
+      return NextResponse.json({
+        success: true,
+        requisition: updated,
+        isFullyApproved: isAdvisorAlreadyApproved,
+        message: isAdvisorAlreadyApproved
+          ? `Both approvals complete! Part request for "${requisition.partName}" forwarded to Spare Parts Manager to issue.`
+          : `Approved by Body Shop Manager! Awaiting sign-off from Service Advisor.`,
+      });
+    }
+
+    // 5e. REJECT PART REQUISITION
+    if (action === 'reject_part') {
+      const { requisitionId, rejectedBy, reason } = body;
+      if (!requisitionId) {
+        return NextResponse.json({ success: false, message: 'Requisition ID is required.' }, { status: 400 });
+      }
+
+      const allReqs = await db.getPartRequisitions();
+      const requisition = allReqs.find((r) => r.id === requisitionId);
+      if (!requisition) {
+        return NextResponse.json({ success: false, message: 'Requisition not found.' }, { status: 404 });
+      }
+
+      const updated = await db.updatePartRequisition(requisition.id, {
+        status: 'Rejected',
+        notes: reason ? `${requisition.notes || ''} | Rejected by ${rejectedBy || 'Manager'}: ${reason}` : requisition.notes,
+      });
+
+      await db.logActivity({
+        action: 'PARTS_REQUEST_REJECTED',
+        entityType: 'PartRequisition',
+        entityId: requisition.id,
+        performedBy: rejectedBy || 'Manager',
+        userRole: 'body_shop_manager',
+        details: `Rejected spare part request for ${requisition.quantity}x "${requisition.partName}" on ${requisition.jobCardNumber}. Reason: ${reason || 'Not approved'}.`,
+      });
+
+      return NextResponse.json({
+        success: true,
+        requisition: updated,
+        message: `Part request for "${requisition.partName}" has been rejected.`,
+      });
+    }
+
+    // 5f. SPARE PARTS MANAGER ISSUES APPROVED REQUISITION TO FLOOR
     if (action === 'approve_and_issue') {
       const { requisitionId, issuedBy, notes } = body;
       if (!requisitionId) {
@@ -343,6 +467,24 @@ export async function POST(req: NextRequest) {
 
       if (requisition.status === 'Issued') {
         return NextResponse.json({ success: false, message: 'Requisition has already been issued to the floor.' }, { status: 400 });
+      }
+
+      // Verify that BOTH Service Advisor and Body Shop Manager have approved
+      const hasBothApprovals =
+        (requisition.advisorApproved && requisition.managerApproved) ||
+        requisition.status === 'Approved';
+
+      if (!hasBothApprovals) {
+        const missing: string[] = [];
+        if (!requisition.advisorApproved) missing.push('Service Advisor');
+        if (!requisition.managerApproved) missing.push('Body Shop Manager');
+        return NextResponse.json(
+          {
+            success: false,
+            message: `Cannot issue part yet: Requisition requires approval from ${missing.join(' and ')} first.`,
+          },
+          { status: 400 }
+        );
       }
 
       const part = await db.getSparePartById(requisition.partId);
@@ -400,7 +542,7 @@ export async function POST(req: NextRequest) {
         success: true,
         requisition: updatedReq,
         part: updatedPart,
-        message: `Requisition approved! ${requisition.quantity}x "${part.name}" issued to floor for ${requisition.jobCardNumber}.`,
+        message: `Parts Issued! ${requisition.quantity}x "${part.name}" issued to floor for ${requisition.jobCardNumber}.`,
       });
     }
 

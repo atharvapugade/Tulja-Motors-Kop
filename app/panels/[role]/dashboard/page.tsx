@@ -8,9 +8,6 @@ interface PageProps {
 
 function RoleDashboardContainer({ params }: PageProps) {
   const { role } = use(params);
-  if (role === 'hr') {
-    notFound();
-  }
   return <RoleDashboardClient role={role} />;
 }
 
